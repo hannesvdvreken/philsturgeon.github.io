@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>PHP 7 Feature Freeze | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Today was the feature freeze for PHP 7. That means no new votes can be started for a feature that is aimed at PHP 7.0, and would instead have to go into PHP 7.1.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="PHP 7 Feature Freeze | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Today was the feature freeze for PHP 7. That means no new votes can be started for a feature that is aimed at PHP 7.0, and would instead have to go into PHP 7.1.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">PHP 7 Feature Freeze</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-03-15 12:10:00 UTC">
+                Mar 15 2015
+              </time>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/internals/">#internals</a>
+              <a href="/tags/php7/">#php7</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Today was the feature freeze for PHP 7. That means no new votes can be started for a feature that is aimed at PHP 7.0, and would instead have to go into PHP 7.1.</p>
+
+<p>Instead of heading out to St Patric’s Day with a bunch of New Yorkers making dubious claims about their tenuous connection to Irish ancestry as an excuse to drink, I thought it would be a good time to review some of the more recent RFCs that made it in, and those that didn’t.</p>
+
+<p>This is not an an extensive list of new PHP 7 functionality. Some of these features did not make it in, and there are many others that did.</p>
+
+<h2 id="already-decided">Already Decided</h2>
+
+<h3 id="remove-php-4-constructors">Remove PHP 4 Constructors</h3>
+
+<p><em>Stop recognizing methods with the same name as the defining class as constructors.</em></p>
+
+<p>This one was a little controversial as some see it as a pointless BC break with no gains, but the gains here are simplicity. We don’t have to warn new PHP developers about how things used to work in PHP 4, or teach them that there are special rules for namespaced code.</p>
+
+<p>They are being deprecated in PHP 7 and removed in PHP 8. I would have been ok with them just being removed in PHP 7 and not simply depreciated, or if a depreciation was required this is exactly what PHP 5.7 was meant to be for. Either way, they’re heading off.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/remove_php4_constructors">https://wiki.php.net/rfc/remove_php4_constructors</a></li>
+  <li><strong>Status:</strong> Accepted</li>
+  <li><strong>Opinion:</strong> Happy</li>
+</ul>
+
+<h3 id="spaceship-operator">Spaceship Operator</h3>
+
+<p><em>This RFC adds a new operator (<code>&lt;=&gt;</code>) for combined comparison. Similar to <code>strcmp()</code> or <code>version_compare()</code> in behavior, but it can be used on all generic PHP values with the same semantics as <code>&lt;</code>, <code>&lt;=</code>, <code>==</code>, <code>&gt;=</code>, <code>&gt;</code>.</em></p>
+
+<p>This is not something I’d use regularly, but it is certainly not useless as some have said. The <a href="https://en.wikipedia.org/wiki/Three-way_comparison">three-way comparison operator</a> is useful for sorting, and that is about it.</p>
+
+<p>A lot of people would have liked this to be a function instead. I naively argued that an operator skips the overhead of a function call, but apparently there have been some gains in the PHP engine that bring that difference from trivial to now more like non-existent.</p>
+
+<p>Either way, it’s handy and whatever, Perl and Ruby have it. And Groovy, whatever the fuck that is.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/combined-comparison-operator">https://wiki.php.net/rfc/combined-comparison-operator</a></li>
+  <li><strong>Status:</strong> Accepted</li>
+  <li><strong>Opinion:</strong> Meh</li>
+</ul>
+
+<h3 id="replacing-current-json-extension-with-jsond">Replacing current json extension with jsond</h3>
+
+<p><em>The current Json Parser in the json extension does not have a free license which is a problem for many Linux distros. This has been referenced at <a href="https://bugs.php.net/bug.php?id=63520">Bug #63520</a>. That results in not packaging json extension in the many Linux distributions.</em></p>
+
+<p>This is down to some stupid line in the original code:</p>
+
+<blockquote>
+  <p>The Software shall be used for Good, not Evil.</p>
+</blockquote>
+
+<p>Some distributions were stripping the json extension out and shipping their own. That was a bit of a mess, and there was some FUD going around, <a href="/blog/2013/08/fud-cracker-php-55-never-lost-json-support/">some of which was my fault</a>.</p>
+
+<p>Well now it has been replaced at the PHP level instead of at the whim of the distributors, and this new one is a smidge quicker too if I remember rightly.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/jsond">https://wiki.php.net/rfc/jsond</a></li>
+  <li><strong>Status:</strong> Accepted</li>
+  <li><strong>Opinion:</strong> Why not</li>
+</ul>
+
+<h3 id="return-type-declarations">Return Type Declarations</h3>
+
+<p><em>The basic idea of declaring a return type has been included in at least three RFCs and has been discussed in a few other places… This RFC proposes a different approach from previous RFC’s to accomplish this goal in a simple way.</em></p>
+
+<p>This is a great RFC. It dodged many political landmines and got a great feature into PHP. Sure, it’s as “half-done” as type hinting for arguments is, but when scalar type hints are finally resolved return types will support <code>int</code>, <code>bool</code>, <code>string</code>, etc too.</p>
+
+<p>While many of us are going to have to wait a little while before we use them for components, frameworks, etc, give it a year or two and your code can be full of these lovely little buggers.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/return_types">https://wiki.php.net/rfc/return_types</a></li>
+  <li><strong>Status:</strong> Accepted</li>
+  <li><strong>Opinion:</strong> Whooooo!</li>
+</ul>
+
+<h3 id="void-types">Void Types</h3>
+
+<p><em>Adds a void return type to require that a function does not return a value.</em></p>
+
+<p>I would have been <a href="/php/2015/02/15/php-void-much-ado-about-nothing/">very happy to have void return types</a>, but this RFC was another casualty of <a href="http://blog.ajf.me/2015-02-15-i-quit">Andrea Faulds quitting</a> as a contributor to PHP.</p>
+
+<p>It could come back at a later date, but it would have to be PHP 7.1 at this point.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/void_return_type">https://wiki.php.net/rfc/void_return_type</a></li>
+  <li><strong>Status:</strong> Withdrawn</li>
+  <li><strong>Opinion:</strong> Sad Panda</li>
+</ul>
+
+<h3 id="skipping-optional-parameters-for-functions">Skipping Optional Parameters for Functions</h3>
+
+<p>Every now and then PHP has a little chat about <a href="/blog/2013/09/named-parameters-in-php/">named parameters</a>, and last time a <a href="https://wiki.php.net/rfc/named_params">great RFC popped for that</a>. That RFC is on ice for now, but this “Skip Params” RFC popped up trying to give people some of the same functionality without actually making named params.</p>
+
+<p>While I am glad Stas went to the trouble of making this, I am so much more glad that people downvoted it. It’s a band aid solution to named parameters, and I really hope we see them for later versions of PHP 7.x.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/skipparams">https://wiki.php.net/rfc/skipparams</a></li>
+  <li><strong>Status:</strong> Declined</li>
+  <li><strong>Opinion:</strong> Thank f**k</li>
+</ul>
+
+<h2 id="currently-voting">Currently Voting</h2>
+
+<h3 id="in-operator">In Operator</h3>
+
+<p><em>This RFC adds a new <code>in</code> operator which simplifies contains checks for strings and arrays. The <code>in</code> operator makes these checks way more readable and lowers the cognitive load. Additionally, it also works for <code>Traversable</code>.</em></p>
+
+<p>Ever since Nikita Popov wrote about <a href="http://nikic.github.io/2012/07/27/How-to-add-new-syntactic-features-to-PHP.html">adding syntactic features to PHP</a>, using in as an example, I wished we actually had it for PHP.</p>
+
+<p>Sadly the chances are poor. Just as a whole bunch of people complained that the <a href="#spaceshit-operator">spaceship operator</a> should be a function not an operator, several internals voters are saying that this is just useless syntactic sugar.</p>
+
+<p>As a developer who works with languages like Ruby and Python, it does always strike me as a shame that PHP developers are so heavily against syntactic sugar.</p>
+
+<p>Dan Ackroyd says this:</p>
+
+<blockquote>
+  <p>The equation is not just “will PHP be better with this” instead it’s
+“will PHP so much better that it justifies the known cost of adding
+syntax to the language, as well as the unknown cost of blocking future
+use of the ‘in’ keyword”.</p>
+</blockquote>
+
+<p>His view point is not at all unreasonable. We don’t want to start adding features just for giggles, but internals members have in the past used this line of reasoning to block a lot of nice things. It often seems like this:</p>
+
+<blockquote>
+  <p>Why would you want a nice clean way to do this in the language, when you have these other shitty options?</p>
+</blockquote>
+
+<p>This was the case with named parameters, when people said “Just use arrays” or “make some parameter bag classes!” No bloody thank you.</p>
+
+<p>I’d love to see the <code>in</code> operator make it <strong>in</strong>, but it’s currently a 4 v 6 vote, with the No’s winning.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/in_operator">https://wiki.php.net/rfc/in_operator</a></li>
+  <li><strong>Status:</strong> Voting</li>
+  <li><strong>Opinion:</strong> Love it</li>
+  <li><strong>Chances:</strong> Doubtful</li>
+</ul>
+
+<h3 id="constructor-behaviour-of-internal-classes">Constructor behaviour of internal classes</h3>
+
+<p><em>Cleanup undesirable behaviour of constructors internal classes.</em></p>
+
+<p>PHP is well known for having inconsistencies in its codebase and PHP 7 is trying to fix a huge number of these things. One such inconsistency is how some internal class constructors behave with failures:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre>$mf = new MessageFormatter('en_US', '{this was made intentionally incorrect}');
+if ($mf === null) {
+    echo "Surprise!";
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>That’s fairly messed up right there, as you’d expect either an object back, or an exception to be thrown.</p>
+
+<p>There are a bunch of other oddities that this RFC looks to clean up, and by documenting the intended behavior it means if any other classes are found to be acting up they can be treated as bugs and fixed.</p>
+
+<p>Attention to detail like this is helping PHP 7 become a really strong version, and takes a lot of wind out of the trolls sails.</p>
+
+<p>Currently at 9 v 1, this looks set to pass. There is barely anything controversial about it so I am confident.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/internal_constructor_behaviour">https://wiki.php.net/rfc/internal_constructor_behaviour</a></li>
+  <li><strong>Status:</strong> Voting</li>
+  <li><strong>Opinion:</strong> Spiffing</li>
+  <li><strong>Chances:</strong> 90%</li>
+</ul>
+
+<h3 id="reclassify-estrict-notices">Reclassify E_STRICT notices</h3>
+
+<p><em>This RFC proposes to reclassify the few existing E_STRICT notices and remove this error category.</em></p>
+
+<p>PHP has way too many <a href="http://php.net/manual/en/errorfunc.constants.php">error types</a>. The cognitive load required to new developers of PHP, and even to seasoned pros, is a nightmare. There are edge cases and confusion all around.</p>
+
+<p><code>E_STRICT</code> alone is a bit of a weird one.</p>
+
+<blockquote>
+  <p>Enable to have PHP suggest changes to your code which will ensure the best interoperability and forward compatibility of your code.
+Since PHP 5 but not included in <code>E_ALL</code> until PHP 5.4.0</p>
+</blockquote>
+
+<p>Ugh. This RFC suggests killing off usage of <code>E_STRICT</code> errors, and recategorising them as one of the following:</p>
+
+<blockquote>
+  <ul>
+    <li>Remove the strict standards notice if it appears inconsistent or informational.</li>
+    <li>Promote to E_DEPRECATED if there is intent to remove this functionality in the future.</li>
+    <li>Promote to E_NOTICE or E_WARNING otherwise.</li>
+  </ul>
+</blockquote>
+
+<p>Good. Simple. Smart.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/reclassify_e_strict">https://wiki.php.net/rfc/reclassify_e_strict</a></li>
+  <li><strong>Status:</strong> Voting</li>
+  <li><strong>Opinion:</strong> Helpful</li>
+  <li><strong>Chances:</strong> Strong</li>
+</ul>
+
+<h3 id="strict-argument-count-on-function-calls">Strict Argument Count On Function Calls</h3>
+
+<p><em>This RFC proposes to sensibly add a strict argument count check for function calls on PHP7</em></p>
+
+<p>This one is very controversial. Right now in PHP, if you have a method that expects 3 arguments and you shove a 4th in there, it’ll accept the value and carry on with no warnings, errors or anything.</p>
+
+<p>Some consider that a bug.</p>
+
+<p>Some consider that <a href="https://wiki.php.net/rfc/strict_argcount#flexible_interface_implementations">a feature</a>.</p>
+
+<p>I fully agree with the RFC author:</p>
+
+<blockquote>
+  <p>Strict checks on argument counts are good to catch bugs (sometimes dangerous bugs) on user space code. According to measurements presented on this RFC, done by running many FOOS projects test suites, the current PHP silent behavior is not helpful and we should fix it.</p>
+</blockquote>
+
+<p>Relying on the fact that PHP will let you sneak extra arguments in to satisfy some interface which should just be updated to me seems like a weird edge case, but some very smart developers rely on that too. It’s hard to say one way or the other, but I always think the more PHP can have our backs and alert us of problems, the easier it becomes to maintain larger systems.</p>
+
+<p>There have been a few discussions about changing things in this RFC, so it might end up pulled and tweaked. If the RFC is not pulled, I’d say its chances are about 50/50 of getting done.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/strict_argcount">https://wiki.php.net/rfc/strict_argcount</a></li>
+  <li><strong>Status:</strong> Voting</li>
+  <li><strong>Opinion:</strong> Conflicted but learning +1</li>
+  <li><strong>Chances:</strong> 50%</li>
+</ul>
+
+<h3 id="anonymous-class-support">Anonymous Class Support</h3>
+
+<p>Anonymous classes can be used to make insanely simple implementations to satisfy interfaces without having to run off to the autoloader or jam a bunch of classes in the same file.</p>
+
+<p>These anonymous classes are also pretty damn good at mocking, so PHP will have to do far fewer gross things to get mocked objects.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre>// New Hotness
+$pusher-&gt;setLogger(new class {
+  public function log($msg) {
+    print_r($msg . "\n");
+  }
+});
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This RFC is another Joe Watkins and Phil Sturgeon production. Joe likes to write the code, but doesn’t always have the time or energy to get things through the RFC procedure. I help out by writing tests, handling the RFC wiki entry, gathering feedback, discussing changes, etc.</p>
+
+<p>Clearly we don’t make a bad team, as this one is steaming through the vote.</p>
+
+<ul>
+  <li><strong>RFC:</strong> <a href="https://wiki.php.net/rfc/anonymous_classes">https://wiki.php.net/rfc/anonymous_classes</a></li>
+  <li><strong>Status:</strong> Voting</li>
+  <li><strong>Opinion:</strong> Nom nom nom</li>
+  <li><strong>Status:</strong> Very likely</li>
+</ul>
+
+<h2 id="scalar-types-etc">Scalar Types etc</h2>
+
+<p>There were a few I missed out for two reasons. Some I don’t know that much about and have missed the conversations, but the others… I just can’t even right now.</p>
+
+<p>“The Great Scalar Type War of 2015” is still waging so hard that it looks like the feature freeze might be completely ignored for this one feature. There are three competing RFCs, two of them in vote, one of them with fuck-all support and one should have passed already. The third is a backup plan for if the other doesn’t pass, but questionably has not been around long enough for voting to start before the end of the feature freeze today.</p>
+
+<ul>
+  <li><a href="https://wiki.php.net/rfc/scalar_type_hints_v5">Scalar Type Hints v0.5</a></li>
+  <li><a href="https://wiki.php.net/rfc/coercive_sth">Coercive Scalar Type Hints</a></li>
+  <li><a href="https://wiki.php.net/rfc/basic_scalar_types">Basic Scalar Type Hints</a></li>
+</ul>
+
+<p>Some really weird shit is happening on internals over the last few days around these RFCs, and it will need a lot more words to explain it than I have space for in this article.</p>
+
+<p>On the up side it’s going to make for an amazing story; one even more preposterous than <a href="/blog/2013/09/t-paamayim-nekudotayim-v-sanity/">T_PAAMAYIM_NEKUDOTAYIM v Sanity</a>.</p>
+
+<p>I am excited about the future of PHP 7, but this scalar type hints thing is a really heated fight. Sadly most of the fighting is being caused by the actions of one well known contributor, and this is not the first time it has happened.</p>
+
+<p>Hopefully it can be resolved and we can play with new functionality in the master branch soon, because so far PHP 7 looks really awesome.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=PHP 7 Feature Freeze&amp;url= https://philsturgeon.uk/2015/03/15/php-7-feature-freeze/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=PHP 7 Feature Freeze&amp;url= https://philsturgeon.uk/2015/03/15/php-7-feature-freeze/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2015/02/15/php-void-much-ado-about-nothing/">PHP Void: Much Ado About Nothing</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2015/05/05/psr7-numeric-workflow/">A Quick Note on PSR Numbering</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2015-03-15 12:10:00 UTC">2015-03-15 12:10:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

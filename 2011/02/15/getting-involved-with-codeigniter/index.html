@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Getting involved with CodeIgniter | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Now that CodeIgniter (Reactor) 2.0 is out people are starting to get involved, which is great. There are still a few stragglers getting confused over branch names and having arguments over the philosophy of CodeIgniter, but it all seems to be dying down a little bit. To put it simply, CodeIgniter Reactor 2.0 is CodeIgniter. When you upgrade, this is what you will most likely be upgrading to, it is the version you will download when you go to the CodeIgniter homepage and as long as you don’t go randomly wandering around BitBucket accidentally downloading development versions then it will be pretty stable. In fact, CodeIgniter Reactor 2.0 has fixed about 30 bugs that existed in 1.7.x so it is actually way more stable.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Getting involved with CodeIgniter | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Now that CodeIgniter (Reactor) 2.0 is out people are starting to get involved, which is great. There are still a few stragglers getting confused over branch names and having arguments over the philosophy of CodeIgniter, but it all seems to be dying down a little bit. To put it simply, CodeIgniter Reactor 2.0 is CodeIgniter. When you upgrade, this is what you will most likely be upgrading to, it is the version you will download when you go to the CodeIgniter homepage and as long as you don’t go randomly wandering around BitBucket accidentally downloading development versions then it will be pretty stable. In fact, CodeIgniter Reactor 2.0 has fixed about 30 bugs that existed in 1.7.x so it is actually way more stable.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Getting involved with CodeIgniter</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2011-02-15 22:05:00 UTC">
+                Feb 15 2011
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Now that CodeIgniter (Reactor) 2.0 is out people are starting to get involved, which is great. There are still a few stragglers getting confused over branch names and having arguments over the philosophy of CodeIgniter, but it all seems to be dying down a little bit. To put it simply, CodeIgniter Reactor 2.0 is CodeIgniter. When you upgrade, this is what you will most likely be upgrading to, it is the version you will download when you go to the CodeIgniter homepage and as long as you don’t go randomly wandering around BitBucket accidentally downloading development versions then it will be pretty stable. In fact, CodeIgniter Reactor 2.0 has fixed about 30 bugs that existed in 1.7.x so it is actually way more stable.</p>
+
+<p>So with that out of the way, what makes Reactor so much more different than CodeIgniter has been in the past? Well that is easy, anyone can be involved whether you are a hard-core developer who is happy to jump into the codebase and start changing things and adding features, or a new user who just wants to request some new features, you can do this on the <a href="https://codeigniter.uservoice.com/forums/40508-codeigniter-reactor">UserVoice</a>. On here are lots of features and we already have some features over 800 vote points (people can spend 10 each, up to 3 at a time, so that is not actually 800 votes). Now I think it is important to address here, that just because a feature is asked for, does not mean 100% it will happen, it just means it will be noticed over other feature requests and discussed. For example, if 100 people go in there and ask for a .NET GUI for generating code… well tough, that still is not going to happen. The fact that we vet feature requests after a full discussion should be seen as a plus, because the community sure would not be happy if we just ran around making every single change that anybody asked for. Then CodeIgniter might as well just be a Microsoft product and would loose its lightweight claim to fame!</p>
+
+<h3 id="you-seem-to-say-we-quite-a-lot">You seem to say “we” quite a lot</h3>
+
+<p>Unlike Queen Victoria I do not use the term “we” to describe myself, I am referring to the Reactor Engineer team. We are a team of 6 long-time CodeIgniter developers who accepted the challenge from EllisLab and applied to help manage a community version of CodeIgniter. The community asked for change and EllisLab responded with a way for us to do it. Great!</p>
+
+<h3 id="what-to-expect-from-the-engineers">What to expect from the Engineers</h3>
+
+<p>Expect dedication but don’t expect the world. There have been numerous complaints that are entirely contradictory.</p>
+
+<ol>
+  <li>They’ll just change everything and change the framework that I love beyond recognition.</li>
+  <li>They aren’t doing enough, why don’t we have namespaces, static classes up the wazoo and a zillion other random features?!</li>
+</ol>
+
+<p>Well it looks like we can’t win eh? ;-)</p>
+
+<p>The Reactor Engineers are mostly people who work with CodeIgniter on a regular basis. Myself, I have been using CodeIgniter every single day on my 9-5 for the last 14 months and a fair bit for the 4 years before that, so I am around it alot. As somebody who uses CodeIgniter this much it is easily fair to say I have written more CodeIgniter based apps than EllisLab! As such I notice a lot of things that are missing or just plain broken and I really wanted to be in a situation where I could make those changes easily. When I notice an error, or a friend of mine working on a commercial app notices an error, or one of the 100 people who email me about CodeIgniter every single bloomin’ day notices an error, I sure want to be able to fix is ASAP.</p>
+
+<p>That is exactly the sort of thing the Engineers are about: helping to facilitate change.</p>
+
+<h3 id="sweet-can-you-facilitate-my-change">Sweet, can you facilitate my change?</h3>
+
+<p>Damn right. Here are some simple rules to get your changes into CodeIgniter:</p>
+
+<ol>
+  <li><a href="http://codeigniter.com/user_guide/general/styleguide.html"><strong>Follow the EllisLab Coding Standards</strong></a> - They are pretty simple and mean that all of CodeIgniter will look like Rick Ellis himself wrote it. Remember, he is a black belt so that is a good thing.</li>
+  <li><strong>Documentation</strong> - Documenting your own code might be boring, but it’s a lot more boring for us to document other peoples code when they are the ones providing the changes. Supply all features and changes with documentation. Some may only be an update to the changelog, some will be entire library docs, just make sure it is right and fits in with the rest.</li>
+  <li><strong>Test</strong> - There is no point sending in busted code. Write the change into your applications, test the balls off it and submit the change when it’s done.</li>
+  <li><strong>Use <a href="https://bitbucket.org/ellislab/codeigniter-reactor">BitBucket</a> / <a href="https://github.com/philsturgeon/codeigniter-reactor">GitHub</a></strong> - You can send the changes via a Pull Request on either repository. The GitHub one is a personal repo I use to help Git users get their changes in, but has EllisLab’s blessing.</li>
+</ol>
+
+<h3 id="what-change-is-good-change">What change is good change?</h3>
+
+<p>A good change to make is one that has been really useful to you. Not just on one project, but on lots. If that change is on UserVoice then even better! Drop a comment on there saying you are going to work on it, then leave another when it is done with a link to the change. That means the Engineers and all the other users interested in that change can have a look.</p>
+
+<p>An example of a good change recently is things like GET string support, or supporting multiple environments. The code for these was tiny, but was pretty darn useful for a lot of developers. Other changes are things like adding  decimal, less_than and greater_than rules to Form Validation or adding the audio/mp3 mime type to the mimes.php config. We aren’t trying to re-invent the framework or create artificial intelligence, just make it better one step at a time.</p>
+
+<h3 id="what-is-a-bad-change">What is a bad change?</h3>
+
+<p>Don’t create something just for the hell of it. If you make a feature and only test that feature in a plain install with no real world usage, that feature is going to suck.</p>
+
+<p>Also I’ve seen quite a few “CodeIgniter haz to haz <em>Sprockets</em> because X and Y Framework have them!!!11one” and this is a terrible reason to do anything. If you instead think “I really like the way Kohana has implemented this feature, perhaps I will work it into my application and test it as I go, then see if anybody else is interested” then good work, you might have yourself a feature for 2.1.</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>CodeIgniter Reactor is here to stay and is a tool for good. It is lightweight, stable, useful and has a great following, but us Engineer folk are not going to spend our entire free time working on features for the hell of it, nor should we be expected or needed to. Everyone who wants and needs a feature in CodeIgniter has the equal opportunity to get their code into place and anybody who has been using CodeIgniter for more than a few months can dedicate something useful. As for the size of the changes, we are taking things slow for now and changes will eventually ramp up but nobody should be scared of using it.</p>
+
+<p>Now hopefully we can all stop posting about “the status of the community” or “the future of CodeIgniter” and having silly arguments on the forums and get back to writing some code. I’ll have a sweet new version of <a href="http://pyrocms.com/">PyroCMS</a> out fairly soon and <a href="http://pancakeapp.com/">Pancake</a> 2.1 needs to get done. Both of which will be running on Reactor and taking full advantage of the new changes!</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Getting involved with CodeIgniter&amp;url= https://philsturgeon.uk/2011/02/15/getting-involved-with-codeigniter/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Getting involved with CodeIgniter&amp;url= https://philsturgeon.uk/2011/02/15/getting-involved-with-codeigniter/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2011/02/12/php-format-abstraction-with-a-simple-class/">PHP Format abstraction with a simple class</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2011/03/06/fuelphp-oil-introduction-scaffolding/">FuelPHP - Oil Introduction &amp; Scaffolding</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2011-02-15 22:05:00 UTC">2011-02-15 22:05:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

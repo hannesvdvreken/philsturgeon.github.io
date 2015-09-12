@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>What is The League of Extraordinary Packages? | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="This is the story of group of friends, who decided to write some code, but somehow confused and angered everyone with a keyboard.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="What is The League of Extraordinary Packages? | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="This is the story of group of friends, who decided to write some code, but somehow confused and angered everyone with a keyboard.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">What is The League of Extraordinary Packages?</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-10-16 14:00:00 UTC">
+                Oct 16 2014
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>This is the story of group of friends, who decided to write some code, but somehow confused and angered everyone with a keyboard.</p>
+
+<p>tl:dr; “Waaaaah why doesn’t <em>everyone</em> like usssss…” That said, the long-form might entertain anyone who is curious about <a href="http://thephpleague.com">The League</a>. It has a bizarrely controversial existence.</p>
+
+<h2 id="the-origin">The Origin</h2>
+
+<p>It was a cold winter morning, February 2013, heading over the Williamsburg Bridge by subway into Manhattan. I had spent the whole night working on some code that I was super excited about releasing.</p>
+
+<p>It had been a few months since <a href="/blog/2012/09/moving-on">I quit CodeIgniter</a> and FuelPHP, and I was a man without an open-source organisation for the first time in ages.</p>
+
+<p>Where should I release this code? Should I release it with a vendor name of <code>Sturgeon\</code>? That seemed rather egotistical.</p>
+
+<p>I could make something up, but what is the point of a single vendor with a single package?  I wondered if any of my buddies were having this problem.</p>
+
+<p>I DMed @alexbilbie and @ben_corlett, what would they release their code under if they had any?</p>
+
+<p>They didn’t know, but liked the idea of doing something together.</p>
+
+<p>Being as hungover as I was, I thought long and hard, for about 5 seconds until something amazing happened in my brain…</p>
+
+<p><strong>The PHP Super Best Friends Club!</strong></p>
+
+<p>The guys loved it, and we started making plans immediately.</p>
+
+<h2 id="the-goals">The Goals</h2>
+
+<p>We’d all worked on projects together before. PyroCMS, CodeIgniter libraries, freelance projects and various other components. We all knew each other well and trusted each other, and expanded our little group to a few other people via email within a week.</p>
+
+<p>There was no concern about trust or leadership or setting up complex rules, because we were all just people and why the hell.</p>
+
+<p>I grabbed a domain, somebody set up a GitHub organisation, and we were up and running.</p>
+
+<p>We started laying out goals for this little group, which were super simple.</p>
+
+<ol>
+  <li>Do nothing half-arsed. There is a <em>lot</em> of shitty PHP code floating around, and we don’t need to add to that.</li>
+  <li>Make sure this never looks even a bit like a framework.</li>
+  <li>Keep it framework agnostic. Nothing for one single framework. Ever.</li>
+  <li>Follow standards and best practices, as a guide for how others can do the same. - This component world is new, and we need examples for the everyman.</li>
+  <li>Avoid bus-factor, by adding each other to Packagist and GitHub.</li>
+  <li>Avoid stale code, but swapping duties or finding help for the project.</li>
+  <li>Cover for others while they were on holiday.</li>
+  <li>Unit test the shit out of it all.</li>
+</ol>
+
+<p>The most important - and least mentioned part - was the bus factor. At the time, I was Lead Engineer of Kapture. I had somebody working for me who chose to release bits of what we’d been building as open-source code under his own name without consent, which was a bit of a dick move, but not a surprising one if you know the chap.</p>
+
+<p>He vanished off the face of the earth one day. Just up and left. No show at work. No contact. Nothing.</p>
+
+<p>We had a lot of code that relied on that code, so we had to fork it, and a lot of the Laravel community was confused about it too, as it was rather popular!</p>
+
+<p>Now, if one of us vanishes, for whatever reason, that code is not lost. It’s in the same repo, we just switch out “Project Leads” and thats it.</p>
+
+<h2 id="name-change">Name Change</h2>
+
+<p>The PHPSBFC was a bit of a mouth-full, and had a terrible PHP vendor namespace.</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>The “PHP Super Best Friends Club” is about to launch, we just need a vendor namespace. Besties, Super, Sbfc, or something else?</p>&mdash; Phil Sturgeon (@philsturgeon) <a href="https://twitter.com/philsturgeon/status/322409684151701504">April 11, 2013</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>I was having a little think about names and ran a few past people over IRC, and somebody said: The League of Extraordinary Packages. I bounced that off a few people and the name seemed to go down well.</p>
+
+<p>Nobody thought that was elitist at the time. It was just a play on that stupid Sean Connery movie <a href="http://www.imdb.com/title/tt0311429/">The League of Extraordinary Gentlemen</a> for crying out loud.</p>
+
+<p>If anything, the advice we had was that “extraordinary packages” might sound like a dick joke, and we should be careful not to offend.</p>
+
+<p>Strangely, its others in the community that have been a huge set of dicks.</p>
+
+<h2 id="league-draft">League Draft</h2>
+
+<p>I slapped together some list of silly rules and requirements in the space of about 20 minutes using the GitHub Page Builder. Within about an hour somebody had shoved that up on Reddit, and a certain somebody was screaming off about elitism due to some jovial wording in a <em>very</em> early rough draft.</p>
+
+<p>A lot of people, who I know and respect, were being utterly obnoxious about it all on StackOverflow Chat.</p>
+
+<p>Others were diving on us on Twitter.</p>
+
+<p>A great start.</p>
+
+<p>But, fuck em. Let’s just write code the best we can.</p>
+
+<p>And we did. For a long time.</p>
+
+<p>We made <a href="https://github.com/thephpleague/fractal">Fractal</a>, <a href="https://github.com/thephpleague/flysystem">Flysystem</a>, <a href="https://github.com/thephpleague/plates">Plates</a> and Alex brought <a href="https://github.com/thephpleague/oauth2-server">OAuth 2 Server</a> over from its old home at the University of Lincoln.</p>
+
+<p>There was some great code here. Really, really useful stuff, and it worked <em>everywhere</em>. Not just in Symfony, or Laravel, or WhoGivesADamn, but everywhere.</p>
+
+<p>Laravel recently implemented Flysystem into the - currently unreleased - Laravel 5.0 branch, which was huge!</p>
+
+<p>Working together with frameworks to reduce the amount of crap they have to do seems like a big win. There are a fair few domain problems that full-stack frameworks have to deal with. Writing a system that abstracts local and cloud-based filesystems does not seem like one.</p>
+
+<p>Kayla Daniels took over maintenance of the incredibly popular <a href="https://github.com/thephpleague/omnipay">Omnipay</a> and brought it to the League, which was huge again!</p>
+
+<h2 id="premier-league">Premier League</h2>
+
+<p>Things were flying at the League. Clearly, we were becoming a serious player in the PHP community.</p>
+
+<ol>
+  <li>Frank is working on a PSR for Events</li>
+  <li>I was handing my position as the PyroCMS voting representative over to the chap who bought PyroCMS LLC off me as soon as PSR-7 got approved</li>
+</ol>
+
+<p>Logical next step? The League should get on the FIG.</p>
+
+<p>Right then Kayla, why don’t you go and apply for…</p>
+
+<p>INTERNETSPLOSION!</p>
+
+<p><a href="https://groups.google.com/forum/#!topic/php-fig/Toukmt2jkNk%5B1-25-false%5D">Five pages of this shit</a>, but the tl:dr; is that half the FIG freaked out. I don’t need to play-by-play this stuff, but if you want some chuckles then I’d suggest cracking out a bottle of the strong stuff; It will take you quite some time to wade through it. It’s bizarre, amazing and… well I don’t have any more words for it. I can’t even with that thread.</p>
+
+<p>Following their logic, as I bought the domain name for the League and was active in conversations around it, I must be the BDFL. The issue there is that - despite explaining I have <a href="https://www.pyrocms.com/blog/2014/08/hard-decisions">sold PyroCMS</a> and am currently only a Technical Advisor - I must still be the BDFL of that too. This would theoretically give me “two votes” on FIG votes, as some folks seem to think that Kayla is just some mindless peon/puppet voter.</p>
+
+<p>Ignoring the various offensive undertones of those assertions, there was clear confusion around the League.</p>
+
+<h2 id="league--phpclasses">League != PHPClasses</h2>
+
+<p>PHPClasses is a package directory. It was built probably about 15 years ago, and has barely changed since then.</p>
+
+<p>At some point last year, people got angry and sad with us that we would not let other packages in. People saw us as a closed group who were saying we were better than everyone else, and kept the common muck out - or something. We never had rules against third-parties bringing their components over to the League. We just never considered it, and didn’t think anyone would want to!</p>
+
+<p>We put some simple rules on the site, saying they could come over if they promised to try to make their code excellent. Part of that involved consistent branding, as we’re a component vendor after-all. Imagine if <a href="http://symfony.com/doc/current/components/">Symfony</a>, <a href="http://framework.zend.com/manual/2.3/en/index.html#zendframeworkreference">Zend</a>, <a href="http://auraphp.com/packages/v2">Aura</a>, <a href="https://github.com/orno">Orno</a> or <a href="https://github.com/hoaproject">Hoa</a> had random components with other vendor names?</p>
+
+<p>Allowing packages to occasionally join does not make us into a package directory like PHPClasses. Not even slightly!</p>
+
+<p>PHPClasses focuses on getting as many packages and users as it can. This all helps it generate ad-revenue, derived from aggressive email campaigns, and forced sign-ins to download code. It then
+uses those user numbers to brand and defend itself, despite having <a href="https://www.youtube.com/watch?v=0ktiTRwd-pg">no way to remove yourself from the site</a>.</p>
+
+<p>The League is a completely free and open GitHub repository, with no adverts, no newsletter and no logins. We just write code and put it on GitHub, then manage issues and pull requests with the help of our growing community of open-source contributors. You can move your code over to our organisation and we can all work together if you like.</p>
+
+<p>The League also recommends the use of approved standards, and suggests the use of established best practices.</p>
+
+<p>I’m not seeing a similarity between the two there at all.</p>
+
+<h2 id="league--pear">League != PEAR</h2>
+
+<p>I think people look at the points we define as metrics of quality, as a checklist to apply to our project. We do not want a million packages. The League probably only ever have about 50, max.</p>
+
+<p>PEAR required votes for packages to get in, but with the League the whole “Apply to join” thing was just an afterthought.</p>
+
+<p>Keep packages out? Anger about elitism.
+Let packages in but ask they follow our rules? We make people beg and jump through hoops, like forced PSR-2 usage.
+Let any packages in regardless of quality? Angry about poor quality code.</p>
+
+<p>Regardless what we do, somebodies cornflakes are going to taste like piss.</p>
+
+<h2 id="league-leadership">League Leadership</h2>
+
+<p>Also diffused from that bat-shit FIG thread, is obvious confusion about the leadership of the League.</p>
+
+<p>It’s quite simple. We don’t have a leader.</p>
+
+<p>Paul Jones suggested the term “Open-Source Cabal”, which sounds cool but has negative connotations.</p>
+
+<p>I don’t know what you’d call it, other than an organisation.</p>
+
+<p>Why would we need leadership? We’re all people, with brains, and email addresses. Some of us even have phones. If we’re not sure about something, we ask. If we’re in disagreement, we work something out.</p>
+
+<p>Not every single open-source project needs a crown and a staff - although Kayla would definitely take them if offered.</p>
+
+<h2 id="return-of-the-league">Return of the League</h2>
+
+<p>While I am still co-ordinating <a href="https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md">PSR-7</a>, I won’t be rushed out of the FIG. When I’m done there, I can hand things over to Ryan Thompson. There will be no further issue with the League’s imagined “conflict” with PyroCMS, and folks can apply again.</p>
+
+<p>In the mean time, The League is still trucking along nicely. The two newest contenders are <a href="http://climate.thephpleague.com/">CLImate</a> and <a href="http://period.thephpleague.com/">Period</a>. The last was only brought over today, but it’s looking super smooth already.</p>
+
+<p>My next article will be about when it makes sense to build new packages, versus contributing to existing code, which will cover a lot of points I would have liked to put into here. It seems The League stepped on some toes with a few packages, and it leads to a great discussion on “When you should start over.”</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=What is The League of Extraordinary Packages?&amp;url= https://philsturgeon.uk/2014/10/16/what-is-the-league-of-extraordinary-packages/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=What is The League of Extraordinary Packages?&amp;url= https://philsturgeon.uk/2014/10/16/what-is-the-league-of-extraordinary-packages/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2014/10/12/try-out-phpbrew-and-virtphp/">Try out PHPbrew and VirtPHP</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2014/10/20/php-wars-attack-of-the-clones/">PHP Wars: Attack of the Clones</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-10-16 14:00:00 UTC">2014-10-16 14:00:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

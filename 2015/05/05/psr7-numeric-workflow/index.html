@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>A Quick Note on PSR Numbering | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="The last PSR from the FIG to be sent out into the world, to be used by whoever felt like using it, was PSR-4: Autoloader. Now people are starting
+to hear about PSR-7, and they’re starting to “lolphp”, wondering what has happened to PSR-5 and PSR-6. I am no longer part of the FIG after PyroCMS
+was acquired and the voting seat was swapped to the new owner, but I do have a few things to say on PSR numbering still.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="A Quick Note on PSR Numbering | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="The last PSR from the FIG to be sent out into the world, to be used by whoever felt like using it, was PSR-4: Autoloader. Now people are starting
+to hear about PSR-7, and they’re starting to “lolphp”, wondering what has happened to PSR-5 and PSR-6. I am no longer part of the FIG after PyroCMS
+was acquired and the voting seat was swapped to the new owner, but I do have a few things to say on PSR numbering still.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">A Quick Note on PSR Numbering</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-05-05 18:04:00 UTC">
+                May  5 2015
+              </time>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/php-fig/">#php-fig</a>
+              <a href="/tags/psr7/">#psr7</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>The last PSR from the FIG to be sent out into the world, to be used by whoever felt like using it, was <a href="http://www.php-fig.org/psr/psr-4/">PSR-4: Autoloader</a>. Now people are starting
+to hear about PSR-7, and they’re starting to “lolphp”, wondering what has happened to PSR-5 and PSR-6. I am no longer part of the FIG after PyroCMS
+was acquired and the voting seat was swapped to the new owner, but I do have a few things to say on PSR numbering still.</p>
+
+<p>This is not like <a href="/php/2014/07/23/neverending-muppet-debate-of-php-6-v-php-7/">The Neverending Muppet Debate of PHP 6 v PHP 7</a>, despite it being the first thought to pop into many peoples heads. Instead, this
+is down to the <a href="https://github.com/php-fig/fig-standards/blob/master/bylaws/004-psr-workflow.md">Workflow Bylaw</a> I put into place last year.</p>
+
+<p>PSR generation in the FIG used to work like this:</p>
+
+<ul>
+  <li><strong>Squabble:</strong> Fuck knows just keep changing stuff</li>
+  <li><strong>Accepted:</strong> Oh you were on holiday? Well… it’s done now, and it’s just <code>$new_id = end($psrs)-&gt;id + 1</code></li>
+</ul>
+
+<p>Now, with the new workflow, it looks more like this:</p>
+
+<ul>
+  <li><strong>Pre-Draft:</strong> Random markdown on the Internet and nobody cares</li>
+  <li><strong>Draft:</strong> The FIG will definitely get to work on this and see what happens. Lets give it a number now</li>
+  <li><strong>Review:</strong> Time to check it out Internet, it <em>should not</em> change too much now without going back to Draft</li>
+  <li><strong>Accepted:</strong> Done, it passed the vote! Whatever number it was, it still is</li>
+</ul>
+
+<p>Other than the few extra stages, the main difference is that something doesn’t have to be completely finished before it gets a number.</p>
+
+<p>At first, that might seem a little complicated, but it is exactly how <a href="https://www.python.org/dev/peps/">PEPs</a> are done in Python. Just like Python,
+PSRs have an index <a href="https://github.com/php-fig/fig-standards/blob/master/index.md">in Git</a>, which is also displayed <a href="http://www.php-fig.org/psr/">on the website</a> for users to see.</p>
+
+<p>Python do it, great, but <em>why</em> does this help?</p>
+
+<p>Initially the FIG was only working on one PSR at a time. Sure, PSR-1 and PSR-2 landed at the same time, but that was only because PSR-2 was
+split off from PSR-1 to make PSR-1 a bit less controversial. They were not meant to be two different things at inception.</p>
+
+<h3 id="nicknames-are-weird">Nicknames are weird</h3>
+
+<p>After PSR-3, and before anything else was being worked on, people referred to what is now PSR-4 as PSR-X or PSR-next. This was only meant
+to be a nickname and ended up sticking as a thing. Then people started saying things like PSR-C or PSR-Cache, and PSR-R was some
+alternative to PSR-X, and it got fucking mental. Bloggers and people on twitter thought those names were legit what was going to be used,
+and all hell broke loose when they found out it wasn’t PSR-X anymore.</p>
+
+<h3 id="psr-concurrency">PSR Concurrency</h3>
+
+<p>Now, with people working on caching, HTTP messaging, phpdoc, etc., there is even more room for confusion. We can’t even
+shorten HTTP messaging because there have been discussions of a HTTP client in the past, so giving these all a single, stable number
+which can be used regardless of its status just made sense.</p>
+
+<p>We could potentially have a “draft number” and an “accepted number” but what is the point? Who cares? All we needed was an index to keep
+track of what is what, avoid multiple conversations confusing which PSR is being talked about, and keep that number the same when and if
+things are done.</p>
+
+<h3 id="but-0-1-2-3-47">But 0, 1, 2, 3, 4…7?!!?</h3>
+
+<p>So what? PSRs are not software, they are not SemVer, and they are not important. They are an arbitrary assignment which could have been
+A, B, C or Roman Numerals.</p>
+
+<p>If people keep complaining about interruptions in the accepted auto-increment I’d be tempted to suggest switching the version numbers to sha1
+hashes of the content like Git commits.</p>
+
+<p>The identifier does not matter.</p>
+
+<h3 id="but-what-if-psr-5-never-comes-out">But what if PSR-5 never comes out?!</h3>
+
+<p>Then PSR-5 will remain in Draft or whatever status it is in until somebody decides to have another go.</p>
+
+<p>Even if PSR-1023482 just came out in the year 2050, PSR-5 could happily make its way to the stage. There is no semantic meaning to the order of these
+numbers, even though a lot of people inferred meaning from 0, 1, 2 being so closely related.</p>
+
+<p>We have near unlimited integers to use for these things, so worrying about 5 being a missed opportunity is just not a valid concern, especially when it could come back later.</p>
+
+<p>PSR-8 is a dead number. It is assigned to the silly April Fools joke from 2014: <a href="https://github.com/php-fig/fig-standards/blob/master/proposed/psr-8-hug/psr-8-hug.md">Huggable Interface</a>. PSR-8 will never be anything else. It will never be useful.
+It will <em>hopefully</em> never be accepted.</p>
+
+<h3 id="fingers-crossed-for-psr-7">Fingers crossed for PSR-7</h3>
+
+<p>I am very impressed with the work and dedication to this PSR. It’s had a few people come and go during the process for various reasons, but an
+<a href="https://groups.google.com/forum/#!topic/php-fig/0baLqR6Rvcg">Acceptance Vote</a> is underway and it is looking good.</p>
+
+<p>Learn more about PSR-7 <a href="http://mwop.net/blog/2015-01-08-on-http-middleware-and-psr-7.html">from MWOP’s blog</a>, or from <a href="http://phptownhall.com/blog/2015/02/02/episode-36-psr-7-the-world-of-tomorrow/">MWOP’s interview on
+PHP Town Hall</a>.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=A Quick Note on PSR Numbering&amp;url= https://philsturgeon.uk/2015/05/05/psr7-numeric-workflow/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=A Quick Note on PSR Numbering&amp;url= https://philsturgeon.uk/2015/05/05/psr7-numeric-workflow/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2015/03/15/php-7-feature-freeze/">PHP 7 Feature Freeze</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2015/05/21/happily-stepping-into-the-shadows/">Happily Stepping into the Shadows</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2015-05-05 18:04:00 UTC">2015-05-05 18:04:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

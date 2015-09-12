@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>RESTful URLs: Actions Need Not Apply | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="I was doing a little consulting for a company while I was out in South Africa and we played the game. You fire SOAP functionality at me, and I write down RESTful endpoints. This was rapid-fire API design with 20 people in the room.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="RESTful URLs: Actions Need Not Apply | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="I was doing a little consulting for a company while I was out in South Africa and we played the game. You fire SOAP functionality at me, and I write down RESTful endpoints. This was rapid-fire API design with 20 people in the room.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">RESTful URLs: Actions Need Not Apply</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-05-11 20:36:00 UTC">
+                May 11 2014
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>I was doing a little consulting for a company while I was out in South Africa and we played the game. You fire SOAP functionality at me, and I write down RESTful endpoints. This was rapid-fire API design with 20 people in the room.</p>
+
+<p>It was fun, but a few of them were tricky. Their requirements were far from trivial, being a company that sends millions of emails and text messages a day to people based on various different type of phone number, short-code, or user id. Once or twice I found myself considering suggesting a dodgy unRESTful endpoints, but each time I wrangled my brain a little harder to work out what combinations of slashes and squiggles would appease the RESTful Overlords, and avoid them throwing lightning bolts down from upon high.</p>
+
+<h2 id="soap-style">SOAP Style</h2>
+
+<p>Traditionally APIs would consist of a series of endpoints which all described verbs (actions):</p>
+
+<blockquote>
+  <p>POST /SendUserMessage HTTP/1.1<br />
+Host: example.com<br />
+Content-Type: application/x-www-form-urlencoded</p>
+
+  <p>id=5&amp;message=Hello!</p>
+</blockquote>
+
+<p>As you might have already gathered, this is not how things are done with REST.</p>
+
+<h2 id="kinda-restful">Kinda RESTful</h2>
+
+<p>Some API developers consider the following approach to be more RESTful because it uses a “sub-resource”:</p>
+
+<blockquote>
+  <p>POST /users/5/send-message HTTP/1.1<br />
+Host: example.com<br />
+Content-Type: application/json</p>
+
+  <p>{ “message” : “Hello!” }</p>
+</blockquote>
+
+<p>Nope, because that is still using a verb in the URL. A verb is an action - a doing term, and our API only needs one verb - the HTTP Method. All other verbs need to stay out of the URL.</p>
+
+<p>A noun is a “place” or a “thing”. Resources are “things”, and a URL becomes the “place” on the Internet where a “thing” lives.</p>
+
+<h2 id="proper-restful">Proper RESTful</h2>
+
+<p>This example would be drastically more RESTful:</p>
+
+<blockquote>
+  <p>POST /users/5/messages HTTP/1.1<br />
+Host: example.com<br />
+Content-Type: application/json</p>
+
+  <p>{ “message” : “Hello!” }</p>
+</blockquote>
+
+<p>Perfect! We are creating a new message, which belongs to a user. The best part about keeping it nice and RESTful like this, is that other HTTP actions can be made to the identical URL:</p>
+
+<ul>
+  <li><code>GET /users/philsturgeon/messages</code></li>
+  <li><code>PATCH /users/philsturgeon/messages/xdWRwerG</code></li>
+  <li><code>DELETE /users/philsturgeon/messages/xdWRwerG</code></li>
+</ul>
+
+<p>This is all much easier to document and much easier to understand for both humans and software which is “RESTfully aware.”</p>
+
+<p>So for this client, they had to send potentially hundreds of thousands of messages on a regular basis. The solution we went with was to make <code>/messages</code> its own endpoint and send the messages in batches of a few hundred:</p>
+
+<blockquote>
+  <p>POST /messages HTTP/1.1
+Host: example.com
+Content-Type: application/json</p>
+
+  <p>{
+	[{
+		“user” : { “id” : 10 },
+		“message” : “Hello!”
+	},<br />
+	{
+		“user” : { “username” : “philsturgeon” },
+		“message” : “Hello!”
+	}]
+}</p>
+</blockquote>
+
+<p>This would look incredibly similar to create the data as it would to retrieve the data, which is intentional. Regardless of the HTTP verb and regardless of the specific URL, a spade should always look like a spade, and a bag of spanners should always look like a bag of spanners. Things should be a specific pattern and it should not require guesswork to figure out how things look for GET or POST… unless you’re Facebook and then it’s just one big gameshow with no prizes.</p>
+
+<p><em>After the session with that company I made a note to write this up in my API book and blog about it too. It took me a while to get around to it, and in the meantime somebody else wrote a blog on the same subject which I cannot remember or find. Gimme the link if you know it, I don’t want anyone getting in a flap saying I stole this.</em></p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=RESTful URLs: Actions Need Not Apply&amp;url= https://philsturgeon.uk/2014/05/11/restful-urls-actions-need-not-apply/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=RESTful URLs: Actions Need Not Apply&amp;url= https://philsturgeon.uk/2014/05/11/restful-urls-actions-need-not-apply/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2014/05/09/heroku-and-php-sitting-in-a-tree/">Heroku and PHP Sitting in a Tree. K.I.S.S.I.N.G</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2014/05/25/restful-deletions-restorations-and-revisions/">RESTful Deletions, Restorations and Revisions</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-05-11 20:36:00 UTC">2014-05-11 20:36:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

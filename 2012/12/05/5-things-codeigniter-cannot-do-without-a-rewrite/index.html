@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>5 Things CodeIgniter Cannot Do (without a rewrite) | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Now that PHP 5.2 is gone from my life entirely I am a happy man. As I don’t use PHP 5.2 anymore I no longer need a 5.2 framework, so I quit the CodeIgniter team and started focusing on my new job.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="5 Things CodeIgniter Cannot Do (without a rewrite) | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Now that PHP 5.2 is gone from my life entirely I am a happy man. As I don’t use PHP 5.2 anymore I no longer need a 5.2 framework, so I quit the CodeIgniter team and started focusing on my new job.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">5 Things CodeIgniter Cannot Do (without a rewrite)</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-12-05 20:00:00 UTC">
+                Dec  5 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Now that PHP 5.2 is gone from my life entirely I am a happy man. As I don’t use PHP 5.2 anymore I no longer need a 5.2 framework, so I quit the CodeIgniter team and started focusing on my new job.</p>
+
+<p><a href="http://kaptu.re/">Kapture</a> is all PHP 5.4, and <a href="https://www.pyrocms.com/blog/2012/11/foundations-for-our-future">PyroCMS is moving to be PHP 5.3</a>, so I can use anonymous functions, short ternary operators, namespaces, go fully PSR-2 and use Composer all the way. PHP 5.3 is a massive change from PHP 5.2 as of course it was meant to be PHP 6, so while it might SEEM like a small update it’s really not. It opens up doors to whole new possibilities, a newer more mature style of programming and sucks SO MUCH LESS than earlier versions of PHP.</p>
+
+<p>Most of the features added to PHP before this have not fundamentally changed the way a framework should look. This served CodeIgniter well and it has managed to maintain the same API for as long as I can remember. Since I started using v1.4.1 back in 2007 or whatever I can name the breaking changes:</p>
+
+<ul>
+  <li>Validation was deprecated and replaced with an improved Form_validation library</li>
+  <li>Constructors changed to use __construct() instead of PHP 4-style constructors</li>
+  <li>Plugins were deleted</li>
+  <li>extends Controller became extends CI_Controller</li>
+  <li>Instead of returning FALSE for unknown data it will now return NULL (like PHP does itself)</li>
+</ul>
+
+<p>Other than that, nothing has happened to break existing applications even though we managed to add a whole bunch of features. So what features are missing from CodeIgniter that pretty much every other framework either currently has, or is working on adding?</p>
+
+<h3 id="autoloading">1. Autoloading</h3>
+
+<p>As features started popping in to PHP 5.1, 5.2 a rewrite was suggested by hundreds of users. The folks that wanted more static and more autoloading tried pushing it, but EllisLab put their foot down, which lead to those users rage-quitting and built Kohana, which autoloaded static classes like they were going out of fashion.</p>
+
+<p>CodeIgniter instead has a feature called “Autoload”, which most other frameworks refer to as “Always-load” or “Eager-load”. Basically it’s an array of stuff to include - that’s it.</p>
+
+<p>Multiple times I looked into how I could work autoloading into CodeIgniter properly, but never came up with anything feasible. The main reason here is that there is no indicator to what you are actually trying to load, so when you try “new Foo;” it could be a library, a model, some random third-party code you found on a blog, a Zend class you’ve bundled in, anything.</p>
+
+<p>CodeIgniter would need to do a series of file_exists() checks throughout to try and guess, then once the class is found we could generate a class-map cache (like Kohana). That not only seems like a slightly crazy solution, but would almost certainly confuse the large number of beginners in the CodeIgniter community that would not understand why their changes were not reflected instantly.</p>
+
+<p>One solution is to use suffixes or prefixes on the classes (like FuelPHP) as Model_Foo is clearly a model, so that cut’s things down a bit, but every time I proposed it on the forums half of the people involved were screaming that they hated it, and the rest were arguing over suffix or prefix, so I gave up trying.</p>
+
+<p>The ideal solution would be to include the composer autoloader, but that won’t happen because the community in general has always been extremely against command-line utilities being used.</p>
+
+<h3 id="namespaces">2. Namespaces</h3>
+
+<p>CodeIgniter does not use namespaces at all. The requirement for namespaces can be somewhat avoided if you prefix or suffix classes, but that is just a workaround and not a solution. Really a namespace should be applied to all of the code in the core, then each “Spark” or package should have it’s own namespace.</p>
+
+<p>This drastically improves autoloading as you give the autoload class a pointer as to where it should be looking for this code, instead of how packages currently work: foreach through EVERYTHING until it finds one that matches. If two packages contain a “Curl” library then it’s going to load the first one it finds. The second will never be loaded thanks to the “singleton” approach, meaning if package B requires functionality in a different version of “Curl” then it’s going to break.</p>
+
+<p>The other issue is one that can be seen in PyroCMS. Add-on developers can’t create a module called “events”. It would need a controller called “Events”, but there is a class called “Events” which is a library. This is extremely frustrating and could be solved with prefix or suffix support. I would have loved to work that in, but of course namespaces are PHP 5.3 only.</p>
+
+<h3 id="database-schema-abstraction">3. Database Schema Abstraction</h3>
+
+<p>So this kinda happened in 2.0 and actually worked by 2.1. When I say it worked, I mean if you were using PDO for MySQL you could SELECT, INSERT, UPDATE, DELETE perfectly, but DBForge does not work at all - and still doesn’t in the 3.0 branch.</p>
+
+<p>Andrey Andreev did a great job here and created “PDO Sub-drivers” which mostly worked. He had a damn good try and getting everything working and as far as I know it’s the last feature the team is working on before 3.0 is released, but really the DBForge system is modeled much too closely around MySQL for this to ever really work.</p>
+
+<p>Do you know how you create a full-text searchable field in SQLite3 using DBForge? You can’t.</p>
+
+<p>This almost by itself is why I have spent the last little while transitioning PyroCMS’ installer over the the Laravel 4 database component, because it is capable of installing PyroCMS on MySQL, PostgreSQL and SQLite - which will be a feature in PyroCMS 2.3.</p>
+
+<h3 id="unit-testing">4. Unit-Testing</h3>
+
+<p>Until <a href="https://github.com/EllisLab/CodeIgniter/tree/develop/tests">3.0-dev</a> CodeIgniter never had any unit-tests on the core. They were added by some heroic work by <a href="http://www.gregaker.net/">Greg Aker</a> (ex-Reactor team member), Pascal Kriete (EllisLab employee) and multiple contributors. I use the word heroic, because getting CodeIgniter unit-tested was a MISSION and a half.</p>
+
+<p>The core is getting fairly well covered (when I left a few months ago it was 40-50% somewhere) but there is going to be a lot of CodeIgniter that you just can’t test - especially your applications.</p>
+
+<p>To draw yet another comparison to Laravel 4, you can <a href="http://vimeo.com/53029232">unit-test</a> your applications perfectly.</p>
+
+<h3 id="good-migrations">5. Good Migrations</h3>
+
+<p>I wrote Migrations for CodeIgniter, so I am not offending anyone by saying they suck.</p>
+
+<p>Why did I write shitty migrations for CodeIgniter? Because it was the best that could be done without a command-line helper much like Oil for FuelPHP or Artisan for Laravel. Really migrations should be generated with simple arguments, use a timestamp instead of a generic number and run with some command like “php ci migrate”, but instead you need to implement $this-&gt;migration-&gt;current() in a hook or some crap to make it run on page load.</p>
+
+<p>I’m sorry.</p>
+
+<h2 id="so-break-the-api">So break the API!</h2>
+
+<p>Every project has to walk the line between “Never Change Anything” and “Fuck You Start Again”. We’ve seen these changes rip communities apart at one end of the spectrum, and let others rot and fade away. While I am over the moon that CodeIgniter has not rewritten itself a million times (that would really screw with PyroCMS) the but there needs to be some sort of middle ground that just isn’t happening.</p>
+
+<p>It’s not that development just isn’y happening, because it is. CodeIgniter has had more bug fixes, tweaks, improvements and new features than any other version in history.</p>
+
+<p><img alt="Number of commits in each version of CodeIgniter so far" src="/assets/article_images/2012-12-05-5-things-codeigniter-cannot-do-without-a-rewrite/commits-in-codeigniter.jpg" /></p>
+
+<p>The issue here, is that if it’s going to move to PHP 5.3 there are only three logical outcomes.</p>
+
+<h3 id="a-major-changes">A) Major Changes</h3>
+
+<p>To take advantage of the missing features I’ve mentioned (especially the ones that PHP 5.3 brings) and removing ALL of that old PHP 4 “tech debt” would essentially make it a new framework, and need serious effort to migrate an application.</p>
+
+<h3 id="b-trivial-changes">B) Trivial Changes</h3>
+
+<p>The API will stay pretty much the same, but some new PHP 5.3 syntax will be used in the core like short ternary operators. If that happens then there would be little point updating the framework version requirement in the first place, and people will complain that the new features were not enough to warrent them having to change their code at all.</p>
+
+<h3 id="c-change-nothing">C) Change Nothing</h3>
+
+<p>CodeIgniter keeps on as it has been and flagrantly ignores new PHP 5.3 features, ignores PSR-0, ignores Composer and ignores all the new stuff out there in PHP.</p>
+
+<h2 id="its-not-a">It’s not “A”</h2>
+
+<p>I say this for a few reasons. Firstly, who would do it? Right now Andrey and Alex Bilbie are doing an amazing job of keeping on top of issues but they are not paid to do this, they do it because they use CodeIgniter and want to make sure it stays working - the same reason I asked to be on the team.</p>
+
+<p>There are other Reactor engineers, but as their friend I know what they’re up to these days - and it’s not CodeIgniter.</p>
+
+<p>The logical question to ask next is why don’t EllisLab do it? They’ve not rewritten it in the last 6 years, why would they start now? All of the CodeIgniter developers in EllisLab that I knew from the old days have quit the company, so who is there to do it? Derek Jones is the new CEO so he’s going to be busy running the whole company, not writing a PHP framework.</p>
+
+<h2 id="fork-codeigniter">Fork CodeIgniter?</h2>
+
+<p>That’s happened three times already. Kohana and FuelPHP were both created for this reason, Kohana aiming at PHP 5.2 and FuelPHP utilizing PHP 5.3 and namespaces. Laravel 3 was also based <em>heavily</em> on CodeIgniter, Kohana and FuelPHP - so they’ve already done the hard work, built a community, built a website, set up the Twitter account, trademarked a name, organized the conference - I don’t see how another fork is going to help anything.</p>
+
+<h2 id="is-codeigniter-dead">Is CodeIgniter Dead?</h2>
+
+<p><strong>Absolutely not;</strong> and nobody is in a position to suggest that it is (looking at you Shawn McCool). CodeIgniter is simply never going to change, and maybe that is ok.</p>
+
+<p>Thousands of companies of all sizes are using CodeIgniter so whatever happens the framework is always going to be around, but it will be exactly the same as it is now for years to come, which means you aren’t going to have to upgrade any legacy apps any time soon. Yay!</p>
+
+<p>I wrote this because people have been asking why I’ve ditched CodeIgniter for PyroCMS, and started moving it to Laravel 4 instead. I’m sure people will think I’m just wildly slagging CodeIgniter off, but I think its possible to respectfully highlight a products shortcomings without there being any hatred or resentment.</p>
+
+<p>The main reason - and I will repeat this over and over again until everybody is tired of hearing it - is that PHP is going through a massive change. Composer, PSR’s, the PHP-FIG, Travis-CI making unit-testing suddenly become cool, etc ALL mean that there is a whole new world being built out there. New PSR components doing amazing things, and making things like my CodeIgniter Curl library look like an absolute piece of shit. New times call for new tools, so use something new.</p>
+
+<p>Laravel 4 has become the “go-to” framework for me because it’s built exactly how I would have wanted to see FuelPHP 2.0 built. Components of Laravel can be used in any framework and the framework itself is extremely skinny and unassuming. It’s all PHP 5.3, namespaced, PSR-1 compliant, and feels extremely familiar if you’ve ever built anything with CodeIgniter, Kohana, FuelPHP or even Sinatra.</p>
+
+<p>Something that makes Laravel stand out from the crowd is that it swallows it’s pride to leverage any existing tool that does the job instead of bullishly reinventing the wheel for the sake of it. Monolog, Symfony Console, Doctrine Common, etc are all used where needed to perform the tasks they were built for.</p>
+
+<h2 id="make-your-own-decisions">Make Your Own Decisions</h2>
+
+<p>Don’t blindly go and switch everything to a new framework just because some guy said so on a blog, that would be ridiculous. If PHP 5.2 support is your thing then stay where you are. If you like CodeIgniter and it does everything you need then <em>awesome</em>, carry on.</p>
+
+<p>If like me you’ve hit the limit on what CodeIgniter will actually let you do, or you just feel bored and want to try something new, then absolutely check <a href="https://github.com/illuminate">Laravel 4</a> out.</p>
+
+<p>That is the GitHub repo for all of the composer components, take a look at /app and run composer install to get started.</p>
+
+<p>Whatever you do, if your framework does not support Composer then fuck that noise. Use Composer to install your packages, and if you are trying to use something that does not have a composer.json then shout at the until they do - or send in a pull request.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=5 Things CodeIgniter Cannot Do (without a rewrite)&amp;url= https://philsturgeon.uk/2012/12/05/5-things-codeigniter-cannot-do-without-a-rewrite/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=5 Things CodeIgniter Cannot Do (without a rewrite)&amp;url= https://philsturgeon.uk/2012/12/05/5-things-codeigniter-cannot-do-without-a-rewrite/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2012/12/02/why-some-people-hate-php/">Why some people hate PHP</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2012/12/27/arguing-on-the-internet/">Arguing on the Internet</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-12-05 20:00:00 UTC">2012-12-05 20:00:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

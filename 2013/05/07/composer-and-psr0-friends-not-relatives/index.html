@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Composer and PSR-0: Friends, Not Relatives | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="As a huge proponent of Composer, a happy user of PSR-0 and a voting member on the PHP-FIG I get into plenty of conversations about all of them and it worries me how much confusion there is in the community about these things not actually being related.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Composer and PSR-0: Friends, Not Relatives | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="As a huge proponent of Composer, a happy user of PSR-0 and a voting member on the PHP-FIG I get into plenty of conversations about all of them and it worries me how much confusion there is in the community about these things not actually being related.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Composer and PSR-0: Friends, Not Relatives</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2013-05-07 18:08:00 UTC">
+                May  7 2013
+              </time>
+              <a href="/tags/psr0/">#psr0</a>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/phpfig/">#phpfig</a>
+              <a href="/tags/composer/">#composer</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>As a huge proponent of Composer, a happy user of PSR-0 and a voting member on the PHP-FIG I get into plenty of conversations about all of them and it worries me how much confusion there is in the community about these things not actually being related.</p>
+
+<p>To many of you this will be preaching to the choir, but this will hopefully clear a few things up for many or at the very least be a handy resource to link people to when they show signs of getting confused between the two. <em>I’m sorry if this bores you silly.</em></p>
+
+<ol>
+  <li>PSR-0 came out in 2009</li>
+  <li>Composer came out in 2011</li>
+  <li>Composer happens to support PSR-0</li>
+  <li>PSR-0 code can be installed and autoloaded using Composer</li>
+</ol>
+
+<p>It seems that a lot of folks discover Composer and PSR-0 at the same time and seem to assume they are the same thing - especially since both Composer and PSR-0 have the idea of a “vendor” and a “package”, but those two things are not related to each other either.</p>
+
+<p>These are a few points that I have wanted to clarify during some strange conversations over the last few weeks.</p>
+
+<h2 id="vendor-name-confusion">Vendor Name Confusion</h2>
+
+<p>This comes up fairly often, and was actually asked on the <a href="https://groups.google.com/forum/?fromgroups=#!topic/composer-dev">composer-dev</a> mailing list the other day.</p>
+
+<p><strong>If you use PSR-0 and Composer then you have two different vendor names, and two different package names.</strong></p>
+
+<p>Why? Because even code that is not using PSR-0 needs vendors and package names, so code like the Facebook SDK can be made Composer compliant by just adding a composer.json, and doesn’t need to be recoded to PSR-0.</p>
+
+<ul>
+  <li>Facebook =&gt; vendor/facebook/php-sdk/src/facebook.php</li>
+</ul>
+
+<p>If you do want to use PSR-0 for your classes then you need to make PHP vendors and packages too, but remember your code could be sitting along-side non-PSR-0 code, so you still need these Composer specific vendors for your code. This means your package could look like this:</p>
+
+<ul>
+  <li>Phil\Kitten\Snuggles =&gt; vendor/phil/kittens/src/Phil/Kitten/Snuggles.php</li>
+</ul>
+
+<p>Now, while you might be annoyed at having to have two lots of vendors, you can see here that they might not be identical. I might want my PHP namespaces to be singular, and my Composer package could well be plural.</p>
+
+<p>This goes even further when you consider the fact that PHP namespaces do not allow hyphens, but composer packages totally do, because why not?</p>
+
+<ul>
+  <li>Symfony\Component\BrowserKit\Cookie =&gt; vendor/symfony/browser-kit/src/Symfony/Components/BrowserKit/Cookie.php</li>
+</ul>
+
+<p>Or these names could be <strong>completely</strong> different from their Composer names:</p>
+
+<ul>
+  <li>Illuminate\Validation\ValidationServiceProvider =&gt; vendor/laravel/framework/src/Illuminate/Validation/ValidationServiceProvider.php</li>
+</ul>
+
+<p>Why is that totally different? Because Laravel is a framework, made up of lots of different components. These components are under the “Illuminate” namespace and can be used in any application you like. Together, it becomes the Laravel framework.</p>
+
+<p>So, these two have nothing to do with each other, and lets not assume they need to be the same thing, because that only covers a fraction of the use-cases that PSR-0 supports.</p>
+
+<h2 id="saying-composer-packages-are-not-psr-0">Saying Composer packages are not PSR-0</h2>
+
+<p>This has come up so many times and it’s silly.</p>
+
+<blockquote>
+  <p>“Composer is meant to support PSR-0, but I have all these lower-case folders!”</p>
+</blockquote>
+
+<p>Uck. Having a sub-directories such as “src/”, “tests/” etc does not make this code Non-PSR-0. PSR-0 autoloaders are able to register to multiple points. Each location you register is bound to a namespace prefix, then it will load from there. If you are using Composer packages you will point your prefix at your src/ folder:</p>
+
+<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre><span class="s2">"autoload"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"psr-0"</span><span class="err">:</span> <span class="p">{</span> <span class="s2">"Foo\Upload"</span><span class="err">:</span> <span class="s2">"src"</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Everything inside there is then considered to be PSR-0, everything outside is irrelevant.</p>
+
+<blockquote>
+  <p>So this code is specifically required to live in Composer? I thought you said…?</p>
+</blockquote>
+
+<p>Nope. This code is developed to be a component, which bundles its src/, its tests/ and a README no doubt. It happens to be installable by Composer, or Unicorn (the dependency manager I made up earlier), but could totally work on its own without breaking the PSR-0 spec at all.</p>
+
+<p>If you wanted this code to live outside of Composer then you could do one of two things:</p>
+
+<ol>
+  <li>Copy and paste the contents of src/ into one main PSR-0 folder in your application - like its 2001 - and use the <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md#example-implementation">example autoloader</a>.</li>
+  <li>Copy and paste the whole component codebase and use the <a href="https://gist.github.com/jwage/221634">SplClassLoader</a> to register Foo\Upload to src/ yourself.</li>
+</ol>
+
+<p>Doing either of these is a bit weird, because… well why would you?</p>
+
+<p>If you want to install components, then use something that is designed to install them (Composer or Unicorn), and if you want to autoload your own code put it directly into an autoloadable area within your application.</p>
+
+<p>PyroCMS does both, it has:</p>
+
+<ul>
+  <li>system/cms/modules/*/src/</li>
+  <li>system/cms/src/</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>vendor/*/*/(lib/</td>
+          <td>src/)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<p><em><strong>Note:</strong> That regex is just there to highlight that Composer devs can do what they like, it doesn’t matter.</em></p>
+
+<p>The point here is that PyroCMS supports custom PSR-0 autoloading locations (one global, one in each module) and a main vendor/ folder which has a mixture of PSR-0 and random classmapped code.</p>
+
+<h2 id="psr-0-must-stay-implementation-agnostic">PSR-0 must stay “Implementation Agnostic”</h2>
+
+<p>This is another conversation that has popped up a few times. People want to see Composer making changes to bring PSR-0 support more into the core, or want PSR-0 to change based around how Composer works. That would be <em>nuts</em>, and luckily nobody on the FIG has been vocal about having any interest in doing this.</p>
+
+<p>Realistically Composer is the only dependency manager out there <em>at the moment</em>, but theoretically somebody else could build a bigger and better system tomorrow. The entire PHP community could immediately fall in love with this dependency manager, instantly throwing Composer out faster than plague-ridden step-mothers in 1349, and they could both support PSR-0 equally.</p>
+
+<p>You might need to make a <code>unicorn.json</code> file to sit next to your <code>composer.json</code> and it could work with both systems just as easily. No other changes should be required to switch.</p>
+
+<p>Having a spec that relies on a specific structure being set up by a piece of third-party software would be detrimental to the entire community, which is why things like <a href="https://github.com/theseer/Autoload">PHPab</a> are awesome, but not a standard.</p>
+
+<h2 id="composer-must-stay-specification-agnostic">Composer must stay “Specification Agnostic”</h2>
+
+<p>What will happen when a new autoloading standard is released? We’ll be finding out fairly soon, as the PHP-FIG are working on an awesome proposal called the “Package Autoloader”. This is codenamed PSR-X and will most likely be released as PSR-4, and is incredibly similar to PSR-0 code with a few super-handy tweaks.</p>
+
+<p>To put it simply, PSR-X no longer translates underscores to directory separators (which was in there for legacy PEAR/Zend type stuff) and allows package developers to potentially skip out the PHP namespace by inferring it:</p>
+
+<ul>
+  <li><code>Symfony\Component\BrowserKit\Cookie</code> =&gt; <code>vendor/symfony/browser-kit/src/Cookie.php</code></li>
+</ul>
+
+<p>For this to work there will be a slightly different sample implementation of the autoloader, which will accept arguments that basically convey the message that Symfony\Component\BrowserKit maps to vendor/symfony/browser-kit, and instead of requiring the extra folder structure it will just start looking for the next folder or file. In other words, you are simply deleting the Symfony/Components/BrowserKit folders and moving everything up a few folders. Simple!</p>
+
+<p>If Composer was all tied up on PSR-0 then this would never work, and all the old stuff would break. As it stands it will be insanely easy for Composer to integrate PSR-X/PSR-4? support into Composer. There will be some logic that goes into the composer.json which will look something like:</p>
+
+<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre><span class="s2">"autoload"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"psr-4"</span><span class="err">:</span> <span class="p">{</span> <span class="s2">"Foo\Upload"</span><span class="err">:</span> <span class="s2">"src"</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This would work exactly the same, but you just skip a few folders. Whoopdydoop!</p>
+
+<h2 id="composer-psr-0-psr-x-and-their-separation-are-all-important">Composer, PSR-0, PSR-X and their separation are all important</h2>
+
+<p>PSR-X needs to be separate to avoid fucking with PSR-0 users. They both need to be separate from Composer to let Composer do its thing while they do theirs.</p>
+
+<p>I’ve heard some chatter about “which is more important” and I think even wondering about that is pointless. PHP is an ecosystem, and in an ecosystem everything plays its part. Trees are obviously important, but I remember having some drunken conversation where somebody explained to me how the planet Earth would pretty much die over a few decades if there were no ants.</p>
+
+<p>Whatever type of “a bird flaps its wings and we have dinosaurs again” story you want to go with, it is important to remember that every single part of an ecosystem is important. If you hate ants then don’t buy an ant-farm, or go to the rain forest but if you kill them all off there will be a lot of upset ant-eaters. Or something.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Composer and PSR-0: Friends, Not Relatives&amp;url= https://philsturgeon.uk/2013/05/07/composer-and-psr0-friends-not-relatives/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Composer and PSR-0: Friends, Not Relatives&amp;url= https://philsturgeon.uk/2013/05/07/composer-and-psr0-friends-not-relatives/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2013/05/06/bike-to-the-beach-2013/">Bike to the Beach 2013</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2013/06/03/facebook-message-with-xmpp-access-tokens-python/">Send a Facebook Message with XMPP using Access Tokens in Python</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2013-05-07 18:08:00 UTC">2013-05-07 18:08:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

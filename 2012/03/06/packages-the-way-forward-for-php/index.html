@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Packages: The Way Forward for PHP | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="What is a package? A package is a piece of reusable code that can be dropped into any application and be used without any tinkering to add functionality to that code. You don’t need to know what is happening inside, only what the API for the class(es) are so that you can archive your goal. Maybe this package uses another package, that is called a dependency.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Packages: The Way Forward for PHP | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="What is a package? A package is a piece of reusable code that can be dropped into any application and be used without any tinkering to add functionality to that code. You don’t need to know what is happening inside, only what the API for the class(es) are so that you can archive your goal. Maybe this package uses another package, that is called a dependency.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Packages: The Way Forward for PHP</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-03-06 10:41:00 UTC">
+                Mar  6 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>What is a package? A package is a piece of reusable code that can be dropped into any application and be used without any tinkering to add functionality to that code. You don’t need to know what is happening inside, only what the API for the class(es) are so that you can archive your goal. Maybe this package uses another package, that is called a dependency.</p>
+
+<p>Most package systems also allow for something called dependencies. This will basically allow “Package A” to sit on top of “Package B”. What is great about this is that if I want to work on one chunk of code I can reuse another chunk. Instead of adding more code this can reduce the amount of extra code in your package, because “Package C” can sit on top of “Package B” too.</p>
+
+<p>This is how most modern programming languages work, but to make a generalisation: <strong>PHP developers hate packages</strong>. Why? Well while other languages have great systems like <a href="http://www.cpan.org/">CPAN</a> for Perl, <a href="http://rubygems.org/">Gems</a> for Ruby, <a href="http://pypi.python.org/pypi/pip">PIP</a>, PHP has had a terrible history with package management going back years.</p>
+
+<h3 id="what-about-pear">What about PEAR?</h3>
+
+<p>PHP has had a packaging system for years called <a href="http://pear.php.net/">PEAR</a>. Let’s get this understood right off the bat:</p>
+
+<blockquote>
+  <p><strong>PEAR sucks</strong></p>
+</blockquote>
+
+<p>To get code onto the main PEAR repository you need to get a certain number of up-votes, otherwise it will not be accepted. This was meant to ensure quality but has only helped to detur contributions and promote elitism.</p>
+
+<p>Another knock-on effect is that you have to install pretty much any code you need to add a new repository, because so many people are using their own to avoid using the default repo. That makes it harder to search, harder to contribute and just generally more of a bitch to work with.</p>
+
+<p>Of the packages already on on PEAR, most of them are massively out of date, inactive and no longer maintained, or never made it out of alpha. I have heard a few developers say “PEAR is awesome, they have a package for everything!” Maybe, but when I see that amongst a team of 4 developers, 2 are inactive and the code only got to 0.2.1 (alpha) in 2006-04-22, I am not full of hope for the stability of that codebase.</p>
+
+<p>The nail in the coffin for me with PEAR is one of the biggest bug bears of the Gem system: system-wide installation. If I want to use a specific package, which requires a newer version of an already installed package, then I have to update it on my whole installation. That means an application I have not touched in weeks might break next time I try loading it on my local box. WAT?</p>
+
+<h3 id="the-community-gave-up-on-pear">The community gave up on PEAR</h3>
+
+<p>With frameworks like <a href="http://rubyonrails.org/">Ruby on Rails</a> doing a cracking job of helping developers get things done faster, PHP frameworks started springing up.</p>
+
+<p>CodeIgniter set out in 2006 suggesting it was for developers who “are not interested in large-scale monolithic libraries like PEAR”. Almost instantly people were hooked. They could make an entire application with the most useful libraries guaranteed to work with their code. Everything was versioned as one, released as one and had the same team.</p>
+
+<p>In a time where nobody in the PHP community could decide on a standard, PHP frameworks would each adopts a coding standard. No matter what those standards were, at least they were the same in all the classes.</p>
+
+<p>CodeIgniter was not the only framework around, with <a href="http://cakephp.org/">CakePHP</a> and <a href="http://symfony.com/">Symfony</a> starting out at similar times. They all had the intention of helping developers build applications without the hassle of dependencies, so people got used to building everything with a framework.</p>
+
+<h3 id="lets-all-start-building-frameworks">Let’s all start building frameworks</h3>
+
+<p>Since late 2005 / early 2006 when these projects set out, hundreds of PHP frameworks have been developed by single developers, companies, community projects, everyone and their dog seems to have been involved with creating a PHP framework at some point or other, hell I’ve been involved in two: CodeIgniter and <a href="http://fuelphp.com/">FuelPHP</a>.</p>
+
+<p>PHP frameworks themselves have taken some flak for building up all this new code, bundling in ORM’s (I’ve always said ORM’s should not be part of a framework), adding in their own DB abstraction layers, etc. Some see this as a barrier as to switch to a new framework means throwing out everything you know and starting again.</p>
+
+<p>One problem with PHP frameworks is that when one framework doesn’t do exactly what a developer wants, they either dump it and start building their own, or fork the existing one until there is no resemblance. This all or nothing approach is what has lead to our main problem: ** Reusable Code **.</p>
+
+<p>Does a library written for Kohana work with CodeIgniter - which was at one point a CodeIgniter fork itself? <strong>Nope</strong>.</p>
+
+<p>Does a package written for Symfony work with FuelPHP? <strong>Not even close!</strong></p>
+
+<h3 id="stuff-frameworks-lets-go-native">Stuff frameworks, let’s go native</h3>
+
+<p>You wouldn’t be the first to suggest it. As you know, creator of PHP Rasmus Lerdorf is all about procedural code and suggested years back that you <a href="http://toys.lerdorf.com/archives/38-The-no-framework-PHP-MVC-framework.html">write your own basic MVC architecture</a> and not a full “framework”.</p>
+
+<p>Why do that? I have to build my own code that turns a URL into a loaded PHP file, I have to sort out a configuration system, handle “templates”, do a million things that I could have done in seconds with a framework. Also, when I get another developer in I love just saying “this is CodeIgniter so you know whats going on” and not spend hours taking them through all my random code, which is probably different for each project.</p>
+
+<p>The MVC wrappers were never the problem here, the problem was the lack of reusable code. Classes that developers can use to build their applications quickly. For years we Googled for PHP libraries and found them from places like <a href="http://sourceforge.net/">SourceForge</a>, <a href="http://www.phpclasses.org/">PHP Classes</a>, <a href="http://code.google.com/">Google Code</a> but this lead to a million different coding standards, no way to get notified about new versions and was generally just a shit way to manage code.</p>
+
+<h3 id="lets-build-an-unframework">Let’s build an unframework!</h3>
+
+<p>This is a fun term that started sprining up with projects like <a href="http://flourishlib.com/">Flourish</a> and <a href="http://www.spoon-library.com/">Spoon</a> starting to build reusable components that you could drop into any application.</p>
+
+<p>Thats idea is lovely and all but Flourish never made it out of BETA after years of development.</p>
+
+<p>Spoon looks brilliant - mainly thanks to their shiny design - but is a one-man-army. How can we expect one guy to take care of all that code? It took a year for the developer to get from 1.2.0 to 1.3.0 which is not a speed of progress I am happy with.</p>
+
+<p>Somebody is even working on a new unframework called <a href="http://www.phrame.org/">Phrame</a> which is only a splash page with a subscription box. Do we need more of these small-team solutions?</p>
+
+<h3 id="so-what">So… what?</h3>
+
+<p>Packages were never the problem. The PHP community has coded itself round in circles for years without ever actually fixing the problem and we’re back where we started.</p>
+
+<p><strong>We need a better packages system.</strong> PEAR2 happened, but it still just sucks.</p>
+
+<p>Frameworks have been used to the idea that they were the solution to a problem - and they are. They are fixing a lot of problems but a problem all the frameworks have been trying to fix over the last year are - wait for it… packages!</p>
+
+<ul>
+  <li>CodeIgniter has <a href="http://getsparks.org/">Sparks</a></li>
+  <li>FuelPHP has <a href="http://docs.fuelphp.com/general/packages.html">Cells</a> (website never went live)</li>
+  <li>Laravel has <a href="http://bundles.laravel.com/">Bundles</a></li>
+  <li>CakePHP has <a href="http://bakery.cakephp.org/">The Bakery</a></li>
+  <li>ZF2 just got <a href="http://akrabat.com/zend-framework-2/modules-in-zf2/">Modules</a></li>
+</ul>
+
+<p>Not even Zend are using PEAR? Funny that.</p>
+
+<p>These framework specific packages - especially those with command line install / update utilities - are a breath of fresh air are and the communities are happy with the added functionality they can instantly put into their applications.</p>
+
+<p>The downside is that the same code is being written over and over again for different frameworks, which is a massive waste of man-hours.</p>
+
+<p>Let’s take a personal example. I noticed recently that Laravel has a <a href="http://bundles.laravel.com/bundle/laravel-oauth2">OAuth2 Bundle</a>, which was forked from my <a href="http://getsparks.org/packages/oauth2/versions/HEAD/show">CodeIgniter Spark</a>. I converted that OAuth2 Spark from a <a href="https://github.com/fuel-packages/fuel-oauth2">FuelPHP Cell</a> when I had a project that called for it.</p>
+
+<p><em><strong>WHAT THE HELL?</strong></em></p>
+
+<p>The realisation hit me like kipper to the face. Why are we all sat around building out identical solutions to each other or forking and maintaining separate codebases when we could just be finishing projects?</p>
+
+<p>I on average spend 70% of my working day on client projects and 30% building or fixing, writing or porting packages and libraries. That 30% could make me 30% richer, or give me 30% more time doing something more interesting than writing code. Maybe I could get around to writing an even BIGGER rant about something else?</p>
+
+<p>Whatever it is we would end up doing with this extra time, we need to find a way to get there.</p>
+
+<blockquote>
+  <p>The PHP community needs to get together behind a new solution and the framework developers need to lead the charge.</p>
+</blockquote>
+
+<h3 id="the-plan">The Plan</h3>
+
+<p>Two very talented PHP developers (<a href="http://www.naderman.de">Nils Adermann</a> and <a href="http://seld.be/">Jordi Boggiano</a>) have been working on a PEAR-killer called <a href="http://getcomposer.org/">Composer</a>, which has a single default repository called <a href="http://packagist.org/">Packagist</a>. Composer is based on systems like npm (NodeJS Package Manager) and Bundler / RubyGems.</p>
+
+<p>There is another solution called <a href="https://github.com/lox/phark">Phark</a> but it’s still unfinished and their syntax is horrid. Sorry guys but Phark just doesn’t look any good to me - and the website linked from your GitHub repo is giving DNS errors. Moving on.</p>
+
+<p>I am happy to see that Symfony are all over packages like a wet flannel. They have been helping out and a huge number of their packages are now using Composer - they’ve even been sending in pull requests.</p>
+
+<p>Other well known developers like <a href="http://funkatron.com/">Ed Finkler</a> and <a href="http://www.littlehart.net/atthekeyboard/">Chris Hartjes</a> who record the <a href="http://itunes.apple.com/us/podcast/dev-hell/id489840699">/dev/null postcast</a> are behind it too. Check the first episode for some of their reasoning. Ed has a bunch of code on Packagist and I’ll be joining him with as much code as I can - such as my <a href="/blog/2011/09/ninjauth-social-integration-php">NinjAuth</a> multi-provider user authentication system.</p>
+
+<p>More than that I am really happy to say that after talking to the FuelPHP team they are all convinced this is the right way for FuelPHP to go. By removing the different between modules and packages, making pretty much everything into a package and fully supporting the PSR-0 standard of file and class naming, we become fully package based.</p>
+
+<p>FuelPHP will still have Cells, but they will be a Composer package that uses a FuelPHP repository. That means our command line utility will be able to install FuelPHP specific code from the FuelPHP repo, and fall back to generic packages. We’ll be amending our Autoloader in 2.0 to support Composer packages, and if there is no FuelPHP autoloader in there (which of course generic packages won’t) then FuelPHP will just crack on and find the files, instead of being told where they are. Minor speed loss for full support of generic packages sounds reasonable to me!</p>
+
+<p>Hopefully Laravel, Lithium and anyone developing a PHP 5.3 framework will see the light. Don’t build out a new system, don’t silo your users, don’t waste time building code that already exists and for god’s sake stop building un-frameworks.</p>
+
+<h3 id="what-can-you-do">What Can You Do?</h3>
+
+<p>Got a good PHP class? Is it only on GitHub, or maybe it’s just sitting around on your blog?</p>
+
+<p><strong>Stop that. Stop that right now.</strong> Make it into a Composer package and host it on Packagist. While you’re at it add <a href="http://www.youtube.com/watch?v=Iq6wvboGU-A&amp;noredirect=1">unit testing</a>, set up <a href="http://travis-ci.org/">Travis</a> with a GitHub service hook and show off how stable it is.</p>
+
+<p>This all makes it easier for anyone use your code, so anyone can contribute to it. The more we reuse the same packages, the more pull requests we can expect to see on that same code, which makes it more portable, more extensive, reduces bugs and means we can all spend a little more time working on that side-project that will eventually pay for us to get out of this coding lark, marry a fashion model and move to our private island for an early retirement.</p>
+
+<p>Only half of that plan is far fetched, the other half you can do right now.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Packages: The Way Forward for PHP&amp;url= https://philsturgeon.uk/2012/03/06/packages-the-way-forward-for-php/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Packages: The Way Forward for PHP&amp;url= https://philsturgeon.uk/2012/03/06/packages-the-way-forward-for-php/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2012/02/23/my-thoughts-on-ciconf-2012-uk/">My Thoughts on CICONF 2012 UK</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2012/04/24/cms-interesting-history-powerful-future/">CMS: Interesting History, Powerful Future</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-03-06 10:41:00 UTC">2012-03-06 10:41:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

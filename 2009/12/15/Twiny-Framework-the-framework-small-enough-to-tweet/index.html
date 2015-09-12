@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Twiny-Framework: the framework small enough to tweet | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new "framework" which is so lightweight it can fit in a Tweet.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Twiny-Framework: the framework small enough to tweet | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new "framework" which is so lightweight it can fit in a Tweet.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Twiny-Framework: the framework small enough to tweet</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-12-15 17:03:00 UTC">
+                Dec 15 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new &quot;framework&quot; which is so lightweight it can fit in a Tweet.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="cp">&lt;?</span> <span class="nv">$g</span><span class="o">=</span><span class="nv">$_GET</span><span class="p">;</span><span class="nv">$c</span><span class="o">=@</span><span class="nv">$g</span><span class="p">[</span><span class="s1">'c'</span><span class="p">]</span><span class="o">?:</span><span class="s1">'Home'</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!@</span><span class="k">include</span><span class="s2">"c/</span><span class="nv">$c</span><span class="s2">.php"</span><span class="p">)</span><span class="k">die</span><span class="p">(</span><span class="s1">'fail'</span><span class="p">);</span>
+<span class="nv">$m</span><span class="o">=</span><span class="nb">method_exists</span><span class="p">(</span><span class="nv">$c</span><span class="p">,</span><span class="nv">$m</span><span class="o">=@</span><span class="nv">$g</span><span class="p">[</span><span class="s1">'m'</span><span class="p">])</span><span class="o">?</span><span class="nv">$m</span><span class="o">:</span><span class="s1">'index'</span><span class="p">;</span>
+<span class="nv">$o</span><span class="o">=</span><span class="k">new</span><span class="nv">$c</span><span class="p">;</span><span class="nv">$o</span><span class="o">-&gt;</span><span class="nv">$m</span><span class="p">(</span><span class="nv">$g</span><span class="p">);</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This idea was not my own, but was inspired by <a href="http://twitto.org/" target="_blank">Twitto</a>. During some extreme boredom at work I decided to &quot;one-up&quot; this teeny-tiny framework and improve on it. My framework does this by allowing you to run Controller files and methods in a similar way to CodeIgniter, while Twitto only has the ability to run functions from a single file.</p>
+
+<h3>Usage</h3>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td><td class="code"><pre>class Blog
+{
+    function index()
+    {
+        echo "This is my blog!";
+    }
+    function view( $params )
+    {
+        echo "This is article #".$params['id'];
+    }
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This simple class structure contains a method for each page, defaulting to index. If no controller is set, then it goes to Home.php.</p>
+
+<ul>
+	<li>index.php - Runs Home-&gt;index() in ./c/Home.php</li>
+	<li>index.php?c=Blog - Runs Blog-&gt;index() in ./Blog.php</li>
+	<li>index.php?c=Blog&amp;m=view&amp;id=1 - Runs Blog-&gt;view($params) and id can be accessed via $params[&#39;id&#39;]</li>
+</ul>
+
+<p>You can get to that with URL&#39;s like index.php?c=Blog&amp;m=view&amp;id=1, but with some mod_rewrite that could be reduced to /Blog/view/id/1 easily enough.</p>
+
+<h3 id="mvc">MVC?</h3>
+
+<p>Want full MVC? Set an autoload function to check ./m/ and use:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre>    function view($params)
+    {
+        include'm/blog_m.php';
+        blog\_m::get( $params['id'] );
+    }
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Views would just be another include with direct access to your variables set in the controller.</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>As I said this mainly came out of boredom and is not meant for serious use (or serious ridicule), but it is cool to see how much can be done with less than 140 characters of PHP as base. I could do some awesome things with this by taking it up to 300-400 characters, but that would spoil the fun right?</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Twiny-Framework: the framework small enough to tweet&amp;url= https://philsturgeon.uk/2009/12/15/Twiny-Framework-the-framework-small-enough-to-tweet/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Twiny-Framework: the framework small enough to tweet&amp;url= https://philsturgeon.uk/2009/12/15/Twiny-Framework-the-framework-small-enough-to-tweet/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2009/12/14/Why-CodeIgniter-HTML-helper-functions-rock/">Why CodeIgniter HTML helper functions rock</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2009/12/29/CodeIgniter-Template-library/">CodeIgniter Template library</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-12-15 17:03:00 UTC">2009-12-15 17:03:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

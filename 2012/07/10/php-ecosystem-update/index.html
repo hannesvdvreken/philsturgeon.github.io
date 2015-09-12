@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>PHP: Ecosystem Update | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Don’t worry guys, this isn’t another PHP apologist or PHP hater blog. We’ve all had enough of those recently. This is a quick heads up on two projects that are doing what they can to make the PHP ecosystem a better place.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="PHP: Ecosystem Update | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Don’t worry guys, this isn’t another PHP apologist or PHP hater blog. We’ve all had enough of those recently. This is a quick heads up on two projects that are doing what they can to make the PHP ecosystem a better place.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">PHP: Ecosystem Update</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-07-10 16:17:00 UTC">
+                Jul 10 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Don’t worry guys, this isn’t another PHP apologist or PHP hater blog. We’ve all had enough of those recently. This is a quick heads up on two projects that are doing what they can to make the PHP ecosystem a better place.</p>
+
+<h2 id="framework-interoperability-group-php-fig">Framework Interoperability Group (PHP-FIG)</h2>
+
+<p>I think most of you by now will have heard of the PHP-FIG or PSR-1 and PSR-2 in some form or another. There have been loads of arguments about this for and against, with the good old fashioned snake_case v camelCase and tabs v spaces arguments coming back for a new round. Nobody agrees - go figure.</p>
+
+<p>These silly arguments about brackets and spaces really clouded the point of what the FIG is trying to do and as member I felt I should help out however I could along with the other members to fix the FUD going around. Paul M Jones wrote an awesome FAQ style blog post that answered a lot of these questions when <a href="http://paul-m-jones.com/archives/2420">PSR-1 and PSR-2 were accepted</a> but to many people this was just “some guys blog”, we really needed some central location for all this information.</p>
+
+<p>So, on a mission to help people know what the hell the FIG are up to, I grabbed a domain, pestered a few people to set something up on GitHub pretty soon they had a website set up on GitHub Pages: <a href="http://www.php-fig.org/">http://php-fig.org/</a>. A few of the guys chipped in with the content, and now there is a shiny new <a href="http://www.php-fig.org/faq/">PHP-FIG FAQ</a> page!</p>
+
+<p>If you still have any questions, doubts or concerns about the FIG then please just comment here, raise issues on GitHub, make suggestions in the form of pull requests, whatever. The point of this page is that it answers questions and stops everyone running around going “THE MEAN MAN ON THE INTERNET IS TELLING ME I CANT PUT BRACKETS ON A NEW LINE!!1!1”.</p>
+
+<p>Seriously, nobody cares, that is not the point.</p>
+
+<p>The point is that the frameworks and component developers have come together to build usable recommendations for interoperable code, so I can build my projects using a little bit of Symfony (love their YAML parser) and a little bit of FuelPHP (grabbing me some Validation) and throw it all into some other framework, and everything is the same.</p>
+
+<p>Beyond the basic interop factor, the way I see it, by reducing the number of active style guides around we’ll have less of these religious battles in the future. Right now you love coding in a certain way, probably because the framework or CMS you develop with always did things in a certain way. If all of these frameworks used the same style new developers are more likely to code in the same way, meaning there will be less of those office arguments about where brackets are going and everything else.</p>
+
+<p>Ruby, Python, etc are all pretty much on the same page with coding style, if PHP can get there too that that is one nice tick in the box for PHP (even if it doesn’t change the world).</p>
+
+<h2 id="php-the-right-way">PHP The Right Way</h2>
+
+<p>As a PHP developer I often have friends ask “What is the best way to get started with PHP?”. My usual answer is “I don’t know, that was 12 years ago, look at tutorials or something.”. I can barely remember what sites I looked at, or what blogs gave me bits of advice. I have no idea where to send them and its been like that for years.</p>
+
+<p>About 3 days ago <a href="https://twitter.com/codeguy">Josh Lockhart</a> (author of the micro-framework <a href="http://www.slimframework.com/">Slim</a>) made an initial commit on a new website, which was another GitHub Pages public repository, with the URL <a href="http://phptherightway.com">phptherightway.com</a>. He sets out to solve exactly this problem by collating together all the best bits of advice, best practises, resources and whatever else seems relevant.</p>
+
+<p>I found this on Reddit /r/PHP and there was a massive fight about PSR-1 and PSR-2 with the usual “You’ll pry allman brackets from my cold dead fingers” bullcrap, so I jumped in and send a pull request to fix up the FIG explanations. Then I kinda got hooked, and I’ve sent in enough pull requests to get push access and my name on the footer. Cheers Josh!</p>
+
+<p>It has grown exponentially since he set it up and there has been a constant stream of issues, pull requests, comments and improvements. Today it had tweets from <a href="https://twitter.com/smashingmag/status/222585989426716674">Smashing Mag</a> and <a href="https://twitter.com/ginatrapani">Gina Trapani</a> (from Lifehacker) and a bunch of other folks are happy to see it and so am I. It’s a great resource that focuses very much on how to do things properly.</p>
+
+<p>The main focus here is that PHP 5.4 is a real option, and you should be using it. The latest bout of “PHP 5.4 sux” comments going around are mainly focused on what PHP 5 was. I am forced to work with PHP 5.2 for distributed apps as there are still about 20% of PyroCMS users on that branch. Only about 3% are on PHP 5.4 even though it’s nearly half way through its lifetime! Hosts are fun. But while I am stuck on this version, most people aren’t. If you are building for clients and you have enough sway then set them up with PHP 5.4. Just tell them its more secure, or faster, or cheaper, or more “social” - whatever you have to say to make them go for it.</p>
+
+<p>It drives me mad on a daily basis that I have to use this archaic version of PHP because… wait for it… PHP 5.4 is awesome!</p>
+
+<p>PHP 5.2, 5.3 and PHP 5.4 all represent MASSIVE jumps forward in the language. Yes we still need primitive types, yes there are still plenty of quirks, but in every single version PHP gets a huge amount better.</p>
+
+<p>Following the advice on this site you will almost certainly learn new things and hopefully it will help new people coming to PHP: The Best Worst Language around.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=PHP: Ecosystem Update&amp;url= https://philsturgeon.uk/2012/07/10/php-ecosystem-update/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=PHP: Ecosystem Update&amp;url= https://philsturgeon.uk/2012/07/10/php-ecosystem-update/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2012/05/31/codeigniter-conference-2012-sf/">CodeIgniter Conference 2012 SF</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2012/07/24/blooie-chat-has-changed/">Blooie: Chat has Changed</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-07-10 16:17:00 UTC">2012-07-10 16:17:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

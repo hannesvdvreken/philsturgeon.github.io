@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Potential Variadic Function Syntax for PHP 5.6 | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="An awesome RFC popped up the other day: Syntax for variadic functions, developed by Nikita Popov. I read through it and I loved it, but I did have to Google to see what the hell a variadic function was. This is what happens when you teach yourself how to code. You know how to do things, but don’t know any of the words.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Potential Variadic Function Syntax for PHP 5.6 | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="An awesome RFC popped up the other day: Syntax for variadic functions, developed by Nikita Popov. I read through it and I loved it, but I did have to Google to see what the hell a variadic function was. This is what happens when you teach yourself how to code. You know how to do things, but don’t know any of the words.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Potential Variadic Function Syntax for PHP 5.6</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2013-08-30 18:07:00 UTC">
+                Aug 30 2013
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>An awesome RFC popped up the other day: <a href="https://wiki.php.net/rfc/variadics">Syntax for variadic functions</a>, developed by <a href="https://twitter.com/nikita_ppv">Nikita Popov</a>. I read through it and I loved it, but I did have to Google to see what the hell a <a href="https://en.wikipedia.org/wiki/Variadic_function">variadic function</a> was. <em>This is what happens when you teach yourself how to code. You know how to do things, but don’t know any of the words.</em></p>
+
+<p>Variadic functions are already possible in PHP and have been throughout 4.x and 5.x in the form of <a href="http://us2.php.net/func_get_args">func_get_args()</a>, which is pretty gross. It’s used for functions where you want to have an unlimited number of functions like:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>max(11, 2, 4, 6, 1);
+sum(1, 5, 6);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Currently to implement a function like this you’d do:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre>function sum()
+{
+    return array_sum(func_get_args());
+}
+
+echo sum(1, 4, 12, 20);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>The proposed RFC lets you write this:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre>function sum(...$nums)
+{
+    return array_sum($nums);
+}
+
+echo sum(1, 4, 12, 20);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This super-trivial example shows off the difference between the two approaches, but some folks are hesitant about how useful this is. Let’s consider a few things here.</p>
+
+<h3 id="pro-readability">Pro: Readability</h3>
+
+<p>Imagine a function that is 50 lines long, and on line 45 the developer is using a <code>func_get_args()</code>. You’d have to notice that to know that you are meant to pass in a bunch of arguments… The new variadic syntax would make it strikingly obvious what is happening in the function declaration, which is where arguments come from.</p>
+
+<p>I ran a find in folder on Pyro to see what came up first, and the answer is:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre>public function orX($x = null)
+{
+    return new CompositeExpression(CompositeExpression::TYPE_OR, func_get_args());
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Doctrine looks drunk here. It accepts one param called <code>$x</code>, which is optional, then uses <code>func_get_args()</code> anyway meaning fuck <code>$x</code>.</p>
+
+<p>Or:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre>  public function orX(...$x)
+  {
+      return new CompositeExpression(CompositeExpression::TYPE_OR, $x);
+  }
+</pre></td></tr></tbody></table>
+</div>
+
+<p>I’ll take that please. Clear, self documenting code.</p>
+
+<h3 id="pro-documentation">Pro: Documentation</h3>
+
+<p>I’m a big fan of DocBlocks. Having well documented code means you can run API generators, use IDE auto-completion, get warnings about return type clashes right in your editer, etc, which is why I volunteered to coordinate the new <a href="https://github.com/php-fig/fig-standards/pull/169">PHPDoc PSR</a> with the phpDocumentor team. Put simply: that shit is awesome.</p>
+
+<p>Sure we could add a <code>@param *variadic</code> doc syntax or something, but it would be odd and not mix in with other syntax very well. The new syntax would make it super easy:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td class="code"><pre>/**
+ * @param mixed ...$x
+ *
+ * @return CompositeExpression
+ */
+public function orX(...$x)
+{
+    return new CompositeExpression(CompositeExpression::TYPE\_OR, $x);
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Thanks!</p>
+
+<h3 id="pro-type-hinting">Pro: Type Hinting</h3>
+
+<p>Type Hinting right now is like a semi-done hair-cut. Some squabbling in the core team about how to handle strong/weak typing hinting for  <code>int</code>, <code>float</code>, <code>string</code>, etc lead to confusion and means the feature is restricted to type hinting for an <code>array</code>, <code>callable</code> or a class/interface name. Sure we can’t type hint every type of value [yet] but the fact that type hinting exists means we should be able to use it.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre>/**
+ * Favorite one or more statuses.
+ *
+ * @param string $screenName
+ * @param Twitter\Status ...$statuses
+ *
+ * @return array[League\Twitter\User]
+ */
+public function favoriteStatus($screenName, Twitter\Status ...$statuses)
+{
+</pre></td></tr></tbody></table>
+</div>
+<p>That is awesome, I can specify the type exactly, instead of having to allow an array then check instances in a loop or some shit. Quicker, more obvious, better for everyone.</p>
+
+<h3 id="pro-less-faff">Pro: Less Faff</h3>
+
+<p>While not the most important aspect, even if you don’t think defining this in the function signature is important, you can avoid this sort of horrendous faffing around:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13</pre></td><td class="code"><pre>public function tryMethod()
+{
+    $args = func_get_args();
+    $method = $args[0];
+    unset($args[0]);
+    $args = array_values($args);
+
+    try {
+        return call_user_func_array([$this, $method], $args);
+    } catch (\Exception $e) {
+        return false;
+    }
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This becomes:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>public function tryMethod($method, ...$args)
+{
+    try {
+        return call_user_func_array([$this, $method], $args);
+    } catch (\Exception $e) {
+        return false;
+    }
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Why screw around when you don’t have to?</p>
+
+<h3 id="pro-keeping-up-with-the-joneses">Pro: Keeping up With The Joneses</h3>
+
+<p>C#, Ruby and Python as well as many others. While copying features might not be best route to innovation, it shows there is precedence for the functionality.</p>
+
+<p>PHP might not be using EXACTLY the same operator as others (which no doubt will cause folks to piss and moan for a while) but PHP is a <a href="http://blog.astrumfutura.com/2012/04/php-innocent-villagefolk-or-a-pillagin-pirate/">Pillagin’ Pirate</a>, and pillagin’ pirates gotta take what they can.</p>
+
+<h3 id="con-trollolololol">Con: Trollolololol?</h3>
+
+<p>I threw this RFC on Reddit to see if anyone could give me some downsides and some epic trolling began by some <a href="http://www.reddit.com/r/lolphp">/r/lolphp</a> bros who seemed to have wandered into the wrong sub-reddit.</p>
+
+<p>One dude was complaining about performance, but there is no reason this would have any effect on performance. Adding an extra token to PHP is not going to make it explode, and randomly making allegations about stuff doesn’t make you big or clever.</p>
+
+<h3 id="con-argument-unpacking">Con: Argument Unpacking</h3>
+
+<p>One valid con came up on the PHP internals list and a few times in comments, that with this new syntax you cannot pass the variadic value on properly.</p>
+
+<p>Well, you can’t right now either. To reuse the same example, you have to do shit like this:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>public function tryMethod($method, ...$args)
+{
+    try {
+        return call_user_func_array([$this, $method], $args);
+    } catch (\Exception $e) {
+        return false;
+    }
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>For this Nikita has another RFC for <a href="https://wiki.php.net/rfc/argument_unpacking">argument unpacking</a> using what is sometimes known as a splat operator.</p>
+
+<p><em>Learning that splat was an actual thing was the most fun I had learning Ruby a few years back, and I can’t wait until I’m reading out some syntax at a conference somewhere and I get to say “bang brace splat”.</em></p>
+
+<p>Taking this same example and applying the new splat operator makes it much nicer:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>public function tryMethod($method, ...$args)
+{
+    try {
+        return $this-&gt;$method(...$args);
+    } catch (\Exception $e) {
+        return false;
+    }
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>It’s just taking the arguments, and shoving them into the method in the same way they came in.</p>
+
+<p>The examples on the RFC are also very handy:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre>call_user_func_array([$db, 'query'], array_merge(array($query), $params));
+
+// or
+
+$db-&gt;query($query, ...$params);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Which would you prefer to type?</p>
+
+<p>Don’t care about pretty syntax? Ok, well it’s faster too. <a href="https://gist.github.com/nikic/6390366">About 3.5x - 4x faster</a>.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Neither of these RFCs are about saying you have to use it, or that variadics are always good, or that using an array of values as parameters is wrong. It’s simply about <em>drastically</em> tidying up existing functionality in PHP.</p>
+
+<p>Somebody on Reddit pointed out this is just like namespaces. PHP users implemented them in a hacky kinda way: (“Let’s all agree that underscores mean a namespace… ok?”) then the language ratified the use with syntax, so now we have an actual namespace separator and <code>use</code> functionality. This is the same. People are already using variadics, so instead of it being a nasty mess this syntax tidies it up.</p>
+
+<p>Use the arguments to explain to folks why this functionality is great. If you know somebody on the core team who is struggling with this feature (and I’ve seen some <em>really</em> bizarre comments going around) then maybe this can help you explain to them why we should have it.</p>
+
+<p>PHP should be allowed to have nice things. How about named parameters next?</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Potential Variadic Function Syntax for PHP 5.6&amp;url= https://philsturgeon.uk/2013/08/30/potential-variadic-function-syntax-for-php-56/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Potential Variadic Function Syntax for PHP 5.6&amp;url= https://philsturgeon.uk/2013/08/30/potential-variadic-function-syntax-for-php-56/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2013/08/29/curlfile-and-the-facebook-sdk-in-php-55/">CurlFile and the Facebook SDK in PHP 5.5</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2013/09/01/named-parameters-in-php/">Named Parameters in PHP</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2013-08-30 18:07:00 UTC">2013-08-30 18:07:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

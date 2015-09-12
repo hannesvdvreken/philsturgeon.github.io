@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Named Parameters in PHP | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Update 06/09/2013: I had initially offered to put together an RFC draft updating the original rather dire efforts at documenting PHP’s lack of interest for named parameters. A more objective RFC has now been put together by Nikita Popov so I can ditch my notes. Wonderful.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Named Parameters in PHP | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Update 06/09/2013: I had initially offered to put together an RFC draft updating the original rather dire efforts at documenting PHP’s lack of interest for named parameters. A more objective RFC has now been put together by Nikita Popov so I can ditch my notes. Wonderful.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Named Parameters in PHP</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2013-09-01 01:35:00 UTC">
+                Sep  1 2013
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p><em><strong>Update 06/09/2013:</strong> I had initially offered to put together an RFC draft updating the original rather dire efforts at documenting PHP’s lack of interest for named parameters. A more objective RFC has now been put together by <a href="https://twitter.com/nikita_ppv">Nikita Popov</a> so I can ditch my notes. Wonderful.</em></p>
+
+<p>Converting a Python Twitter API package to PHP turned out to be more trouble than I initially expected due to the usage of Python’s named parameters. Here is the converted function signature:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7</pre></td><td class="code"><pre>public function getFriends(
+    $user_id = null, 
+    $screen_name = null, 
+    $cursor = -1, 
+    $skip_status = false, 
+    $include_user_entities = false
+) {
+</pre></td></tr></tbody></table>
+</div>
+
+<p>In Python a call to that method could look like this:</p>
+
+<div class="highlight python"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">api</span><span class="o">.</span><span class="n">get_friends</span><span class="p">(</span><span class="n">screen_name</span><span class="o">=</span><span class="s">"phpdrama"</span><span class="p">,</span> <span class="n">include_user_entities</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Because PHP has no ability for users to specify parameters and is instead done entirely based on the definition order, it’s going to look like this:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$api-&gt;getFriends(null, 'phpdrama', -1, false, true);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Everything is wrong with this.</p>
+
+<ol>
+  <li>I as a user should not have to know or care what the default values of arguments im not using are.</li>
+  <li>It is unobvious when/if default values change.</li>
+  <li>I don’t know what im saying <code>false</code> to without looking back at the declaration.</li>
+  <li>It looks shitty.</li>
+</ol>
+
+<h3 id="what-about-arrays">What about arrays?</h3>
+
+<p>Whenever I say I’d like to use named parameters, somebody says “why do you need them, just use arrays!”</p>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/philsturgeon">@philsturgeon</a> That argument always comes up on internals when named parameters are raised. Shows a fundamental misunderstanding, I feel.</p>&mdash; weierophinney (@mwop) <a href="https://twitter.com/mwop/statuses/361982046433845248">July 29, 2013</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>Well, if it’s my only option I guess I will, but how does it look:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12</pre></td><td class="code"><pre>public function getFriends($args)
+{
+    $args += [
+    	'user_id' =&gt; null,
+    	'screen_name' =&gt; null,
+    	'cursor' =&gt; -1,
+    	'skip_status' =&gt; false,
+    	'include_user_entities' =&gt; false,
+    ];
+    extract($args);
+	// ....
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p><em><strong>Update 01/09/2013:</strong> I had some nasty-ass isset statements in there but a few people pointed out this array situation would be nicer. They’re right of course. I need to stop blogging from the bar.</em></p>
+
+<p>This syntax will make the following syntax available:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$api-&gt;getFriends(['screen_name' =&gt; 'phpdrama', 'include_user_entities' =&gt; true]);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Ok so yes, technically this will work, but I lose all ability to docblock anything, type hinting is a chore and I have to do it in EVERY method. There are a lot of methods, which means literally hundreds of lines of boilerplate that could be replaced easily with syntax.</p>
+
+<p>What would it look like in PHP-land? Something like one of these I guess:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre>$api-&gt;getFriends(screen_name =&gt; 'phpdrama', include_user_entities =&gt; true);
+$api-&gt;getFriends(screen_name='phpdrama', include_user_entities=true);
+$api-&gt;getFriends(:screen_name =&gt; 'phpdrama', :include_user_entities =&gt; true);
+$api-&gt;getFriends(screen_name: 'phpdrama', include_user_entities: true);
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Comment on which you prefer and why. Also feel free to suggest other syntax.</p>
+
+<h2 id="next-step">Next Step</h2>
+
+<p>Named Parameters for PHP is not a new conversation. It’s reared its head several times - so much so that the <a href="https://wiki.php.net/rfc/namedparameters">named parameters RFC</a> says:</p>
+
+<blockquote>
+  <p>Since the topic continually gets re-raised, and now PHP has an RFC process, the discussion should be recorded in an RFC (Note this is yet to be done) so the same arguments don’t have to be revisited.</p>
+</blockquote>
+
+<p>The reason I’ve not been confident about seeing named parameters make it into PHP is due to the conclusion on this RFC:</p>
+
+<blockquote>
+  <p><strong>Discussion</strong></p>
+
+  <p>We don’t see the real need for named parameters, as they seem to violate PHP’s KISS principle. It also makes for messier code.</p>
+
+  <p><strong>Conclusions</strong></p>
+
+  <p>We do not want to add it.</p>
+</blockquote>
+
+<p>The attitude that comes across here is extremely negative and mostly sounds like the response of somebody that does not truly understand what named parameters are. The RFC also says that it needs to be updated to include conversations that have been had since the RFC was initially created.</p>
+
+<p>I can read, I can Google and I can write, so I feel like I am the perfect person for the job.</p>
+
+<p>I’ve emailed the internals list asking for a green light, then I’ll rewrite the RFC to be a fair and balanced outline of what named parameters are. If you guys can make syntax suggestions I can propose the most popular ones as options on the RFC.</p>
+
+<p>I definitely don’t think named parameters will get into 5.6, but I do think the RFC can be drastically improved to A) give people a better understanding of the pros and cons and B) perhaps change the minds of enough of the core team to eventually make named parameters a possibility.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Named Parameters in PHP&amp;url= https://philsturgeon.uk/2013/09/01/named-parameters-in-php/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Named Parameters in PHP&amp;url= https://philsturgeon.uk/2013/09/01/named-parameters-in-php/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2013/08/30/potential-variadic-function-syntax-for-php-56/">Potential Variadic Function Syntax for PHP 5.6</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2013/09/09/t-paamayim-nekudotayim-v-sanity/">T_PAAMAYIM_NEKUDOTAYIM v Sanity</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2013-09-01 01:35:00 UTC">2013-09-01 01:35:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

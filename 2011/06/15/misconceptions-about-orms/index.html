@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Misconceptions about ORMs | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="I was reading an article today ORM is an anti-pattern and it reminded me of some of the opinions I used to have about ORMs. I had used some PHP ORMs before like Doctrine and Propel and found them both to be heavy and a bit long winded for doing what I wanted to do. After that I wrote off ORMs for good and refused to listen to anyone who tried selling me a new one, but this makes about as much sense as turning to men just because you ended up with one fat girl. They aren’t all that heavy, and they aren’t all that ugly.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Misconceptions about ORMs | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="I was reading an article today ORM is an anti-pattern and it reminded me of some of the opinions I used to have about ORMs. I had used some PHP ORMs before like Doctrine and Propel and found them both to be heavy and a bit long winded for doing what I wanted to do. After that I wrote off ORMs for good and refused to listen to anyone who tried selling me a new one, but this makes about as much sense as turning to men just because you ended up with one fat girl. They aren’t all that heavy, and they aren’t all that ugly.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Misconceptions about ORMs</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2011-06-15 23:21:00 UTC">
+                Jun 15 2011
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>I was reading an article today <a href="http://seldo.com/weblog/2011/06/15/orm_is_an_antipattern">ORM is an anti-pattern</a> and it reminded me of some of the opinions I used to have about ORMs. I had used some PHP ORMs before like Doctrine and Propel and found them both to be heavy and a bit long winded for doing what I wanted to do. After that I wrote off ORMs for good and refused to listen to anyone who tried selling me a new one, but this makes about as much sense as turning to men just because you ended up with one fat girl. They aren’t all that heavy, and they aren’t all that ugly.</p>
+
+<p>After I decided to learn some Ruby on Rails (mainly for poops and giggles) I ended up falling in love with their <a href="http://guides.rubyonrails.org/active_record_querying.html">ActiveRecord implementation</a> - which is essentially ORM. They had thought out pretty much everything, it seemed to work pretty quickly and saved me a craptonne of time over working with SQL.</p>
+
+<p>This article is not intended to directly dig at our friend Seldo here, but I will be referring to the points in his article to help me dispel some of the misconceptions that he - and plenty of others - have about ORMs as a whole.</p>
+
+<h3 id="inadequate-abstraction">Inadequate abstraction</h3>
+
+<blockquote>
+  <p>The whole point of an abstraction is that it is supposed to simplify. An abstraction of SQL that requires you to understand SQL anyway is doubling the amount you need to learn: first you need to learn what the SQL you’re trying to run is, then you have to learn the API to get your ORM to write it for you.</p>
+</blockquote>
+
+<p>Personally, I couldn’t give a damn what SQL is being written as long as the ORM is performant and gives me results. The whole point of abstraction is that you are provided with a simple solution to do something more difficult or time consuming. Whether or not the API is intuitive or not is purely down to whoever developed the API and not down to ORMs on the whole.</p>
+
+<h3 id="incorrect-abstraction">Incorrect abstraction</h3>
+<blockquote>
+  <p>If your project really does not need any relational data features, then ORM will work perfectly for you, but then you have a different problem: you’re using the wrong datastore. The overhead of a relational datastore is enormous; this is a large part of why NoSQL data stores are so much faster. If your data is relational, however, that overhead is worth it: your database does not merely <em>store</em> your data, it <strong>represents</strong> your data and can answer questions about it on the basis of the relations captured, far more efficiently than you could in procedural code.</p>
+</blockquote>
+
+<p>Hang about, ORM stands for Object Relational Mapping. The fact that it handles relationships for you is exactly the reason for using an ORM! Maybe Doctrine and Propel handle this badly, but if you use something like FuelPHP’s or Rails ActiveRecord then you’ll see that adding in some <code>belongs_to</code>, <code>has_many</code>, <code>has_one</code>, etc. to your models makes talking to related data a breeze. Let’s imagine a normal model in CodeIgniter for example - not pure SQL but close enough to be the same thing:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12</pre></td><td class="code"><pre><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">User_model</span>
+<span class="p">{</span>
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">get</span><span class="p">(</span><span class="nv">$params</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span>
+      <span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="s1">'profiles.*, users.*, IF(profiles.last_name = "", profiles.first_name, CONCAT(profiles.first_name, " ", profiles.last_name)) as full_name'</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span><span class="na">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+      <span class="o">-&gt;</span><span class="na">join</span><span class="p">(</span><span class="s1">'profiles'</span><span class="p">,</span> <span class="s1">'profiles.user_id = users.id'</span><span class="p">,</span> <span class="s1">'left'</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'users'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">row</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Well that was no fun, but we have a method we can use to grab a single user from the database. Now, if we want to make a query that will get us a list of articles that user has written, or decide to see a list of their friends or work with any other sort of data then we have two options:</p>
+
+<ol>
+  <li>Modify the SQL query to make one mega-join</li>
+  <li>Make another query</li>
+</ol>
+
+<p>To be honest I don’t really want to do either! Option 1 leaves me pulling back way more information than I need everywhere else in my application that method is used and option 2 means writing a really similar method just to join a few extra fields. What a PITA.</p>
+
+<p>Now if we were using Rails we’d just do this:</p>
+
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="no">User</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="ss">:include</span> <span class="o">=&gt;</span> <span class="ss">:profile</span><span class="p">)</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Then if we felt like including the users articles or friends we’d just do this:</p>
+
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="no">User</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="ss">:include</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="ss">:profile</span><span class="p">,</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">:friends</span><span class="p">])</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>And brilliantly we can just do user.profile.foo to access nested properties and not have it all jammed into the main user variable as a SQL JOIN would end up doing.</p>
+
+<h3 id="death-by-a-thousand-queries">Death by a thousand queries</h3>
+
+<blockquote>
+  <p>This leads naturally to another problem of ORM: inefficiency. When you fetch an object, which of its properties (columns in the table) do you need? ORM can’t know, so it gets all of them (or it requires you to say, breaking the abstraction). Initially this is not a problem, but when you are fetching a thousand records at a time, fetching 30 columns when you only need 3 becomes a pernicious source of inefficiency. Many ORM layers are also notably bad at deducing joins, and will fall back to dozens of individual queries for related objects.</p>
+</blockquote>
+
+<p>WRONG. Most ORMs will allow you to pass a select in to suggest what fields you want back instead of just assuming you want <code>*</code>. As for relationships this is done in two ways.</p>
+
+<p><strong>Lazy-Loading</strong> - When you call $article-&gt;comments in PHP for example, the ORM can fire a <code>__get()</code> and see that comments is not set. It’ll then realise it has a join and can sy “oh crp, I’d better go find some comments for this article!”. That is <em>amazing</em> for Rapid Application Development, but of course is pretty inefficient. That is why any decent ORM will have…</p>
+
+<p><strong>Eager-Loading</strong> - You can see an example of eager loading in the code-block above. I told the ORM that not only did I want a User record, but I was going to want to load up the Profile, all related Articles and the users Friends too. That will make the ORM run off and build up one whacking massive query that will be cut, sliced, diced and formatted in exactly the way I would expect - an object for user and profile, and articles &amp; friends are an array of objects containing only the relevant data.</p>
+
+<blockquote>
+  <p>Many ORM layers are also notably bad at deducing joins, and will fall back to dozens of individual queries for related objects. As I mentioned earlier, many ORM layers explicitly state that efficiency is being sacrificed, and some provide a mechanism to tune troublesome queries. The problem, I have discovered with experience, is that there is seldom a single “magic bullet” query that needs to be optimized: the death of database-backed applications is not the efficiency of any one query, but the number of queries. ORM’s lack of context-sensitivity means that it cannot consolidate queries, and must fall back on caching and other mechanisms to attempt to compensate.</p>
+</blockquote>
+
+<p>Well only if the ORM is a piece of junk. I mentioned earlier how lazy loading is great for RAD, well that is me all over. Bash together a prototype for the investors/testers/indecisive client, etc then make something slick and efficient later. I was working on <a href="http://travlrapp.com/philsturgeon/usa-canada-2011">TravlrApp</a> and noticed that the page was running slowly. Sure its got a lot of data, but I noticed I was missing any eager loading. This meant that the ORM was making about 400 queries on a page… :-/</p>
+
+<p>I popped a few eager load references in and BAM, it made some crazy SQL for me like so:</p>
+
+<div class="highlight sql"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">Trip</span> <span class="k">Load</span> <span class="p">(</span><span class="mi">4</span><span class="p">.</span><span class="mi">4</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="nv">"trips"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"trips"</span> <span class="k">WHERE</span> <span class="p">(</span><span class="nv">"trips"</span><span class="p">.</span><span class="n">user_id</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">28</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">,</span><span class="mi">35</span><span class="p">,</span><span class="mi">36</span><span class="p">,</span><span class="mi">37</span><span class="p">,..........,</span><span class="mi">346</span><span class="p">,</span><span class="mi">347</span><span class="p">,</span><span class="mi">348</span><span class="p">,</span><span class="mi">349</span><span class="p">,</span><span class="mi">350</span><span class="p">,</span><span class="mi">351</span><span class="p">,</span><span class="mi">352</span><span class="p">,</span><span class="mi">353</span><span class="p">,</span><span class="mi">354</span><span class="p">,</span><span class="mi">355</span><span class="p">,</span><span class="mi">356</span><span class="p">,</span><span class="mi">357</span><span class="p">,</span><span class="mi">358</span><span class="p">,</span><span class="mi">360</span><span class="p">,</span><span class="mi">361</span><span class="p">)</span> <span class="k">AND</span> <span class="p">(</span><span class="nv">"trips"</span><span class="p">.</span><span class="nv">"started"</span> <span class="o">=</span> <span class="s1">'t'</span> <span class="k">AND</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"completed"</span> <span class="o">=</span> <span class="s1">'f'</span><span class="p">))</span> <span class="n">Trip</span> <span class="k">Load</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="nv">"trips"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"trips"</span> <span class="k">WHERE</span> <span class="p">(</span><span class="nv">"trips"</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="mi">19</span> <span class="k">AND</span> <span class="p">(</span><span class="nv">"trips"</span><span class="p">.</span><span class="nv">"started"</span> <span class="o">=</span> <span class="s1">'t'</span> <span class="k">AND</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"completed"</span> <span class="o">=</span> <span class="s1">'f'</span><span class="p">))</span> <span class="k">LIMIT</span> <span class="mi">1</span> <span class="k">SQL</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="nv">"users"</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="nv">"friendships"</span> <span class="k">ON</span> <span class="nv">"users"</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="nv">"friendships"</span><span class="p">.</span><span class="n">user_id</span> <span class="k">WHERE</span> <span class="p">((</span><span class="nv">"friendships"</span><span class="p">.</span><span class="n">friend_id</span> <span class="o">=</span> <span class="mi">19</span><span class="p">)</span> <span class="k">AND</span> <span class="p">((</span><span class="n">accepted_at</span> <span class="k">IS</span> <span class="k">NULL</span><span class="p">)))</span> <span class="n">Marker</span> <span class="k">Load</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="nv">"markers"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"markers"</span> <span class="k">WHERE</span> <span class="nv">"markers"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="mi">16</span> <span class="k">LIMIT</span> <span class="mi">1</span> <span class="k">CACHE</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="nv">"users"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"users"</span> <span class="k">WHERE</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="mi">19</span> <span class="k">LIMIT</span> <span class="mi">1</span> <span class="n">Rendered</span> <span class="n">home</span><span class="o">/</span><span class="n">_activity</span><span class="p">.</span><span class="n">html</span><span class="p">.</span><span class="n">erb</span> <span class="p">(</span><span class="mi">40</span><span class="p">.</span><span class="mi">1</span><span class="n">ms</span><span class="p">)</span> <span class="n">Rendered</span> <span class="n">layouts</span><span class="o">/</span><span class="n">partials</span><span class="o">/</span><span class="n">_metadata</span><span class="p">.</span><span class="n">html</span><span class="p">.</span><span class="n">erb</span> <span class="p">(</span><span class="mi">4</span><span class="p">.</span><span class="mi">7</span><span class="n">ms</span><span class="p">)</span> <span class="n">Rendered</span> <span class="n">layouts</span><span class="o">/</span><span class="n">partials</span><span class="o">/</span><span class="n">_header</span><span class="p">.</span><span class="n">html</span><span class="p">.</span><span class="n">erb</span> <span class="p">(</span><span class="mi">7</span><span class="p">.</span><span class="mi">5</span><span class="n">ms</span><span class="p">)</span> <span class="k">User</span> <span class="k">Load</span> <span class="p">(</span><span class="mi">93</span><span class="p">.</span><span class="mi">6</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"id"</span> <span class="k">AS</span> <span class="n">t0_r0</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"email"</span> <span class="k">AS</span> <span class="n">t0_r1</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"encrypted_password"</span> <span class="k">AS</span> <span class="n">t0_r2</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"password_salt"</span> <span class="k">AS</span> <span class="n">t0_r3</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"reset_password_token"</span> <span class="k">AS</span> <span class="n">t0_r4</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"remember_token"</span> <span class="k">AS</span> <span class="n">t0_r5</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"remember_created_at"</span> <span class="k">AS</span> <span class="n">t0_r6</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"sign_in_count"</span> <span class="k">AS</span> <span class="n">t0_r7</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"current_sign_in_at"</span> <span class="k">AS</span> <span class="n">t0_r8</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"last_sign_in_at"</span> <span class="k">AS</span> <span class="n">t0_r9</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"current_sign_in_ip"</span> <span class="k">AS</span> <span class="n">t0_r10</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"last_sign_in_ip"</span> <span class="k">AS</span> <span class="n">t0_r11</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"created_at"</span> <span class="k">AS</span> <span class="n">t0_r12</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"updated_at"</span> <span class="k">AS</span> <span class="n">t0_r13</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"username"</span> <span class="k">AS</span> <span class="n">t0_r14</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"first_name"</span> <span class="k">AS</span> <span class="n">t0_r15</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"last_name"</span> <span class="k">AS</span> <span class="n">t0_r16</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"website"</span> <span class="k">AS</span> <span class="n">t0_r17</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"bio"</span> <span class="k">AS</span> <span class="n">t0_r18</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"admin"</span> <span class="k">AS</span> <span class="n">t0_r19</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"total_distance_traveled"</span> <span class="k">AS</span> <span class="n">t0_r20</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"invitation_code"</span> <span class="k">AS</span> <span class="n">t0_r21</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"num_invites"</span> <span class="k">AS</span> <span class="n">t0_r22</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"address_1"</span> <span class="k">AS</span> <span class="n">t0_r23</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"address_2"</span> <span class="k">AS</span> <span class="n">t0_r24</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"town"</span> <span class="k">AS</span> <span class="n">t0_r25</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"city"</span> <span class="k">AS</span> <span class="n">t0_r26</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"country_id"</span> <span class="k">AS</span> <span class="n">t0_r27</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"postcode"</span> <span class="k">AS</span> <span class="n">t0_r28</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"home_marker_id"</span> <span class="k">AS</span> <span class="n">t0_r29</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"current_marker_id"</span> <span class="k">AS</span> <span class="n">t0_r30</span><span class="p">,</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"last_seen_marker_id"</span> <span class="k">AS</span> <span class="n">t0_r31</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"id"</span> <span class="k">AS</span> <span class="n">t1_r0</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"name"</span> <span class="k">AS</span> <span class="n">t1_r1</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"slug"</span> <span class="k">AS</span> <span class="n">t1_r2</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"description"</span> <span class="k">AS</span> <span class="n">t1_r3</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"user_id"</span> <span class="k">AS</span> <span class="n">t1_r4</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"created_at"</span> <span class="k">AS</span> <span class="n">t1_r5</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"updated_at"</span> <span class="k">AS</span> <span class="n">t1_r6</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"start_date"</span> <span class="k">AS</span> <span class="n">t1_r7</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"end_date"</span> <span class="k">AS</span> <span class="n">t1_r8</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"last_place_id"</span> <span class="k">AS</span> <span class="n">t1_r9</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"distance_traveled"</span> <span class="k">AS</span> <span class="n">t1_r10</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"started"</span> <span class="k">AS</span> <span class="n">t1_r11</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"completed"</span> <span class="k">AS</span> <span class="n">t1_r12</span><span class="p">,</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"is_private"</span> <span class="k">AS</span> <span class="n">t1_r13</span> <span class="k">FROM</span> <span class="nv">"users"</span> <span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="nv">"trips"</span> <span class="k">ON</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"user_id"</span> <span class="o">=</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"id"</span> <span class="k">AND</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"started"</span> <span class="o">=</span> <span class="s1">'t'</span> <span class="k">AND</span> <span class="nv">"trips"</span><span class="p">.</span><span class="nv">"completed"</span> <span class="o">=</span> <span class="s1">'f'</span> <span class="k">WHERE</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"id"</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">124</span><span class="p">,</span> <span class="mi">158</span><span class="p">,</span> <span class="mi">242</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">262</span><span class="p">,</span> <span class="mi">294</span><span class="p">,</span> <span class="mi">298</span><span class="p">,</span> <span class="mi">299</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">301</span><span class="p">,</span> <span class="mi">302</span><span class="p">,</span> <span class="mi">303</span><span class="p">,</span> <span class="mi">304</span><span class="p">,</span> <span class="mi">305</span><span class="p">,</span> <span class="mi">306</span><span class="p">,</span> <span class="mi">307</span><span class="p">,</span> <span class="mi">308</span><span class="p">,</span> <span class="mi">309</span><span class="p">,</span> <span class="mi">310</span><span class="p">,</span> <span class="mi">311</span><span class="p">,</span> <span class="mi">312</span><span class="p">,</span> <span class="mi">313</span><span class="p">,</span> <span class="mi">314</span><span class="p">,</span> <span class="mi">315</span><span class="p">,</span> <span class="mi">316</span><span class="p">,</span> <span class="mi">317</span><span class="p">,</span> <span class="mi">318</span><span class="p">,</span> <span class="mi">319</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">322</span><span class="p">,</span> <span class="mi">323</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">324</span><span class="p">,</span> <span class="mi">325</span><span class="p">,</span> <span class="mi">326</span><span class="p">,</span> <span class="mi">327</span><span class="p">,</span> <span class="mi">328</span><span class="p">,</span> <span class="mi">329</span><span class="p">,</span> <span class="mi">330</span><span class="p">,</span> <span class="mi">331</span><span class="p">,</span> <span class="mi">332</span><span class="p">,</span> <span class="mi">333</span><span class="p">,</span> <span class="mi">334</span><span class="p">,</span> <span class="mi">335</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">296</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">232</span><span class="p">,</span> <span class="mi">234</span><span class="p">,</span> <span class="p">...............</span> <span class="mi">288</span><span class="p">,</span> <span class="mi">281</span><span class="p">,</span> <span class="mi">282</span><span class="p">,</span> <span class="mi">283</span><span class="p">,</span> <span class="mi">287</span><span class="p">,</span> <span class="mi">284</span><span class="p">,</span> <span class="mi">290</span><span class="p">,</span> <span class="mi">285</span><span class="p">,</span> <span class="mi">280</span><span class="p">,</span> <span class="mi">291</span><span class="p">,</span> <span class="mi">89</span><span class="p">)</span> <span class="k">AND</span> <span class="p">(</span><span class="n">trips</span><span class="p">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">users</span><span class="p">.</span><span class="n">username</span> <span class="n">Rendered</span> <span class="n">home</span><span class="o">/</span><span class="n">_dashboard_sidebar</span><span class="p">.</span><span class="n">html</span><span class="p">.</span><span class="n">erb</span> <span class="p">(</span><span class="mi">126</span><span class="p">.</span><span class="mi">6</span><span class="n">ms</span><span class="p">)</span> <span class="k">SQL</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="n">ms</span><span class="p">)</span> <span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="nv">"users"</span> <span class="n">Rendered</span> <span class="n">layouts</span><span class="o">/</span><span class="n">partials</span><span class="o">/</span><span class="n">_footer</span><span class="p">.</span><span class="n">html</span><span class="p">.</span><span class="n">erb</span> <span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="mi">6</span><span class="n">ms</span><span class="p">)</span> <span class="n">Rendered</span> <span class="n">home</span><span class="o">/</span><span class="n">dashboard</span><span class="p">.</span><span class="n">html</span><span class="p">.</span><span class="n">erb</span> <span class="n">within</span> <span class="n">layouts</span><span class="o">/</span><span class="n">application</span> <span class="p">(</span><span class="mi">266</span><span class="p">.</span><span class="mi">8</span><span class="n">ms</span><span class="p">)</span> <span class="n">Completed</span> <span class="mi">200</span> <span class="n">OK</span> <span class="k">in</span> <span class="mi">4170</span><span class="n">ms</span> <span class="p">(</span><span class="n">Views</span><span class="p">:</span> <span class="mi">174</span><span class="p">.</span><span class="mi">4</span><span class="n">ms</span> <span class="o">|</span> <span class="n">ActiveRecord</span><span class="p">:</span> <span class="mi">3411</span><span class="p">.</span><span class="mi">5</span><span class="n">ms</span><span class="p">)</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>As I said before, I don’t care how it’s all working internally as long as it works well - and this is awesome! This is two pretty speedy queries instead of essentially infinite queries. I could have made it all into one query, but as the article mentions it’s not about making one super-dooper query and often two small ones are quicker.</p>
+
+<h3 id="ok-so-like-omgz">OK, So like OMGZ?!</h3>
+
+<p>Well no. One thing I agree with in this article - and with most ORM naysayers - is that using ORM all the time for everything is obviously ridiculous. ORM is around as a RAD tool to help you get things done quicker. A phrase that I find myself having to say far too often is  “doing more stuff takes longer”, which means “yes, ORM does use more memory than native SQL” but that does not make it evil and bad.</p>
+
+<p>If you are using a decent ORM then I see no reason why your application would fall over or perform badly unless you wrote it wrong.</p>
+
+<p>Sure if you are developing a site that is going to have 6 squillion users logging in every second then you are probably going to find ORM being a bottleneck, but at that point I would recommend either using Stored Procedures instead of SQL in your PHP, or maybe even switch to an even more performant database engine.</p>
+
+<h3 id="so-which-would-you-suggest">So… which would you suggest?</h3>
+
+<p>ORMs I consider to be worth a try are mainly ones built specifically for a framework. This removes a lot of the bloat as the framework itself contains a lot of the code that something like Doctrine would end up duplicating.</p>
+
+<ul>
+  <li><a href="http://guides.rubyonrails.org/active_record_querying.html">ActiveRecord</a> (Rails)</li>
+  <li><a href="http://fuelphp.com/docs/packages/orm/crud.html">ORM</a> (FuelPHP - not blowing my own horn, this excellent ORM was made entirely by Jelmer and Dan)</li>
+  <li><a href="http://datamapper.wanwizard.eu/">DataMapper</a> (CodeIgniter)</li>
+</ul>
+
+<h3 id="summary">Summary</h3>
+
+<p>ORM is development on crack. You’ll get things done quicker and as long as you don’t pick a fatty you’ll have a good time. Use it to make your web applications quickly and if you end up getting that Angel Investor to give you $10 million for “SquareFaceTwitPile” then you can probably afford to hire somebody to spend all day tweaking the last 0.00000002% of performance out of the application for v2.0 while you are sipping Mai Tais on a yacht somewhere.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Misconceptions about ORMs&amp;url= https://philsturgeon.uk/2011/06/15/misconceptions-about-orms/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Misconceptions about ORMs&amp;url= https://philsturgeon.uk/2011/06/15/misconceptions-about-orms/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2011/06/10/tumbleweed/">Tumbleweed?</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2011/08/17/video-pancake-3.1-overview/">Video: Pancake 3.1 overview</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2011-06-15 23:21:00 UTC">2011-06-15 23:21:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

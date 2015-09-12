@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Build API's That You Wont Hate: Part 1 - Useful Database Seeding | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="A little while back I produced an article called Building a Decent API which was mostly a tongue-in-cheek list of things that I’d come across in other APIs that pissed me off, or that I had done myself and used my super-power of hindsight combined with sarcasm to make a set of rules for you to live by when building APIs.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Build API's That You Wont Hate: Part 1 - Useful Database Seeding | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="A little while back I produced an article called Building a Decent API which was mostly a tongue-in-cheek list of things that I’d come across in other APIs that pissed me off, or that I had done myself and used my super-power of hindsight combined with sarcasm to make a set of rules for you to live by when building APIs.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Build API&#x27;s That You Wont Hate: Part 1 - Useful Database Seeding</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2013-11-08 18:32:00 UTC">
+                Nov  8 2013
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>A little while back I produced an article called <a href="/blog/2013/07/building-a-decent-api">Building a Decent API</a> which was mostly a tongue-in-cheek list of things that I’d come across in other APIs that pissed me off, or that I had done myself and used my super-power of hindsight combined with sarcasm to make a set of rules for you to live by when building APIs.</p>
+
+<p>The combination of cheek and naughty words made that “eat your greens” article go down a lot more smoothly, but it certainly lacked a little substance but I always wanted to turn that into a much more in depth of blog posts.</p>
+
+<p>Let’s start at the very beginning. Well, an entity-relationship diagram is probably the first step unless you’re a lunatic cowboy, but they’re boring as hell. Whatever, let’s start with seeding your database.</p>
+
+<h2 id="what-is-database-seeding">What is Database Seeding?</h2>
+
+<p>The idea is fairly simple. You have your database scheme built somehow, via a .sql file you imported, or a series of migrations, or it’s mongo and your application will just magically build it for you, whatever, but you have an empty database and you need to fill it with data. This is often referred to as “dummy data”.</p>
+
+<p>This data could be the categories for your application, test users, content entries with a bunch of comments, fake locations available for checkin, fake notifications to display in the iPhone app (one of each type) or credit-card payments at various stages of processing - with some complete, some half done and some super-fraudulent looking ones.</p>
+
+<p>This is all very helpful so you don’t need to waste time creating this manually over and over again, because the data you enter like that is almost always half-arsed and will often miss out things you really should have considered already.</p>
+
+<p>Uses for dummy data are testing (that’s the next article), getting freelancers/new hires up to speed with useful content, and avoiding the temptation to copy live data over to your development environments.</p>
+
+<h2 id="why-is-using-production-data-in-development-bad">Why is using production data in development bad?</h2>
+
+<p>Have you ever been writing a script that sends out emails and used some dummy copy while you’re building it? Ever used some cheeky words in that content? Ever accidentally sent that email out to 10,000 real customers email addresses? Ever been fired for losing a company north of £200,000?</p>
+
+<p>I haven’t, but I know a guy that has. Don’t be that guy.</p>
+
+<h2 id="fk-that-what-data-do-we-use">F**k that. What data do we use?</h2>
+
+<p>Garbage! Use absolute nonsense for your development database, but nonsense of the correct data type, size, and format. That can be done with a fun little library called <a href="https://github.com/fzaninotto/Faker">Faker</a> by <a href="https://twitter.com/francoisz/">François Zaninotto</a> which is a wonderful little library that can essentially bullshit for Queen and country.</p>
+
+<p>Kapture uses Laravel which has the joys of having <a href="http://laravel.com/docs/migrations#database-seeding">Database Seeding</a> baked in. This is essentially a tarted up CLI task which almost any modern PHP framework will have (or bloody well should do) so the principles are applicable to all.</p>
+
+<p>Break your Database Seeders down into chunks. This doesn’t need to be “one seeder-per-table” but it can be. The reason I don’t try to stick to that rule is that sometimes your data needs to be built at the same time as other types of data, so for us Users are created in the same “seeder” as their settings, oauth tokens, and friendship data is made. Putting that stuff into multiple seeders purely to keep things tidy would be an exercise in futility, and slow everything down for no reason.</p>
+
+<p>So, this is a drastically simplified version of our user seeder all in one go, ignoring the Laravel specific structure. <em>If you’re using L4, just shove this in your <code>run()</code> method.</em></p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></td><td class="code"><pre>    $faker = Faker\Factory::create();
+
+    for ($i = 0; $i <span class="nt">&lt; Config::get</span><span class="err">('</span><span class="na">seeding</span><span class="err">.</span><span class="na">users</span><span class="err">');</span> <span class="err">$</span><span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+
+        <span class="err">$</span><span class="na">user =</span><span class="err"> </span><span class="s">User::create([</span>
+            <span class="err">'</span><span class="na">name</span><span class="err">'</span>               <span class="err">=</span><span class="nt">&gt;</span> $faker-&gt;name,
+            'email'              =&gt; $faker-&gt;email,
+            'active'             =&gt; $i === 0 ? true : rand(0, 1),
+            'gender'             =&gt; rand(0, 1) ? 'male' : 'female',
+            'timezone'           =&gt; mt_rand(-10, 10),
+            'birthday'           =&gt; rand(0, 1) ? $faker-&gt;dateTimeBetween('-40 years', '-18 years') : null,
+            'location'           =&gt; rand(0, 1) ? "{$faker-&gt;city}, {$faker-&gt;state}" : null,
+            'had_feedback_email' =&gt; (bool) rand(0, 1),
+            'sync_name_bio'      =&gt; (bool) rand(0, 1),
+            'bio'                =&gt; $faker-&gt;sentence(100),
+            'picture_url'        =&gt; $this-&gt;picture_url[rand(0, 19)],
+        ]);
+    }
+</pre></td></tr></tbody></table>
+</div>
+
+<p>So what do we have here? Let’s go through this section at a time:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>    $faker = Faker\Factory::create();
+</pre></td></tr></tbody></table>
+</div>
+
+<p>An instance of Faker, our bullshit artist for-hire.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>    for ($i = 0; $i <span class="nt">&lt; Config::get</span><span class="err">('</span><span class="na">seeding</span><span class="err">.</span><span class="na">users</span><span class="err">');</span> <span class="err">$</span><span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>We’re going to want a certain number of users, but I’d recommend you have a few less on development than you do on testing or staging, because time.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>        $user = User::create([
+            'name'               =&gt; $faker-&gt;name,
+            'email'              =&gt; $faker-&gt;email,
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Make a random name and random email. We don’t have to define the pool of random data it uses, because ITS MAGIC!</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'active'             =&gt; $i === 0 ? true : rand(0, 1),
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Ok I lied, our garbage is not 100% random. We want user number 1 to be active for tests later on.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'gender'             =&gt; rand(0, 1) ? 'male' : 'female',
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Gender equality is important.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'timezone'           =&gt; mt_rand(-10, 10),
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Our original developer decided that saving timezones as an integer was a clever thing to do. Bellend. How you gonna handle countries with +4.45 timezones bro? I still need to refactor this, but it’s fine for now.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'birthday'           =&gt; rand(0, 1) ? $faker-&gt;dateTimeBetween('-40 years', '-18 years') : null,
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Users of all of our target age demographic.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'location'           =&gt; rand(0, 1) ? "{$faker-&gt;city}, {$faker-&gt;state}" : null,
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Give us a city name and a state name. This works fine with foreign countries too which is cool.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>            'had_feedback_email' =&gt; (bool) rand(0, 1),
+            'sync_name_bio'      =&gt; (bool) rand(0, 1),
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Some user flags we don’t care much about. True or false, whatever.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'bio'                =&gt; $faker-&gt;sentence(100),
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Make a sentence with 100 characters in it.</p>
+
+<h2 id="thats-about-it">That’s about it</h2>
+
+<p>You will end up making a lot of these files, and you’ll want to populate pretty much every table you have with data. You’ll also want to tell your Database Seeder to wipe all the tables you’re going to populate. Do this globally right at the start of the process, don’t wipe each table at the top of each seeder or you’ll be wiping out content in that table from other seeders in the same process.</p>
+
+<p>Example of a overall system in Laravel 4:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre></td><td class="code"><pre>class DatabaseSeeder extends Seeder
+{
+    public function run()
+    {
+        if (App::environment() === 'production') {
+            exit('I just stopped you getting fired. Love Phil');
+        }
+
+        Eloquent::unguard();
+
+        $tables = [
+            'locations',
+            'merchants',
+            'opps',
+            'opps_locations',
+            'moments',
+            'rewards',
+            'users',
+            'oauth_sessions',
+            'notifications',
+            'favorites',
+            'settings',
+            'friendships',
+            'impressions',
+        ];
+
+        foreach ($tables as $table) {
+            DB::table($table)-&gt;truncate();
+        }
+
+        $this-&gt;call('MerchantTableSeeder');
+        $this-&gt;call('PlaceTableSeeder');
+        $this-&gt;call('UserTableSeeder');
+        $this-&gt;call('OppTableSeeder');
+        $this-&gt;call('MomentTableSeeder');
+    }
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This wipes everything, then runs other seeder classes to do their thing.</p>
+
+<p>Then I just run <code>$ php artisan db:seed</code> and it goes about it’s business.</p>
+
+<h2 id="when-to-run-this">When to run this</h2>
+
+<p>This is run whenever a developer on the team wants fresh data in their system, at random intervals on the staging server and automatically on the jenkins testing server when we deploy new builds of the api.</p>
+
+<p>More on testing automationy goodness with Jenkins and Behat coming up soon, and a lot more to come after that including how to represent your data output, how to handle nesting data (respecting context and avoiding unlimited nesting and memory-leaks) and authentication with <a href="https://github.com/php-loep/oauth2-server">OAuth 2 Server</a> from <a href="http://www.thephpleague.com/">The PHP League of Extraordinary Packages</a>.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Build API&#x27;s That You Wont Hate: Part 1 - Useful Database Seeding&amp;url= https://philsturgeon.uk/2013/11/08/build-apis-part-1-useful-database-seeding/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Build API&#x27;s That You Wont Hate: Part 1 - Useful Database Seeding&amp;url= https://philsturgeon.uk/2013/11/08/build-apis-part-1-useful-database-seeding/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2013/10/15/psr2-v-codesniffer-psr2/">PSR-2 v CodeSniffer PSR-2: A Success Story</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2013/11/12/benchmarking-codswallop-nodejs-v-php/">Benchmarking Codswallop: NodeJS v PHP</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2013-11-08 18:32:00 UTC">2013-11-08 18:32:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

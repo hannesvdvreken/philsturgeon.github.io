@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Treehouse: PHP Standards and Best Practices | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="A while ago Treehouse got in touch with me, and asked me if I would be interested in working with them on a video course. They wanted more PHP-related content, and they had heard I knew a thing or two about that.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Treehouse: PHP Standards and Best Practices | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="A while ago Treehouse got in touch with me, and asked me if I would be interested in working with them on a video course. They wanted more PHP-related content, and they had heard I knew a thing or two about that.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Treehouse: PHP Standards and Best Practices</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-11-25 12:05:00 UTC">
+                Nov 25 2014
+              </time>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/treehouse/">#treehouse</a>
+              <a href="/tags/education/">#education</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>A while ago <a href="http://teamtreehouse.com/">Treehouse</a> got in touch with me, and asked me if I would be interested in working with them on a video course. They wanted more PHP-related content, and they had heard I knew a thing or two about that.</p>
+
+<p>We talked about a few options, and they were interested in PSRs, things like <a href="http://www.phptherightway.com/">PHP The Right Way</a>, etc, and we ended up settling on a course called: <a href="http://teamtreehouse.com/library/standards-and-best-practices">Standards and Best Practices</a>.</p>
+
+<p>This is the outline:</p>
+
+<blockquote>
+  <p>PHP is a flexible language with a long history. Being such a popular language for so long means there is a lot of code out there. There are many ways to program in PHP, and not all of them are as safe, performant, or maintainable as some of the older educational materials might have you believe.</p>
+</blockquote>
+
+<blockquote>
+  <p>Having so many options can be daunting to many developers as they grow from beginner to intermediate. Fortunately there are established best practices out there, and this course will help you learn about many of them.</p>
+</blockquote>
+
+<p>I was pretty excited to do this for a bunch of reasons.</p>
+
+<p>Obviously I like being paid for things, but more than that it was a great opportunity to put modern PHP and “best practices” right in front of PHP developers as they are starting out.</p>
+
+<p>There is so much old guff floating around the Internet about PHP on W3 Schools and the like, that having these resources for people to take on right after they learn the basics is going to hopefully improve the situation in the PHP community from the bottom up.</p>
+
+<p>It’s not just for beginners either. My favorite stage in this course is “Creating Distributable OOP Packages”, which has a video for each of these topics:</p>
+
+<ul>
+  <li>Creating Components</li>
+  <li>PSR-1</li>
+  <li>PSR-2</li>
+  <li>Composer Metadata</li>
+  <li>Semantic Versioning</li>
+</ul>
+
+<p>It shows you how to combine the basic knowledge of Composer and autoloading outlined in previous videos, to actually build your own components It even shows the very basics of unit-testing that component to promote TDD over hacking around trying to get that thing to show in the browser somehow.</p>
+
+<p><img alt="Somebody else will expanding upon unit-testing a whole lot more in the future." src="/assets/article_images/2014-11-25-treehouse-standards-best-practices/grumpy-gives-no-fks.gif" /></p>
+
+<p>Now, I know it’s paid content and that’s a bit of an bummer as a lot of beginners just can’t afford it, but I do have a “50% off for a month” <a href="https://teamtreehouse.com/signup_code/PhilSturgeon50">sign-up link</a> here for you to use and share to people.</p>
+
+<p>All I ask is that you don’t take the piss out of me too much for the terrified and partially robotic look on my face. I started off pretty wooden but think I relaxed and got the hang of things as I progressed.</p>
+
+<p>It was truly one of the scariest things I’ve ever done, and I’ve kayaked and hiked all the shit over some scary stuff. It was definitely scarier than the time I was almost arrested for vagrancy in New Mexico, and the time the black bear snuck up on me in Canada was just adrenaline not fear.</p>
+
+<p>Having a camera shoved in my face for a damn <em>week</em> had me totally fried and broken, but I would definitely do it again if they invite me back.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=Treehouse: PHP Standards and Best Practices&amp;url= https://philsturgeon.uk/2014/11/25/treehouse-standards-best-practices/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=Treehouse: PHP Standards and Best Practices&amp;url= https://philsturgeon.uk/2014/11/25/treehouse-standards-best-practices/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2014/11/15/alien-status-extraordinary-again/">Alien Status: Extraordinary Again</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2014/11/30/state-of-markdown/">The State of Markdown</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-11-25 12:05:00 UTC">2014-11-25 12:05:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

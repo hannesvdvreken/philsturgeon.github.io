@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>PHP 6: Pissing in the Wind | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Update 12/12/2014: This ended up getting to #1 on Google for “PHP 6” so I thought it was important
+to give an update. The article hoped to outline one way in which we could solve one of the
+most commonly mentioned issues of the PHP language. Not the biggest or most important problem,
+but all the same something that should be fixed.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="PHP 6: Pissing in the Wind | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Update 12/12/2014: This ended up getting to #1 on Google for “PHP 6” so I thought it was important
+to give an update. The article hoped to outline one way in which we could solve one of the
+most commonly mentioned issues of the PHP language. Not the biggest or most important problem,
+but all the same something that should be fixed.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <!-- header start -->
+
+<a href="/" class="logo-readium fa fa-home"></a>
+
+<!-- header end -->
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">PHP 6: Pissing in the Wind</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2013-01-26 15:59:00 UTC">
+                Jan 26 2013
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <blockquote>
+  <p><strong>Update 12/12/2014:</strong> This ended up getting to #1 on Google for “PHP 6” so I thought it was important
+to give an update. The article hoped to outline one way in which we could solve one of the
+most commonly mentioned issues of the PHP language. Not the biggest or most important problem,
+but all the same something that should be fixed.</p>
+
+  <p>After some squabbling over whether <a href="/php/2014/07/23/neverending-muppet-debate-of-php-6-v-php-7/">PHP 6 or PHP 7</a> should be used for the next version, <a href="https://wiki.php.net/rfc/php6">PHP 7</a> was
+chosen, and it will contain none of these suggestions.</p>
+</blockquote>
+
+<p>PHP is well known for having an inconsistent API when it comes to PHP functions. Anyone with an anti-PHP point of view will use this as one of their top 3 arguments for why PHP sucks, while most PHP developers will point out that they don’t really care. This is mostly because we’re either used to it, have a god-like photographic memory or our IDE handles auto-complete so it’s a moot point. For me I’m not too fussed because I spend more time trying Googling words like recipe (see, I got that wrong) recipe than I ever spend looking up PHP functions.</p>
+
+<p>Another big thing that anti-PHP folks laugh about is the lack of scalar objects, so instead of <code>$string-&gt;length()</code> you have to do <code>strlen($string)</code>.</p>
+
+<p><em>Another</em> thing that people often joke about is how PHP 6.0 just never happened, because the team were trying to bake in Unicode support but just came across so many issues that it never happened.</p>
+
+<h2 id="the-obvious-answer">The Obvious Answer</h2>
+
+<p>There is a single way to fix all of these issues in a single blow. I’m by no means the first person to think of it, but it blows my mind that it’s not being worked on.</p>
+
+<p>PHP 5.x</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$foo = "string";
+echo strlen($foo); // Outputs: 6
+echo $foo-&gt;length(); // PHP Fatal error:  Call to a member function length() on a non-object
+</pre></td></tr></tbody></table>
+</div>
+
+<p>PHP 6.0</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$foo = "string";
+echo strlen($foo); // Outputs: 6
+echo $foo-&gt;length(); // Outputs: 6
+</pre></td></tr></tbody></table>
+</div>
+
+<p>PHP 6.1</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$foo = "string";
+echo strlen($foo); // Outputs: 6 /w a PHP Deprecated: use String-&gt;length()
+echo $foo-&gt;length(); // Outputs: 6
+</pre></td></tr></tbody></table>
+</div>
+
+<p>PHP 6.2</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$foo = "string";
+echo strlen($foo); // PHP Fatal error:  Call to undefined function strlen()
+echo $foo-&gt;length(); // Outputs: 6
+</pre></td></tr></tbody></table>
+</div>
+
+<h2 id="unicode-support">Unicode Support</h2>
+
+<p>PHP 5.x</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$foo = u"string"; // AHH WHAT IS THIS?
+echo strlen($foo); // PHP Warning:  strlen() expects parameter 1 to be string, MADNESS given
+echo $foo-&gt;length(); // PHP Fatal error:  Call to a member function length() on a non-object
+</pre></td></tr></tbody></table>
+</div>
+
+<p>PHP 6.0</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$foo = u"string";
+echo strlen($foo); // Warning: strlen() expects parameter 1 to be String, UnicodeString given
+echo $foo-&gt;length(); // Outputs: 6
+</pre></td></tr></tbody></table>
+</div>
+
+<p>If you want to get super detailed, people concerned about UTF-8 or UTF-16 support could even do:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$foo = u"string";
+$foo = u16"string";
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This shows that the language would default to UTF-8, because thats what most people default to when they give a shit about Unicode support, but gives extra super-powers to those who need UTF-16.</p>
+
+<h2 id="so-why-isnt-this-happening">So why isn’t this happening?</h2>
+
+<p>As I see there are two major reasons. One is: who is going to do it?</p>
+
+<p>One core contributor <a href="http://nikic.github.com/">Nikita Popov</a> who shares this view is currently working on a <a href="https://github.com/nikic/scalar_objects">proof of concept</a>. We’ve never spoke and I’m not claiming anything, he just seems to share a common opinion, that this is an obvious next step for PHP which avoids breaking any BC while standardising function names in one fell-swoop.</p>
+
+<p>Well, if a core PHP contributor is working on it, that means its happening right?</p>
+
+<p>Nope, which is my second point. Let’s put this into context.</p>
+
+<h3 id="php-property-accessors-syntax">PHP Property Accessors Syntax</h3>
+
+<p>This was an absolutely wonderful <a href="https://wiki.php.net/rfc/propertygetsetsyntax-v1.2#voting">RFC proposed</a> to PHP which by the reactions of many PHP developers looked like a shoe-in.</p>
+
+<p>It gave us the exact same logical getter setter controls that <a href="http://forums.asp.net/t/1191140.aspx">C#</a> offers, and which Ruby has something <a href="http://www.rubyist.net/~slagell/ruby/accessors.html">pretty similar</a>. I was excited. Lots of people were excited. Then it got blammed by a 33 for and 21 against vote.</p>
+
+<p>Sadly its not a majority wins situation, it had to get a 2/3rds majority. So we got fucked. No getter setter syntax for us.</p>
+
+<h3 id="class-name-resolution-via-class-keyword">Class Name Resolution via “class” Keyword</h3>
+
+<p>This is a handy little addition to the language that means you can take any variable and append <code>$foo::class</code> to get a fully resolved class name. This means when you’re trying to use <code>call_user_func()</code> on a method of a class you don’t need to piss around with strings or <code>get_class()</code>, which is lovely.</p>
+
+<p>As this is only a little feature only <a href="https://wiki.php.net/rfc/class_name_scalars#votes">a few votes</a> were needed. I recognise these names as active bloggers, contributors, or people otherwise known as active in the community.</p>
+
+<h2 id="the-little-point">The Little Point</h2>
+
+<p>When it’s a little feature, whoever is interested in getting it voted in - as long as a reasonable number of active PHP guys agree - it’s going to get in. That means a trivial/small feature always has a good shot as long as it makes sense.</p>
+
+<p>But, if you even try to change any sort of syntax on a large scale you need to get a majority. Sadly it seems most of this majority are not the sort of people who vote unless they’re asked to vote. It almost seems like they don’t really care unless they are asked to care, and when they are asked the response is more often that not “nay”.</p>
+
+<p>Really, look up the votes for recent RFC’s and see who said “nay” on Getter/Setter, they nay vote a lot.</p>
+
+<h2 id="the-bigger-point">The Bigger Point</h2>
+
+<p>I know in my heart that democracy is mostly a good idea, in the same way that communism started off as a really good idea, but when you have a large number of people making decisions that don’t really give a fuck then the people really are not being represented as they should. How often has Rasmus said he prefers procedural code over OOP? Of course plenty of people are voting against drastic improvements to the OOP functionality of PHP, because the core devs <a href="http://news.php.net/php.internals/64770">can’t even decide</a> if PHP is going to be OOP, functional, or whatever!</p>
+
+<h2 id="another-point">Another Point</h2>
+
+<p>People not being able to get on the same page is one thing, but I heard a reason from a “nay” voter who I’m going to leave nameless (mainly because I have forgotten his name) said that merging the getter/setter syntax would require too much maintenance. Right, doing stuff means doing stuff and that is an unfortunate fact of life, but if you don’t like doing stuff: quit.</p>
+
+<p>I quit the CodeIgniter development team because I was no longer doing client work with CodeIgniter and had no interest in helping CodeIgniter recode itself to put it into a vaguely competitive position against modern frameworks.</p>
+
+<p>Now, while we don’t need PHP to “win”, it would be nice if we could get some sort of progress on the problems that have obviously plagued the language for the last decade.</p>
+
+<p>The suggestion I’m making (and that plenty of others have made) are not particularly complex. They require some recoding of core functions, but for developers it would not require a recode of their applications for the foreseeable future.</p>
+
+<p>Basically put, these suggestions won’t break shit. Legacy developers can stay on 5.x from now until the end of time, and they could even upgrade to 6.0 for forever too. If they upgrade to 6.1 they’ll start getting deprecated errors (which they can turn off) and when they get to 6.2 maybe they’ll have problems - but 6.2 will probably drop in about 2020 so who even gives a damn?</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I’d love to see this change happen. It’s going to take effort, and I’d love to be able to help, but I suck with C (beyond making some robot fighting game in college) so I’m out of the picture. Seriously, while I’m a <a href="https://spaz.spreadshirt.com/pull-request-or-stfu-black-A6928817">Pull Request or STFU</a> kinda guy the last person that should be doing this sort of change is me.</p>
+
+<p>People who give a shit (like Nikita Popov) need to be working on this, and people who think its a good idea need to get on board. People with no opinion should have a little look at how the majority of PHP developers are using PHP these days.</p>
+
+<p>It’s not just a language for noobs, juniors, idiots, designers who like if statements and other bottom dwellers to pedal shit. It’s a serious language with known defects, used besides that fact to make some impressive systems (and WordPress). PHP runs almost 80% of the Internet and as such it has become a haven for people who want to spread their code to as many users as possible, and is not just the shit-storm so many people pretend it is. PHP 4 was a piece of shit, PHP 5.1 was OK, PHP 5.2 was reasonable, by 5.3 it got awesome and 5.4 and 5.5 are adding to it so hard.</p>
+
+<p>Let’s keep making it brilliant, not so PHP can win some imaginary competition, but so the people who make distributed applications can continue to not only achieve the objective of “Getting onto as many servers as possible” but also “not be forced to write retarded code because that is all the language is capable of doing”. There is a middle-ground, and this one change would handle so many of the problems that PHP suffers from.</p>
+
+<p><strong>Making changes to this language should not be blocked just because a quiet minority of the core team don’t like the idea of being asked to do stuff.</strong></p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="//twitter.com/share?text=PHP 6: Pissing in the Wind&amp;url= https://philsturgeon.uk/2013/01/26/php-6-pissing-in-the-wind/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="//twitter.com/share?text=PHP 6: Pissing in the Wind&amp;url= https://philsturgeon.uk/2013/01/26/php-6-pissing-in-the-wind/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2013/01/25/goals-for-2013/">Goals for 2013</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2013/02/12/catapult-into-pyrocms/">Catapult into PyroCMS</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2013-01-26 15:59:00 UTC">2013-01-26 15:59:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

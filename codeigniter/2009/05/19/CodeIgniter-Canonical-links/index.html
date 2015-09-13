@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>CodeIgniter & Canonical links | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Due to CodeIgniter’s URI flexibility people are able to access the same url in many ways which causes issues with both Google ranking, search results and Google Analytic.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="CodeIgniter & Canonical links | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Due to CodeIgniter’s URI flexibility people are able to access the same url in many ways which causes issues with both Google ranking, search results and Google Analytic.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">CodeIgniter &amp; Canonical links</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-05-19 12:03:00 UTC">
+                May 19 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Due to CodeIgniter’s URI flexibility people are able to access the same url in many ways which causes issues with both Google ranking, search results and Google Analytic.</p>
+
+<p><strong>Home page</strong></p>
+
+<blockquote>
+  <p>http://example.com/<br />
+http://example.com/home.html (managed view my page manager)</p>
+</blockquote>
+
+<p>This makes working out who hit my homepage tricky as there are several pages all showing as home.</p>
+
+<p><strong>Multiple module/controller URI’s</strong></p>
+
+<blockquote>
+  <p>http://example.com/news<br />
+http://example.com/news/<br />
+http://example.com/news.html</p>
+</blockquote>
+
+<p>This has two problems. I cannot find out which section is most popular without using a calculator, and it breaks content drilldown.</p>
+
+<p><strong>Multiple page content</strong></p>
+
+<blockquote>
+  <p>http://example.com/news/Article-name<br />
+http://example.com/news/2009/05/Article-name<br />
+http://example.com/news/Article-name.html<br />
+http://example.com/news/2009/05/Article-name.html</p>
+</blockquote>
+
+<p>This just confuses the search engines by having a whole bunch of pages with the same content, and again means tracking page views in Google Analytics is near impossible.</p>
+
+<p>Now, here are are two possibilities.</p>
+
+<h3 id="method-1-full-parsed-urls">Method #1: Full parsed URL’s</h3>
+
+<p>This method basically shows Google crawlers and Google Analytic the same URL; the URL that a user _should _be using to view this page.</p>
+
+<p><code>echo '&lt;link rel="canonical" href="' . site_url( $this-&gt;uri-&gt;uri_string() ) . '" /&gt;';</code></p>
+
+<p><strong>Pro’s:</strong> This would make sure EVERY page had a correctly formed URL for the page no matter what URI they accessed the page from.</p>
+
+<p><strong>Con’s:</strong> Content Drilldown in Google Analytic will not work if you use $config[‘url_suffix’] extensions. Doesn’t take into account routed URL’s so they will show separately.</p>
+
+<h3 id="method-2-routed-urls-for-analytic-parsed-urls-for-robots">Method #2: Routed URL’s for Analytic, Parsed URL’s for Robots</h3>
+
+<p>Well it seems to make Google search and Google Analytic happy we are going to need two different approaches. This method will insert the full correct URL if a robot comes to the site to crawl for links, and insert the link we’d like to see show in Google Analytic if it is a normal user.</p>
+
+<p><code>if ($this-&gt;agent-&gt;is_robot()) \{   echo '&lt;link rel="canonical" href="' . site_url( $this-&gt;uri-&gt;uri_string() ) .'" /&gt;'; } else \{   echo '&lt;meta name="canonical" content="'. base_url().implode('/', $this-&gt;uri-&gt;rsegment_array()) . '" /&gt;'; }</code></p>
+
+<p><strong>Pro’s:</strong> The pro’s of Method 1 but also uses will display the basic CodeIgniter URI even if the URL is masked behind a Route.</p>
+
+<p><strong>Con’s:</strong> If you use routes for content drilldown such as “news/2009/04/Article-name” then it will show up as “news/article/Articlename”. This may or may not be a bad thing.</p>
+
+<p><strong><em>Update:</em></strong> _ These first two methods require you to use <a href="http://erikvold.com/blog/index.cfm/2009/4/23/relcanonical-and-google-analytics">a piece of JavaScript</a> written by <a href="http://erikvold.com/">Erik Vold</a> to enable Google Analytics to register canonical links. I had not realised Google Analytics would pay no attention to a canonical link until I showed this article to a member of the web marketing team at work. I have added this 3rd method to cover this._</p>
+
+<h3 id="method-3-routed-urls-for-analytic-parsed-urls-for-robots-direct-aproach">Method #3: Routed URL’s for Analytic, Parsed URL’s for Robots (direct aproach)</h3>
+
+<p>As it turns out Google Analytic could not care less about your canonical links by default, we can give Google bots and Google Analytic two totally different values. We can set the current user-facing URI as a canonical link in the HTML, then insert the fully routed URI segments straight to Google Analytic.</p>
+
+<p><code>echo '&lt;link rel="canonical" href="' . site_url( $this-&gt;uri-&gt;uri_string() ) . '" /&gt;';</code></p>
+
+<p><code> &lt;script type="text/javascript"&gt; try { var pageTracker = _gat._getTracker("UA-XXXXXXX-YY"); pageTracker._trackPageview("&lt;?=base_url().implode('/', $this-&gt;uri-&gt;rsegment_array();?&gt;")); } catch(err){} &lt;/script&gt; </code></p>
+
+<p><strong>Pro’s:</strong> Same as method #2 but doesn’t require any extra JavaScript. You are simply passing a CodeIgniter value straight into code that is already there.</p>
+
+<p><strong>Con’s:</strong> Effectively the same as method #2 here as well.</p>
+
+<p>I personally am a fan of method #2 method #3. Does anybody have any other funky methods for handling this?</p>
+
+<p>This is not the set-up that will work for everyone, as sometimes people want to have multiple URL’s being tracked for a single content page. This happens quite a bit at work, but for my personal site and most of the sites using <a href="http://pyrocms.com/">PyroCMS</a> I could see the advantages.</p>
+
+<p>As captcha’s are still not working, please discuss this in the <a href="http://codeigniter.com/forums/viewthread/114862/">CodeIgniter post</a> I set up for this article.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=CodeIgniter &amp; Canonical links&amp;url=https://philsturgeon.uk/codeigniter/2009/05/19/CodeIgniter-Canonical-links/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=CodeIgniter &amp; Canonical links&amp;u=https://philsturgeon.uk/codeigniter/2009/05/19/CodeIgniter-Canonical-links/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/codeigniter/2009/05/17/Access-CodeIgniter-helpers-from-Smarty-templates/">Access CodeIgniter helpers from Smarty templates</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/linux/2009/05/22/Build-your-own-VPS-in-the-cloud/">Build your own VPS in the cloud</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-05-19 12:03:00 UTC">2009-05-19 12:03:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

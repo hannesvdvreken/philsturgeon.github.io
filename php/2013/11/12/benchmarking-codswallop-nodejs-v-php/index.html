@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Benchmarking Codswallop: NodeJS v PHP | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Sometimes people link me to articles and ask for my opinions. This one was a real doozy.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Benchmarking Codswallop: NodeJS v PHP | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Sometimes people link me to articles and ask for my opinions. This one was a real doozy.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Benchmarking Codswallop: NodeJS v PHP</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2013-11-12 03:01:00 UTC">
+                Nov 12 2013
+              </time>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/nodejs/">#nodejs</a>
+              <a href="/tags/benchmarks/">#benchmarks</a>
+              <a href="/tags/fud/">#fud</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Sometimes people link me to articles and ask for my opinions. This one was a real doozy.</p>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/reactphp">@reactphp</a> <a href="https://twitter.com/philsturgeon">@philsturgeon</a> NodeJS owns PHP on website scraping ? <a href="http://t.co/zpWQBx3zvY">http://t.co/zpWQBx3zvY</a></p>&mdash; GDmac (@GDmac) <a href="https://twitter.com/GDmac/statuses/399459655765618688">November 10, 2013</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>Oh goody, a framework versus language post. Let’s try and chew through this probable linkbait.</p>
+
+<blockquote>
+  <p>This is more of a benchmark test than example.</p>
+</blockquote>
+
+<p>Ok so we’re benchmarking NodeJS v PHP. Weird, but I’ll go along with it.</p>
+
+<blockquote>
+  <p>External library used for Nodejs was cheerio and PhpQuery for Php.</p>
+</blockquote>
+
+<p>Well, now we’re testing cheerio v PhpQuery which is a bit different, but fine, let’s go along with it. These two libraries do essentially the same thing, let you parse HTML and traverse about the DOM model. I can see how one might think it’s fair, even if the title is already misleading…</p>
+
+<blockquote>
+  <p>Nodejs took 175.535 sec to complete where as Php took 711.790 sec to complete. Php was four times slower than Nodejs.</p>
+</blockquote>
+
+<p>Sure it was, because phpQuery uses <code>file_get_contents()</code> which is blocking, meaning each and every single one of those web requests has to be done in turn. PHP is just sitting there waiting for the server to respond, when it could be doing something else. Also where were these tests being run from? The moon?!</p>
+
+<p>We’ve come a long way from the original title of “NodeJS v PHP”, to really asking “cheerio v phpQuery”, which is realistically asking “Blocking v Non-Blocking”, or “Synchronous v Asynchronous”.</p>
+
+<p>Benchmarking to see if “doing multiple things at once” is faster than “doing one thing at a time” almost certainly sounds like a waste of time, but it would at least match the actual code examples being run and therefore be a valid test. Let’s just pretend it <em>was</em> worded like that, and have a go at this benchmark ourselves.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>I made <a href="https://github.com/philsturgeon/nonblockingbro">a repo</a> and shoved a Vagrantfile in there with just the basic Ubuntu 12.10 image. I could have done up a whole Puppet manifest, but this will be a useful learning exercise for people who want to learn how to setup ReactPHP anyway. Vagrant up that box, then ssh in. All the test scripts are in there.</p>
+
+<p>I have no idea what version of PHP he is using because he doesn’t actually say, but let’s just go with PHP 5.5 ourselves because it is the current more recent stable version.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$ sudo add-apt-repository ppa:ondrej/php5
+$ sudo apt-get update
+$ sudo apt-get install php5-cli
+</pre></td></tr></tbody></table>
+</div>
+
+<p>That gets PHP ready.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre>$ sudo apt-get install -y php5-dev libevent-dev
+$ wget http://pecl.php.net/get/libevent-0.0.5.tgz
+$ tar -xzf libevent-0.0.5.tgz
+$ cd libevent-0.0.5 <span class="err">&amp;&amp;</span> phpize <span class="err">&amp;&amp;</span> ./configure <span class="err">&amp;&amp;</span> make <span class="err">&amp;&amp;</span> sudo make install
+$ echo "extension=libevent.so" | sudo tee -a /etc/php5/cli/php.ini
+</pre></td></tr></tbody></table>
+</div>
+
+<p>That should sort out libevent, so we can let PHP work with event loops.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre>$ sudo apt-get install -y python-software-properties python g++ make
+$ sudo add-apt-repository ppa:chris-lea/node.js
+$ sudo apt-get update
+$ sudo apt-get install -y nodejs
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This will install a version of Node much newer than the 0.6.x Ubuntu’s default repo will give you.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$ npm install request
+$ npm install cheerio
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now we have the NPM modules for Node to do its thing.</p>
+
+<h2 id="variables">Variables</h2>
+
+<p><strong>Bandwidth:</strong> 15 Mbps
+<strong>Vagrant Memory:</strong> 1024MB
+<strong>PHP version:</strong> v5.5.5
+<strong>NodeJS version:</strong> v0.10.21</p>
+
+<p>I used phpQuery with the <a href="https://code.google.com/p/phpquery/downloads/detail?name=phpQuery-0.9.5.386-onefile.zip&amp;can=2&amp;q=">one file</a> download, because they haven’t bothered getting it on Composer yet. If they’re going to flagrantly ignore PSR-0 and Composer I may as well go with performantly packaged option.</p>
+
+<h2 id="run-the-tests">Run the Tests</h2>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$ cd /vagrant
+$ chmod +x ./run.sh
+$ ./run.sh
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This will run the same two examples from the original article first, then run my non-blocking example put together with a little help from <a href="https://twitter.com/boden_c">Chris Boden</a>, one of the ReactPHP developers.</p>
+
+<h2 id="results">Results</h2>
+
+<p>My async re-do of the original PHP example kicked the fuck out of everything else.</p>
+
+<p>Here are the numbers:</p>
+
+<h3 id="node-v01021--cheerio">Node v0.10.21 + Cheerio</h3>
+
+<blockquote>
+  <p>real	0m45.142s
+user	0m8.081s
+sys	0m0.888s</p>
+</blockquote>
+
+<h3 id="php-555--phpquery-blocking">PHP 5.5.5 + phpQuery (Blocking)</h3>
+
+<blockquote>
+  <p>real	3m33.601s
+user	0m8.685s
+sys	0m1.212s</p>
+</blockquote>
+
+<h3 id="php-555--reactphp--phpquery">PHP 5.5.5 + ReactPHP + phpQuery</h3>
+
+<blockquote>
+  <p>real	0m23.877s
+user	0m10.237s
+sys	0m1.568s</p>
+</blockquote>
+
+<p>People like pretty graphs:</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/37978558/blog/php-v-node-results.png" alt="Num. Seconds Passed v Page Number" style="width: 750px;" /></p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>The primary conclusion to draw from this is that doing 200 HTTP requests in sequence is slower than making multiple requests at the same time. Shocker that.</p>
+
+<p>We can also be pretty confident that the original article was completely wrong about everything. PHP is not as pathetic at async code as the original “benchmark” alludes to. It is entirely down to how a package decides to implement libevent or libev, much like ReactPHP has done.</p>
+
+<p>Both systems can probably go faster somehow, and both systems could probably have their API’s cleaned up some to make this even easier. They both need some fault tolerance because when I cranked up the number to 1000 both systems had problems.</p>
+
+<p>I’m not going to say either system is faster, just that the massive gap in the original article comes down purely to picking a blocking system. Run it yourself, and make your own conclusions. Let’s just say that PHP is not sucking as bad as some people would expect.</p>
+
+<p><em><strong>Update:</strong> A few people have mentioned that Node by default will use maxConnections of 5, but setting it higher would make NodeJS run much quicker. As I said, I was sure NodeJS could go faster but I would never make assumptions about something I don’t know much about. I re-ran the test and the results reflect these suggestions. Removing the blocking PHP approach (because obviously it’s slow as shit) and running just the other three scripts looks like this:</em></p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/37978558/blog/php-v-node-results2.png" alt="Num. Seconds Passed v Page Number" style="width: 750px;" /></p>
+
+<p><em>Look, they’re the same. At this point it is just a network test. The speed between the two systems for handling this specific task is essentially identical, with both systems taking it in turns to “win” as they swap by about 0.3 seconds. This does not really effect any of the rest of the article, because it was assumed node could be tweaked to be more in line with PHP, I was never trying to suggest PHP was faster than node (even though a bunch of you seemed to think I did). Where did that come from?</em></p>
+
+<h2 id="observations">Observations</h2>
+
+<p>It is worth noting that the faster the network connection the less the difference is between the two. At 82 Mbps down <a href="http://twitter.com/jshez">Jon Sherrard</a> was reporting “PHP 5.5.5 + ReactPHP + phpQuery” running at 15 seconds and “Node + Cheerio” running at 18 seconds.</p>
+
+<p>I asked a few friends to try having a go at improving the speed of the original posters NodeJS code, and a <a href="https://gist.github.com/boxedfish/7423034">few alternatives</a> sprung up from <a href="https://twitter.com/alexjakass">Alex Akass</a>. His results have them pegged as only slight speed improvements, while mine had ps4.js clocked at about 9 seconds, which is mental. It did use a lot of child processes and fail when the page count was bumped to 1000 though, which is a useful reminder that none of this is magic and everything has costs.</p>
+
+<h2 id="thoughts">Thoughts</h2>
+
+<p>It seems likely to me that people just assume PHP can’t do this stuff, because by default most people arse around PHP with things like MAMP, or on their shitty web-host where is is hard to install things and as such get used to writing PHP without utilizing many extensions. It is probably exactly this which makes people think PHP just can’t do something, when it easily can. It is also probably this that causes package developers to generally ignore depending on functionality that would be extension only, just like PyroCMS often has to do.</p>
+
+<p>This is why the work being done by folks like the ReactPHP project is incredibly important. They’re wrapping up things like libevent and libev to provide developers with a simple Composer package to base other code on. Simple dependencies abstracting complicated stuff is exactly what modern development is all about, and PHP is keeping up nicely.</p>
+
+<p>The HTTP Client library I used in this example is a little weak and only works with HTTP 1.0, which is problematic. For this reason <a href="https://twitter.com/igorwesome">Igor Wiedler</a> himself recommends that you don’t use it, but there is no reason why a better version could not be built.</p>
+
+<p><a href="http://guzzlephp.org/">Guzzle</a> might get some async love soon too wrapping up <a href="http://php.net/manual/en/function.curl-multi-init.php">curl multi</a>, as <a href="https://twitter.com/naderman/status/399988127705468928">Nils Adermann</a> just finished up a <a href="https://github.com/guzzle/guzzle/pull/466">pull request</a>. Great timing!</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>The trolls will no doubt say I am only defending PHP (again) because I am just not clever enough to learn other languages, but really I am tired of people making shit up. Once again people this is an example, not a specific piece of rage against just one person that wrote one shitty article. This happens a lot, and this should be an example to people who will try it again.</p>
+
+<p>PHP has enough <a href="http://phpsadness.com/">legitimate concerns</a> without people just pretending they’re scientists and using bullshit numbers to prove that up is left and cheese is made of potatoes.</p>
+
+<h2 id="update-08112013">Update: 08/11/2013</h2>
+
+<p>I am happy that the vast majority of people got the point of this article. It got some amazing attention reaching about 40,000 hits on Google Analytics, front page on Hacker News for a bit, etc but the best was several tweets and RTs from the official NodeJS account, who have read it and seem to agree:</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>.<a href="https://twitter.com/philsturgeon">@philsturgeon</a> Nice article.&#10;&#10;Node users don&#39;t know about maxSockets.&#10;&#10;PHP users don&#39;t know about React.&#10;&#10;Much work to do, all around!</p>&mdash; node js (@nodejs) <a href="https://twitter.com/nodejs/statuses/400295942311534592">November 12, 2013</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>So you can be happy or sad about this article, but it is not wrong.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Benchmarking Codswallop: NodeJS v PHP&amp;url=https://philsturgeon.uk/php/2013/11/12/benchmarking-codswallop-nodejs-v-php/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Benchmarking Codswallop: NodeJS v PHP&amp;u=https://philsturgeon.uk/php/2013/11/12/benchmarking-codswallop-nodejs-v-php/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2013/11/08/build-apis-part-1-useful-database-seeding/">Build API's That You Wont Hate: Part 1 - Useful Database Seeding</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2013/12/12/php-apis-fractal-of-good-design/">PHP API's: Fractal of GOOD Design</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2013-11-12 03:01:00 UTC">2013-11-12 03:01:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

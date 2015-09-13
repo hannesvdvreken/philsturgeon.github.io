@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>How to: Multi-site CodeIgniter Set-up | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="A few people have asked me recently about setting up CodeIgniter to run across multiple domains based on the same codebase. This can be handy for sites than run different databases for different geographical areas, all of which need the same code but different content.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="How to: Multi-site CodeIgniter Set-up | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="A few people have asked me recently about setting up CodeIgniter to run across multiple domains based on the same codebase. This can be handy for sites than run different databases for different geographical areas, all of which need the same code but different content.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">How to: Multi-site CodeIgniter Set-up</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-06-22 21:35:00 UTC">
+                Jun 22 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>A few people have asked me recently about setting up CodeIgniter to run across multiple domains based on the same codebase. This can be handy for sites than run different databases for different geographical areas, all of which need the same code but different content.</p>
+
+<p>To get this working I took a little code from <a href="http://pyrocms.com/">PyroCMS</a> and modded a previous article “ <a href="news/2009/01/How-to-Support-multiple-production-environments-in-CodeIgniter.html">How to: Support multiple production environments in CodeIgniter</a>” and found a relatively simple solution.</p>
+
+<h3 id="setting-the-base-url">Setting the base URL</h3>
+
+<p>The first step of getting CodeIgniter working anywhere automatically is curing it of it’s most pointless configuration setting. It seems CodeIgniter would like to be told where it is, which really doesn’t need to happen. We could solve this in many ways, but instead of extending or replacing any core code, I would prefer to put a little snippet of code into the main application/config/config.php. Enter this code into the file and it will automatically support pretty much any kind of URL.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>&lt;?php if (!defined('BASEPATH')) exit('No direct script access allowed');/*|--------------------------------------------------------------------------| Base Site URL|--------------------------------------------------------------------------|| URL to your CodeIgniter root. Typically this will be your base URL,| WITH a trailing slash:|| http://www.your-site.com/|*/if(isset($_SERVER['HTTP_HOST'])){    $config['base_url'] = isset($_SERVER['HTTPS']) &amp;&amp; strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';    $config['base_url'] .= '://'. $_SERVER['HTTP_HOST'];    $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);}else{    $config['base_url'] = 'http://localhost/';}
+</pre></td></tr></tbody></table>
+</div>
+
+<h3 id="setting-a-site-constant">Setting a SITE constant</h3>
+
+<p>So the website URL is now set and links are fully working around the site. Next we need a way to work out throughout our code which site is currently being used. Amongst other things, this will help us with selecting the right database settings later.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>/*|--------------------------------------------------------------------------| Site| Set a constant for whichever site you happen to be running, if its not here| it will fatal error.|--------------------------------------------------------------------------*/switch($_SERVER['HTTP_HOST']){    case 'example.com':    case 'www.example.com':        define('SITE', 'example');    break;        case 'example2.com':    case 'www.example2.com':        define('SITE', 'example2');    break;        default:        define('SITE', 'default');    break;}
+</pre></td></tr></tbody></table>
+</div>
+
+<h3 id="domain-based-database-settings">Domain based database settings</h3>
+
+<p>Now that CodeIgniter has its links working and it knows what site it is trying to run, it needs to know the database configuration for this domain. To do that, we can break down our config into domain specific “Database groups”.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>&lt;?php if (!defined('BASEPATH')) exit('No direct script access allowed');/*| -------------------------------------------------------------------| DATABASE CONNECTIVITY SETTINGS| -------------------------------------------------------------------| This file will contain the settings needed to access your database.|| For complete instructions please consult the "Database Connection"| page of the User Guide.|| -------------------------------------------------------------------| EXPLANATION OF VARIABLES| -------------------------------------------------------------------|| ['hostname'] The hostname of your database server.| ['username'] The username used to connect to the database| ['password'] The password used to connect to the database| ['database'] The name of the database you want to connect to| ['dbdriver'] The database type. ie: mysql. Currently supported: mysql, mysqli, postgre, odbc, mssql| ['dbprefix'] You can add an optional prefix, which will be added| to the table name when using the Active Record class| ['pconnect'] TRUE/FALSE - Whether to use a persistent connection| ['db_debug'] TRUE/FALSE - Whether database errors should be displayed.| ['active_r'] TRUE/FALSE - Whether to load the active record class| ['cache_on'] TRUE/FALSE - Enables/disables query caching| ['cachedir'] The path to the folder where cache files should be stored|| The $active_group variable lets you choose which connection group to| make active. By default there is only one group (the "default" group).|*/$active_record = TRUE;$db['default']['hostname'] = "localhost";$db['default']['username'] = "";$db['default']['password'] = "";$db['default']['database'] = "";$db['default']['dbdriver'] = "mysql";$db['default']['dbprefix'] = "";$db['default']['pconnect'] = TRUE;$db['default']['db_debug'] = TRUE;$db['default']['cache_on'] = FALSE;$db['default']['cachedir'] = "";$db['default']['char_set'] = "utf8";$db['default']['dbcollat'] = "utf8_general_ci";// example$db['example']['hostname'] = "localhost";$db['example']['username'] = "root";$db['example']['password'] = "";$db['example']['database'] = "example";$db['example']['dbdriver'] = "mysql";$db['example']['dbprefix'] = "";$db['example']['active_r'] = TRUE;$db['example']['pconnect'] = TRUE;$db['example']['db_debug'] = TRUE;$db['example']['cache_on'] = FALSE;$db['example']['cachedir'] = "";$db['example']['char_set'] = "utf8";$db['example']['dbcollat'] = "utf8_general_ci";// Example 2$db['example2']['hostname'] = "localhost";$db['example2']['username'] = "root";$db['example2']['password'] = "root";$db['example2']['database'] = "testfoo";$db['example2']['dbdriver'] = "mysql";$db['example2']['dbprefix'] = "";$db['example2']['active_r'] = TRUE;$db['example2']['pconnect'] = TRUE;$db['example2']['db_debug'] = TRUE;$db['example2']['cache_on'] = FALSE;$db['example2']['cachedir'] = "";$db['example2']['char_set'] = "utf8";$db['example2']['dbcollat'] = "utf8_general_ci";// Check the configuration group in use exists, if not use the default$active_group = (defined('SITE') &amp;&amp; array_key_exists(SITE, $db)) ? SITE : 'default';?&gt;
+</pre></td></tr></tbody></table>
+</div>
+
+<p>The little snippet of code at the bottom will check to see if the SITE constant you have set matches up with a database group. If it doesn’t, it will use the default configuration group.</p>
+
+<p>Your CodeIgniter set-up should now work with any domain you happen to point to it. You even run simple little if(SITE == ‘example2’) checks anywhere within your code to do special code for a certain site, although I would not recommend you doing this too heavily.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=How to: Multi-site CodeIgniter Set-up&amp;url=https://philsturgeon.uk/codeigniter/2009/06/22/How-to-Multi-site-CodeIgniter-Set-up/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=How to: Multi-site CodeIgniter Set-up&amp;u=https://philsturgeon.uk/codeigniter/2009/06/22/How-to-Multi-site-CodeIgniter-Set-up/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/git/2009/06/22/Quick-tip-Create-a-branch-in-Git-with-a-dirty-copy/">Quick tip: Create a branch in Git with a dirty copy</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2009/06/24/Poll-Will-you-use-goto-in-PHP-5.3/">Poll: Will you use goto in PHP 5.3?</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-06-22 21:35:00 UTC">2009-06-22 21:35:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

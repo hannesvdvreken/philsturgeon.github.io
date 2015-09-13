@@ -1,0 +1,17 @@
+
+          <html>
+            <head>
+              <link rel="canonical" href="/php/2013/09/12/solving-the-php-internals-workflow/" />
+              <meta name="robots" content="noindex,follow" />
+              <meta http-equiv="cache-control" content="no-cache" />
+              <script>
+                // Attempt to keep search and hash
+                window.location.replace("/php/2013/09/12/solving-the-php-internals-workflow/"+window.location.search+window.location.hash);
+              </script>
+              <meta http-equiv=refresh content="0; url=/php/2013/09/12/solving-the-php-internals-workflow/" />
+            </head>
+            <body>
+              <a href="/php/2013/09/12/solving-the-php-internals-workflow/">You are being redirected.</a>
+            </body>
+          </html>
+        

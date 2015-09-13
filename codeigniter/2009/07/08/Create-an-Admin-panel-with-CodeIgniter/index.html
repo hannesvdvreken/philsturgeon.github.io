@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Create an Admin panel with CodeIgniter | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="As I see it there are three methods to creating an admin system using the MVC framework CodeIgniter. In this article I will show examples of the structures for each and mention the pro’s and con’s of using each.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Create an Admin panel with CodeIgniter | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="As I see it there are three methods to creating an admin system using the MVC framework CodeIgniter. In this article I will show examples of the structures for each and mention the pro’s and con’s of using each.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Create an Admin panel with CodeIgniter</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-07-08 09:49:00 UTC">
+                Jul  8 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>As I see it there are three methods to creating an admin system using the MVC framework <a href="http://codeigniter.com">CodeIgniter</a>. In this article I will show examples of the structures for each and mention the pro’s and con’s of using each.</p>
+
+<p>This article will only outline the theory and suggest the structures to you. I do not plan on writing yet another “How to make a user login system and add admins to it” type article.</p>
+
+<h3 id="two-applications">1.) Two applications</h3>
+
+<p>In CodeIgniter you can easily set up multiple applications to run off the same CodeIgniter install, simply by creating a copy of index.php and renaming it to something else.</p>
+
+<blockquote>
+  <p>/ applications/ frontend/ controllers/ home.php blog.php comments.php models/ blog_model.php comment_model.php views/ blogs/ index.php view.php comment/ view.php index.php backend/ config/ controllers/ dashboard.php blog.php comments.php models/ blog_model.php comment_model.php views/ blogs/ index.php form.php comment/ index.php dashboard.php login.php system/ index.php admin/ index.php</p>
+</blockquote>
+
+<p>Here you can see I have put index.php into an admin/ folder of its own. Both index.php files will point to a single folder within /applications and this can be done by setting:</p>
+
+<p><strong>index.php</strong></p>
+
+<p><code> $application_folder = "applications/frontend"; </code></p>
+
+<p><strong>admin/index.php</strong></p>
+
+<p><code> $application_folder = "applications/backend"; </code></p>
+
+<p>This method does work, but is only really any good for big sites that have <em>very</em> different content for their front and back ends. You cannot use the same libraries, helpers, models, etc which will mean its very easy to end up with duplicated code. I’m not a big fan of such frontend/backend separation as for most sites, an admin panel will use the same models and code but this varies entirely on the spec of the site you are building.</p>
+
+<h3 id="sub-directories">2.) Sub-directories</h3>
+
+<p>This method follows a more usual CodeIgniter set-up and is the way that most new CodeIgniter users will try things at first.</p>
+
+<blockquote>
+  <p>/ application/ config/ controllers/ admin/ blog.php dashboard.php comments.php blog.php comments.php models/ blog_model.php comments_model.php views/ admin/ blog/ index.php form.php comments/ index.php form.php dashboard.php login.php blog/ index.php view.php comments/ view.php system/ index.php</p>
+</blockquote>
+
+<p>Here we are keeping the default MVC structure of CodeIgniter and using sub-directories for our controllers to give us the http://example.com/admin/blog URL structure. You’ll need to set a $route[‘admin’] = ‘admin/dashboard’; to get example.com/admin working but that’s easy enough.</p>
+
+<p>This method has the advantage of being able to share models, libraries and helpers across both the front and backend. If you really need to separate models for front and back ends, why not just have a models/admin/ folder and put them in there?</p>
+
+<p>The down side is that when your site expands and more controllers are required, it can be a real pain to have your content so loosely linked across the entire application directory. You can see in the example above that we have several folders for blog and comment content, where really we should only have one. This one folder is called a module…</p>
+
+<h3 id="modules">3.) Modules</h3>
+
+<p>To keep all the content under one single folder we can adopt the HMVC approach. This stands for Hierarchical MVC which essentially is just modular CodeIgniter. Two systems have been developed for this: <a href="http://codeigniter.com/wiki/Modular_Extensions_-_HMVC/">HMVC</a> and <a title="Matchbox - lets you organize your codeigniter resources in modules" href="http://code.google.com/p/matchbox/">Matchbox</a>. I personally prefer use the latter but have never tried HMVC so i’ll leave that one up to you.</p>
+
+<p>A strange thing that many CodeIgniter users seem to do is create a blog module, comment module and admin module. This strikes me as a very strange separation of content that goes against the point of using modules in the first place! I have a single admin.php controller in the main controllers folder to act as the default admin page which will handle login, logout and the main dashboard. Then I add another admin.php controller in each module and use <a title="CodeIgniter User Guide: URI Routing" href="http://codeigniter.com/user_guide/general/routing.html">URI Routing</a> to get my URL structure as http://example.com/admin/.</p>
+
+<blockquote>
+  <p>/ application/ config/ controllers/ admin.php modules/ blog/ controllers/ admin.php blog.php models/ blog_model.php views/ admin/ index.php form.php comments/ controllers/ admin.php comments.php models/ comment_model.php views/ admin/ index.php form.php views/ admin/ dashboard.php login.php system/ index.php</p>
+</blockquote>
+
+<p>Right now to get at the blog admin you would have to go to http://example.com/blog/admin which may well be fine with you. If not, you can add the following routes to your <strong>application/config/routes.php</strong> to swap the segments around and emulate a /admin/ folder.</p>
+
+<p><code> $route['admin/([a-zA-Z_-]+)/(:any)'] = '$1/admin/$2'; $route['admin/login'] = 'admin/login'; $route['admin/logout'] = 'admin/logout'; $route['admin/([a-zA-Z_-]+)'] = '$1/admin/index'; $route['admin'] = 'admin'; </code></p>
+
+<p>This way you have your admin controllers kept with the frontend controllers, you are sharing models, libraries and helpers and you still have some nice URL’s.</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>If your front and back end applications share nothing in common and never will do, use method #1. If you have a small site with one a few controllers and do not want the small overhead HMVC adds, use method #2. If you are working on a massive site that is modular and shares code between front and back ends, use method #3.</p>
+
+<p>Got any more methods to handle admin structures? Let me know in the comments.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>dashboard.php
+</pre></td></tr></tbody></table>
+</div>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Create an Admin panel with CodeIgniter&amp;url=https://philsturgeon.uk/codeigniter/2009/07/08/Create-an-Admin-panel-with-CodeIgniter/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Create an Admin panel with CodeIgniter&amp;u=https://philsturgeon.uk/codeigniter/2009/07/08/Create-an-Admin-panel-with-CodeIgniter/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2009/07/01/Rant-Fed-up-with-Twitter-news/">Rant: Fed up with Twitter news!</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2009/07/28/How-to-Create-a-Twitter-feed-with-full-syntax-support/">How to: Create a Twitter feed with full syntax support</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-07-08 09:49:00 UTC">2009-07-08 09:49:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

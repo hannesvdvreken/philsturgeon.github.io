@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Tips for a Subversion addict learning Git | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="This post is a mixture of things learnt from IRC, educated guesses and the results of many hours of trial and error.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Tips for a Subversion addict learning Git | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="This post is a mixture of things learnt from IRC, educated guesses and the results of many hours of trial and error.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Tips for a Subversion addict learning Git</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-05-11 14:42:00 UTC">
+                May 11 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>This post is a mixture of things learnt from IRC, educated guesses and the results of <em>many</em> hours of trial and error.</p>
+
+<h3 id="local--remote-repositories">Local &amp; Remote repositories</h3>
+
+<p>In Subversion you have one repository which all of your code is submitted to directly when a commit is made. This is very different for Git and is what makes it a “distributed” version control system. A repository can be on a SSH server, GitHub, a local folder or network drive. Each repository is given a nickname, which is called a “remote”.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git remote add origin git@github.com:philsturgeon/pyrocms.gitgit pull origin master
+</pre></td></tr></tbody></table>
+</div>
+
+<p>The name of this new remote repository is “origin”, but it can be anything you like.</p>
+
+<p>The pull command fills your local repository with commits from the remote repository for the “master” branch, which is essentially the same as the Subversion “trunk”.</p>
+
+<p>As I mentioned earlier, when you make a commit it doesn’t actually send the changes anywhere. To do that you need to use git push.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git push origin master
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This just sends any commits on your local repo to the remote repo.</p>
+
+<p><strong>Summary of point:</strong> Subversion only has one repository, Git can have any number from 1 to… lots.</p>
+
+<h3 id="local--remote-branches">Local &amp; Remote branches</h3>
+
+<p>In Subversion seeing as you only have the one repo, all branches exist there and all your commits update that branch straight away. Git has branches stored in two places, local and remote. This idea confused the hell out of me when I first heard about it but after learning to understand point #1, this became very useful.</p>
+
+<p>Git allows you to create a local branch, check it out, work on it and commit to it all offline without contacting the remote repo. Eg:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git branch ticket5git checkout ticket5git commit -a -m "Committing changes"
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Then when you are done, you may send all of your commits to the remote branch in ‘origin’ using push again.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git push origin ticket5
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This is what the guide meant when it said “You will never directly modify a remote branch.” because you don’t, you work on a copy of that branch then send that copy to the repo when you are done.</p>
+
+<p><strong>Summary of point:</strong> You can commit, switch and merge branches offline then send it all off online.</p>
+
+<h3 id="empty-folders">Empty folders</h3>
+
+<p>Subversion can add a folder in the same was as you can add a file. Git has a known bug that simply ignores any folder with no files in it. No matter what you do, you cannot add or commit an empty folder. Always just add a index.html or another empty file if that folder needs to be there.</p>
+
+<p>The developers know about this, but to quote from the official <a href="http://git.or.cz/gitwiki/GitFaq">Git FAQ</a>:</p>
+
+<blockquote>
+  <p>“…nobody competent enough to make the change to allow empty directories has cared enough about this situation to remedy it.”. Fair enough then.</p>
+</blockquote>
+
+<p><strong>Summary of point:</strong> Make sure each directory has at least one file.</p>
+
+<h3 id="do-not-rename">Do not rename</h3>
+
+<p>Just don’t even bother trying, it seems to just break at random. It is better to copy the file(s), set the new name and delete the old copy. My worse rename experience was renaming “public_html” to “application” in the PyroCMS repo. It added “application” but kept an empty directory structure of some of “public_html” and it was a nightmare to remove this ghost directory as it did not exist in local copies and could not be pulled or fetched.</p>
+
+<p><strong>Summary of point:</strong> Do not rename a thing, copy and delete.</p>
+
+<h3 id="get-a-mac-or-use-linux">Get a Mac or use Linux</h3>
+
+<p>Seriously, do not try install Git on a Windows machine unless you are a masochist: it is NOT worth it. Use anything with a Unix shell and the install will be done in minutes.</p>
+
+<p>That said, installing Git on CentOS 5 was an absolute nightmare for me as well.</p>
+
+<p>If you are using Windows, give <a title="Visual GUI for Windows &amp; Git" href="http://www.syntevo.com/smartgit/">SmartGit</a> a try. It actually makes the whole process rather painless.</p>
+
+<p><strong>Summary:</strong> Git is one confusion S.O.B when you first start using it, but it soon begins to make sense if you stick with it. Read the manuals, use the command line and try to stop thinking like a Subversion user. Ignore what you know about Subversion and learn Git like it is something brand new. If you can’t forget about Subversion then head my advice here and save yourself the headaches I have suffered the last 2 weeks.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Tips for a Subversion addict learning Git&amp;url=https://philsturgeon.uk/git/2009/05/11/Tips-for-a-Subversion-addict-learning-Git/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Tips for a Subversion addict learning Git&amp;u=https://philsturgeon.uk/git/2009/05/11/Tips-for-a-Subversion-addict-learning-Git/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2009/05/07/PyroCMS-an-open-source-CodeIgniter-CMS/"></a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/codeigniter/2009/05/17/Access-CodeIgniter-helpers-from-Smarty-templates/">Access CodeIgniter helpers from Smarty templates</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-05-11 14:42:00 UTC">2009-05-11 14:42:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

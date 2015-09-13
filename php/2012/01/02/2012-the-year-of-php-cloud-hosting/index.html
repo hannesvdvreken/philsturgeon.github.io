@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>2012: The year of PHP cloud hosting | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Cloud hosting is nothing new. Seeing as “cloud” is such a loosely used term some will consider their VPS solutions on Slicehost or Rackspace to be “cloud hosting”. That is partially true, but this article covers how PHP is getting some serious attention in the PaaS (Platform as a Service) field. This year you will almost certainly find yourself making the decision whether or not to move some of your applications and services across to the cloud, and this article can hopefully help you work out why and how.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="2012: The year of PHP cloud hosting | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Cloud hosting is nothing new. Seeing as “cloud” is such a loosely used term some will consider their VPS solutions on Slicehost or Rackspace to be “cloud hosting”. That is partially true, but this article covers how PHP is getting some serious attention in the PaaS (Platform as a Service) field. This year you will almost certainly find yourself making the decision whether or not to move some of your applications and services across to the cloud, and this article can hopefully help you work out why and how.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">2012: The year of PHP cloud hosting</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-01-02 21:18:00 UTC">
+                Jan  2 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Cloud hosting is nothing new. Seeing as “cloud” is such a loosely used term some will consider their VPS solutions on Slicehost or Rackspace to be “cloud hosting”. That is partially true, but this article covers how PHP is getting some serious attention in the PaaS (Platform as a Service) field. This year you will almost certainly find yourself making the decision whether or not to move some of your applications and services across to the cloud, and this article can hopefully help you work out why and how.</p>
+
+<p>The two PaaS solutions in my toolkit right now are <a href="http://phpfog.com/">PHP Fog</a> and <a href="http://pagodabox.com/">Pagoda Box</a>. I’ve been using the two systems for the last year since they were kind enough to let me into their private BETA. Currently in my mind there are no clear victors as they both work a little differently, but they both achieve the same goal: get your code running online quickly and securely.</p>
+
+<h3 id="that-sounds-quite-a-lot-like-heroku">That sounds quite a lot like Heroku?</h3>
+
+<p>Precisely. The Ruby community has had <a href="http://www.heroku.com/">Heroku</a> since 2007 and they’ve been offering the same thing for quite some time. Heroku is a very simple service that is basically a Git repository that will deploy your code once you push to it and automatically handle any dependencies you might have such as Gems (think PEAR or PECL for the PHP’s closest equivalent, but less clunky).</p>
+
+<p>Ruby didn’t just get one PaaS though, there are quite a few smaller companies and one large competitor <a href="http://www.engineyard.com/">Engine Yard</a> which was founded even earlier in 2006.</p>
+
+<h3 id="so-why-is-this-new">So why is this new?</h3>
+
+<p>Well this has not existed at a decent level in PHP for very long. The main reason for this is that for a long time PHP didn’t really need it. If you look at Ruby it is much more low-level than PHP and it needs a little kick in the right direction to become a web-ready language. It needs WeBrick/Thin/Shotgun web-servers running to get it accepting HTTP requests and is in general designed more for long-life processes while PHP has always been more about distributed .php files running once on fire-and-forget mode using CGI or mod_php. In general Ruby systems take a bit more work to get running on the web, Heroku helps speed that all up.</p>
+
+<p>That is still true, so why do we need PHP PaaS now?</p>
+
+<h3 id="speedy-deployments">Speedy Deployments</h3>
+
+<p>If you are still using FTP as your main method of deployment you really need to go and sit on the naughty step and have a think about your life. FTP is slow as balls, insecure and did I mention it was slow as balls? Version Control has come a long way in the last few years and <a href="/blog/2011/08/cicon2011-and-the-future-of-codeigniter">adoption of Git in the CodeIgniter community</a> has meant that all my projects now use it.</p>
+
+<p>Now what happens when we want to deploy all of our well managed, feature branched, Git tracked code? Open FTP and drag files around? Pfft. Hit FTP Sync and hope I don’t randomly delete content from the live site? No thank you.</p>
+
+<p>There are some tools around such as <a href="http://deployhq.com/">DeployHQ</a> which will take your Git repo and deploy changed files over FTP/SSH for you. Over the previous option this is at least a step in the right direction, but recently I’ve had a few nightmares. If you upgrade a site using DeployHQ and you for example upgrade a CMS which has renamed a integral folder, it will go and delete all those important files before it starts uploading the “new” files. Sure that might not that common, but definitely a potential concern.</p>
+
+<p>Another option is to spend some time faffing about with the Ruby-based Capistrano? If you have been using Capistrano a while you’ll probably have it down to a art form, but this is an extra thing to learn which is often beyond the means of some new users. Go back to the first time you tried to set it up. I’ve got to be honest, I’ve had less stressful experiences.</p>
+
+<p>PaaS services such as PHP Fog and Pagoda Box take care of all of this for you. Create your application and they give you a Git remote to push to.</p>
+
+<p>Deploying my sites has become as simple as running one command:</p>
+
+<pre class="code">
+$ git push production master
+</pre>
+
+<p>I migrated <a href="http://pyrocms.com">pyrocms.com</a> away from a VPS to Pagoda Box in about 10 minutes thanks to that simplicity. Yummy.</p>
+
+<h3 id="security">Security</h3>
+
+<p>Hosting code can be a dangerous game, with even companies like <a href="http://techcrunch.com/2007/08/11/facebook-source-code-leaked/">Facebook screwing up</a> at times. Anyone can get a basic LAMP stack up but if you want it to be really secure what do you do? Teach yourself a whole bunch of sysadmin stuff and take on that role as well as being the developer? That’s two jobs. If you’re anything like me and already stuck with project management, book keeping and even <a href="http://ciconf.com">event management now</a> the last thing you need is another hat to wear.</p>
+
+<p>If you are running a company you’ll probably end up hiring a guy (or a team of guys) just to look after your servers. Shoving it in the cloud takes care of that for you, and if you have any security leaks… hell you have somebody to sue for it.</p>
+
+<h3 id="scaling">Scaling</h3>
+
+<p>No more “Slashdot-effect” for you. You can easily control how much traffic your system is ready to handle, with some systems offering “auto-scaling with daily budgets”, meaning you can pay for your average traffic then if you suddenly get a massive spike your instant instantly adapts to handle the new load.</p>
+
+<p>On the whole with Pagoda Box I find that one instance can handle 1,000 users a day just fine. Once or twice I’ve dragged the slider to two instances just so I don’t get that Pingdom email while I’m out with the girlfriend, just for safety of mind. Scaling of that ease is POWERFUL stuff.</p>
+
+<h3 id="future">Future</h3>
+
+<p>A few months ago it seems pretty much every PaaS provider decided that they all had to do everything. While I’m still not sure if that is for the best, Heroku now handle Java, Python, Scala, Grails, Python/Django and I hear they have a PHP in private BETA - but don’t quote me on that.</p>
+
+<p>Engine Yard made a similar move and snapped up <a href="http://orchestra.io/">Orchestra.io</a> which is another PHP platform that’s been around for a while. I had a Skype preview of that one back in its early days and it’s another great contender.</p>
+
+<p>PHP Fog are going the other way and starting to offer other services, under their rebranded service <a href="http://appfog.com/">App Fog</a>.</p>
+
+<p>If you’re interesting in hearing more about how Cloud Hosting works, I’ve managed to get Pagoda Box to send their Chief Architect, Tyler Flint over to <a href="http://ciconf.com/">CICONF 2012</a> in London this February.</p>
+
+<p>The future is looking more and more like it’s going to be cloud based and I am happy with that. The less time I have to spend working to achieve the same goals means more time and money can be spent doing something fun.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=2012: The year of PHP cloud hosting&amp;url=https://philsturgeon.uk/php/2012/01/02/2012-the-year-of-php-cloud-hosting/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=2012: The year of PHP cloud hosting&amp;u=https://philsturgeon.uk/php/2012/01/02/2012-the-year-of-php-cloud-hosting/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/personal/2011/12/29/starting-up-in-start-ups/">Starting Up in Start-ups</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2012/02/23/my-thoughts-on-ciconf-2012-uk/">My Thoughts on CICONF 2012 UK</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-01-02 21:18:00 UTC">2012-01-02 21:18:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

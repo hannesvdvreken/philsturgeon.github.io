@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Composer with CodeIgniter | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Composer is the best thing for PHP since sliced arrays and using it in your applications means you have easy access to a large selection of well written PHP packages that plug and play with any framework that supports PSR-0 namespacing. This is BRILLIANT as it means less reliability on the framework and framework-specific code, and helps you get towards the goal of portable code where the framework is essentially just the wrapper. FuelPHP 1.x works with an optional autoloader and 2.0 will support Composer packages out of the box as does Symfony2 and I hear Drupal are working it in too. This interoperability is brilliant, but how do you use it with CodeIgniter?">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Composer with CodeIgniter | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Composer is the best thing for PHP since sliced arrays and using it in your applications means you have easy access to a large selection of well written PHP packages that plug and play with any framework that supports PSR-0 namespacing. This is BRILLIANT as it means less reliability on the framework and framework-specific code, and helps you get towards the goal of portable code where the framework is essentially just the wrapper. FuelPHP 1.x works with an optional autoloader and 2.0 will support Composer packages out of the box as does Symfony2 and I hear Drupal are working it in too. This interoperability is brilliant, but how do you use it with CodeIgniter?">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Composer with CodeIgniter</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-05-07 12:08:00 UTC">
+                May  7 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Composer is the <a href="/blog/2012/03/packages-the-way-forward-for-php">best thing for PHP since sliced arrays</a> and using it in your applications means you have easy access to a large selection of well written PHP packages that plug and play with any framework that supports PSR-0 namespacing. This is BRILLIANT as it means less reliability on the framework and framework-specific code, and helps you get towards the goal of portable code where the framework is essentially just the wrapper. FuelPHP 1.x works with an optional autoloader and 2.0 will support Composer packages out of the box as does Symfony2 and I hear Drupal are working it in too. This interoperability is brilliant, but how do you use it with CodeIgniter?</p>
+
+<p>People have suggested that <a href="https://github.com/EllisLab/CodeIgniter">CodeIgniter 3.0</a> should be rewritten entirely around Composer and we make it PHP 5.3 only, but rewriting is a silly suggestion and PHP 5.3 still only has about 30% coverage on servers so that is not going to happen. Besides if CodeIgniter 3.0 became PHP 5.3 over night then either it would break everyone’s application because it changed so much, or change so little that it would not merit a PHP version bump.</p>
+
+<p>That said, if you want to start using Composer components in your application there is no reason why you should not. The code is mainly PHP 5.3 but by slowing moving the majority of your application from framework specific code to generic packages that work in any framework you free yourself from being limited to a specific framework and will find a transition to FuelPHP 2.0, Laravel or Symfony2 much easier in the future.</p>
+
+<p>Sadly Laravel have not announced any plans to exclusively support Composer out of the box, but it is just as easy to work with <a href="http://www.keithloy.me/2012/04/composer-with-laravel/">Composer in Laravel</a> as it is in CodeIgniter, so let’s get going:</p>
+
+<h3 id="step-1">Step 1</h3>
+
+<p>Navigate to your project and install composer:</p>
+
+<pre class="code bash">$ cd /path/to/my/project
+$ curl -s http://getcomposer.org/installer | php</pre>
+
+<p>You could instead use <a href="http://mxcl.github.com/homebrew/">Homebrew</a> to install composer system-wide, which is my preference:</p>
+
+<p>__Update: __ It turns out the homebrew package is pretty old. I installed a few weeks previous to this post, but users are having problems. Use the .phar method for now.</p>
+
+<pre class="code bash">$ brew install composer</pre>
+
+<h3 id="step-2">Step 2</h3>
+
+<p>Next you need to make a <strong>composer.json</strong> in the root of your project (not the application folder):</p>
+
+<pre class="code json">{
+    "require": {
+        "kriswallsmith/buzz": "*"
+    }
+}</pre>
+
+<p>This will add a requirement for the Buzz package, which is a handy HTTP Request / Response PHP 5.3.x class.</p>
+
+<h3 id="step-3">Step 3</h3>
+
+<p>To actually install these files to your CodeIgniter project you simply run the install command:</p>
+
+<pre class="code bash">$ composer.phar install</pre>
+
+<p>If you have installed via Homebrew then this will be:</p>
+
+<pre class="code bash">$ composer install</pre>
+
+<p>Then you should notice composer creating a <strong>./vendors</strong> folder in your application and code will be installed there.</p>
+
+<h3 id="step-4">Step 4</h3>
+
+<p>To autoload this newly installed code all you need to do is drop a single line of PHP into your <strong>index.php</strong></p>
+
+<pre class="code php">include_once './vendor/autoload.php';</pre>
+
+<h3 id="done">Done</h3>
+
+<p>It is as simple as that. Now in my test controller I can use Buzz happily, along with any other PSR-0 code that I install via Composer:</p>
+
+<pre class="code php">class Test extends CI_Controller
+{
+	public function index()
+	{
+		$browser = new Buzz\Browser();
+		$response = $browser-&gt;get('http://www.google.com');
+
+		echo $browser-&gt;getLastRequest()."\n";
+		echo $response;
+	}
+}</pre>
+
+<p>To see what is available check out <a href="http://packagist.org/packages/">Packagist</a> - the default repo for Composer packages.</p>
+
+<p>If you are not familiar with Composer or PSR-0 support then you should really look into it. The <a href="http://groups.google.com/group/php-standards">PHP Standards group</a> or <a href="https://github.com/php-fig">PHP-FIG</a> are doing a brilliant job of taming the mess that is third-party PHP code and are building some great <a href="https://github.com/php-fig/fig-standards">standards</a>, which are open to discussion and voted on by some of the best PHP developers around.</p>
+
+<p>Get involved and help PSR-1 and PSR-2 become something brilliant. In the mean-time enjoy all the PSR-0 code and use it wherever the hell you develop.</p>
+
+<p>Stop making CodeIgniter libraries, Laravel bundles and Zend modules, make Composer packages.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Composer with CodeIgniter&amp;url=https://philsturgeon.uk/php/2012/05/07/composer-with-codeigniter/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Composer with CodeIgniter&amp;u=https://philsturgeon.uk/php/2012/05/07/composer-with-codeigniter/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2012/04/24/cms-interesting-history-powerful-future/">CMS: Interesting History, Powerful Future</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2012/05/22/laravel-is-awesome/">Laravel is Awesome</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-05-07 12:08:00 UTC">2012-05-07 12:08:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

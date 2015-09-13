@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Using OmniAuth to make Twitter/oAuth API requests | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Using the brilliant user system gem Devise and a gem called OmniAuth you can make a Rails application that logs in or registers users via Twitter, Facebook, Gowalla, etc with amazing ease. But once the user is logged in, how do you go about actually interacting with the API on behalf of the account that has just been authorized?">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Using OmniAuth to make Twitter/oAuth API requests | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Using the brilliant user system gem Devise and a gem called OmniAuth you can make a Rails application that logs in or registers users via Twitter, Facebook, Gowalla, etc with amazing ease. But once the user is logged in, how do you go about actually interacting with the API on behalf of the account that has just been authorized?">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Using OmniAuth to make Twitter&#x2F;oAuth API requests</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2010-11-16 20:18:00 UTC">
+                Nov 16 2010
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Using the brilliant user system gem <a href="https://github.com/plataformatec/devise">Devise</a> and a gem called <a href="http://github.com/intridea/omniauth">OmniAuth</a> you can make a Rails application that logs in or registers users via Twitter, Facebook, Gowalla, etc with amazing ease. But once the user is logged in, how do you go about actually interacting with the API on behalf of the account that has just been authorized?</p>
+
+<p>This article starts where RailsCasts leaves off, so if you are not already up and running with Devise and OmniAuth then you might want to watch:</p>
+
+<ul>
+  <li><a href="http://railscasts.com/episodes/209-introducing-devise">RailsCast #209: Introducing Devise</a></li>
+  <li><a href="http://railscasts.com/episodes/235-omniauth-part-1">RailsCast #235: OmniAuth Part 1</a></li>
+  <li><a href="http://railscasts.com/episodes/236-omniauth-part-2">RailsCast #236: OmniAuth Part 2</a></li>
+</ul>
+
+<p>So, assuming we are all about at the point that the third video ends on, we are all ready to go. I’ll be using the example of Twitter but really any of the providers using oAuth will use the same approach. Like in the “ye-olden days” when we used the Twitter username and password to authenticate an API request, we now use a Access Token and Token Secret. You can think of these as being basically the same thing as for the purpose of authenticating API requests, to us, they are.</p>
+
+<p>To get the token and secret you need to add some fields to your authentications table:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>rails g migration AddTokenToAuthentications token:string secret:string
+rake db:migrate
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now the database is ready to save the credentials we can change the authentication code to populate the fields. Assuming you placed the method in user.rb like <a href="http://railscasts.com/episodes/236-omniauth-part-2">RailsCast #236: OmniAuth Part 2</a> suggested then open user.rb and modify the following line:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>authentications.build(:provider =&gt; omniauth['provider'], :uid =&gt; omniauth['uid'])
+</pre></td></tr></tbody></table>
+</div>
+
+<p>and replace it with:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre>authentications.build(
+    :provider =&gt; omniauth['provider'],
+    :uid =&gt; omniauth['uid'],
+    :token =&gt; omniauth['credentials']['token'],
+    :secret =&gt; omniauth['credentials']['secret']
+)
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now whenever anybody authenticates their account we can save their credentials which are passed back from the internal hidden magic that is OmniAuth.</p>
+
+<p>The next step is to actually make some requests using these saved credentials, which is described almost perfectly in the <a href="http://dev.twitter.com/pages/oauth_single_token#ruby">Twitter Developer Documentation</a>. You’ll want to install the oauth gem (put it in your Gemfile and run bundle install) then you can use the following code to test-dump a list of tweets from the user:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></td><td class="code"><pre>class TwitterController &lt; ApplicationController
+
+
+    def recent_tweets
+        # Exchange your oauth_token and oauth_token_secret for an AccessToken instance.
+
+
+        def prepare_access_token(oauth_token, oauth_token_secret)
+            consumer = OAuth::Consumer.new("APIKey", "APISecret"
+                { :site =&gt; "http://api.twitter.com"
+                })
+            # now create the access token object from passed values
+            token_hash = { :oauth_token =&gt; oauth_token,
+                                         :oauth_token_secret =&gt; oauth_token_secret
+                                     }
+            access_token = OAuth::AccessToken.from_hash(consumer, token_hash )
+            return access_token
+        end
+
+
+        auth = current_user.authentications.find(:first, :conditions =&gt; { :provider =&gt; 'twitter' })
+
+
+        # Exchange our oauth_token and oauth_token secret for the AccessToken instance.
+        access_token = prepare_access_token(auth['token'], auth['secret'])
+
+
+        # use the access token as an agent to get the home timeline
+        response = access_token.request(:get, "http://api.twitter.com/1/statuses/user_timeline.json")
+
+
+        render :json =&gt; response.body
+    end
+end
+</pre></td></tr></tbody></table>
+</div>
+
+<p>By pulling the content from current_user.authentications (im finding the first as in my application they should only have one) I can grab the credentials and have full permissions to get their recent tweets, post new ones, see friends tweets, etc.</p>
+
+<p>Now I can tweak this, get stuff saved, faff with the JSON and take what I need. Working with Facebook or any other oAuth provider will work in an almost identical way, or you can install specific gems to interact with their API’s if the direct approach is not as smooth as you’d like.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Using OmniAuth to make Twitter&#x2F;oAuth API requests&amp;url=https://philsturgeon.uk/rails/2010/11/16/using-omniauth-to-make-twitteroauth-api-requests/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Using OmniAuth to make Twitter&#x2F;oAuth API requests&amp;u=https://philsturgeon.uk/rails/2010/11/16/using-omniauth-to-make-twitteroauth-api-requests/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2010/11/06/drumbeat-festival-barcelona/">Drumbeat Festival: 3 days of awesome</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/pyrocms/2010/11/26/pyrocms-reaches-final-v1.0/">PyroCMS reaches final: v1.0</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2010-11-16 20:18:00 UTC">2010-11-16 20:18:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

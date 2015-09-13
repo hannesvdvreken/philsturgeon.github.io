@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Puppet or Chef? | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Back in the UK at PHPNE this May I saw an awesome talk from Ian Chilton, who explained very simply why using Vagrant for your development environments was a good idea. He mentioned briefly server provisioning but didn’t get fully into it, and suggested we go out and play with Puppet and Chef to see which fit our needs.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Puppet or Chef? | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Back in the UK at PHPNE this May I saw an awesome talk from Ian Chilton, who explained very simply why using Vagrant for your development environments was a good idea. He mentioned briefly server provisioning but didn’t get fully into it, and suggested we go out and play with Puppet and Chef to see which fit our needs.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Puppet or Chef?</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-10-28 20:13:00 UTC">
+                Oct 28 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Back in the UK at <a href="http://phpne.org.uk/">PHPNE</a> this May I saw an awesome talk from <a href="http://www.ichilton.co.uk/blog/virtualization/my-phpne-talk-on-vagrant-496.html">Ian Chilton</a>, who explained very simply why using Vagrant for your development environments was a good idea. He mentioned briefly server provisioning but didn’t get fully into it, and suggested we go out and play with Puppet and Chef to see which fit our needs.</p>
+
+<p>I started off using Puppet to build up development boxes, with the use-case of testing how <a href="http://pyrocms.com/">PyroCMS</a> worked with different combinations of PHP 5.3 and PHP 5.4, Apache, Nginx, PHP-FPM, Postgres, etc without having to utterly bastardise the built in OSX LAMP stack or try to make MAMP do something useful.</p>
+
+<p>So, if you’re hopping on the “devops” train and would like to learn a server provisioning tool, which should you learn?</p>
+
+<h3 id="syntax">Syntax</h3>
+
+<p>Puppet uses a <s>proprietary</s> custom language, while Chef uses Ruby. This straight off the bat means a lot of Ruby developers prefer Chef as they can build out in a familiar language, but the Puppet language is so incredibly simple it should not be seen as a barrier to entry.</p>
+
+<p><em><strong>Update:</strong> Turns out there is a <a href="http://puppetlabs.com/blog/ruby-dsl/">Ruby DSL</a> for Puppet too, released in November 2010. I missed that entirely.</em></p>
+
+<p>Often the same code written in Puppet or Chef will look cleaner in Puppet, but in Chef you can do some pretty crazy stuff. As it’s using Ruby you can use programming structures like loops and if statements, which is not possible with Puppet.</p>
+
+<h3 id="manifest--cookbook-flow">Manifest / Cookbook Flow</h3>
+
+<p>Manifests (Puppet) and Cookbooks (Chef) are essentially the same thing. You write in these documents what you want to ensure is installed, created, running, etc and through the glory of idempotence these can be run as many times as you like without barfing all over your server.</p>
+
+<p>While the two ideas are similar, they have one major difference. Puppet will evaluate all of the manifest files then run it in whatever order it deems best to ensure requirements are met. Chef will simply do things in whatever order it’s defined, running top to bottom through each of your cookbooks - which I’m pretty sure run alphabetically for each node. For many programmers Chef is more logical, while the Puppet approach takes a little mental acrobatics to understand at first but makes a lot of sense when you get the hang of it.</p>
+
+<p>I myself am not sure which I prefer here. The “do X then Y” approach does make debugging a very simple process, but you need to be careful that you’re actually creating idempotence recipes - which is the whole point of this.</p>
+
+<h3 id="modules">Modules</h3>
+
+<p>Both systems have a f**kload of modules available for software like PHP, MySQL, RabbitMQ, Postgres, whatever. Most of the modules are third-party and have been configured to work nicely with Debian, Ubuntu, Fedora, RedHat, etc using several layers of abstraction.</p>
+
+<p>The only real difference here is that Chef has a <a href="http://community.opscode.com/cookbooks/php">community repository</a> where people can submit these modules and show ratings and installation counts, whereas Puppet relies on a Google search and probably a relatively out of date GitHub repository. I’ve had to send multiple pull requests to various popular Puppet modules just to get them to actually install on an Ubuntu 12.04 box.</p>
+
+<p><em><strong>Update:</strong> Yet another error on my part. Puppet has a Forge, which is the same as the Chef community repository. That said, I don’t remember ever landing on it when looking for modules. Searching “Puppet PHP” puts a result in 6th place, with GitHub being all of the results before it. Sorry about that.</em></p>
+
+<h3 id="environments">Environments</h3>
+
+<p>Most projects have multiple environments; unless you’re a cowboy coder who enjoys life on the edge and does all of his coding using vim through a SSH tunnel.</p>
+
+<s>Puppet doesn't really provide any sort of solution for this. I'm not hating on Puppet, I just don't think this was ever really one of its goals in life.</s>
+
+<p><em><strong>Update:</strong> Puppet does have environments, but you won’t get that working with Vagrant. The Puppet / Vagrant integration only allows for the “manifests” and “modules” folders, but environments sit in their own folder at that level - meaning you can only work overrides for your other environments like Staging and Production. This might be ok for you, but it should be watched out for.</em></p>
+
+<p>Chef offers “environments”, which are a little ruby file where you give each environment a name and maybe a description. I have dev.rb, stag.rb and prod.rb. Prod and staging don’t really do anything, but my develop has a few overridden attributes:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></td><td class="code"><pre>name "dev"
+description "The development environment"
+
+override_attributes ({
+    "api" =&gt; {
+        "db_host" =&gt; "localhost",
+        "server_name" =&gt; "dev.api.example.re",
+        "docroot" =&gt; "/vagrant/www/api/public",
+        "config_dir" =&gt; "/vagrant/www/api/fuel/app/config"
+    },
+    "frontend" =&gt; {
+        "db_host" =&gt; "localhost",
+        "server_name" =&gt; "dev.example.com",
+        "docroot" =&gt; "/vagrant/www/frontend/public",
+        "config_dir" =&gt; "/vagrant/www/frontend/fuel/app/config"
+    }
+})
+
+ENV['FUEL_ENV'] = 'development'
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Awesome sauce.</p>
+
+<h3 id="multiple-tools">Multiple Tools</h3>
+
+<h4 id="puppet--chef-solo">Puppet &amp; Chef Solo</h4>
+
+<p>Both Puppet and Chef Solo run on a single machine and that is that. Chef Solo and Puppet are for the same use case, but the difference is really this; Puppet’s language is simplistic and often quite elegant, where as Chef is an pile of really powerful functions, methods and arrays.</p>
+
+<h4 id="puppet-master--chef-server">Puppet Master &amp; Chef Server</h4>
+
+<p>This at first seems a little crazy, but with Chef Server you have your local “workstation” which has a command line tool called “knife”. You use knife to move your cookbooks, recipes, roles, environments, etc up onto the “Chef Server”. This chef server can be your own EC2 instance, VPS, whatever running Chef - or you can pay to use Opscode’s servers. I have friends running their own chef server to avoid paying the monthly subscription, but no servers anywhere are free. For now I’m using the service and it’s only gone down the once - but that was on Friday while half of the internet seemed to be broken so I can’t really blame them.</p>
+
+<p>I haven’t played with Puppet Master at all, I only found out it existed it got linked up in the comments on Reddit. Sure its on the homepage, but it’s below the fold and that is a huge site with a lot of information. Also <a href="http://d.pr/i/YeI1">this</a>.</p>
+
+<h3 id="encrypted-data-bags">Encrypted Data Bags</h3>
+
+<p>There are lof of funky little extras in Chef Server, one of which is called <a href="http://wiki.opscode.com/display/chef/Encrypted+Data+Bags">Encrypted Data Bags</a>. Instead of storing API credentials and passwords in git where anyone in the team can see them you can put them in a secure location. Why is that a big deal? Well maybe that guy you fired still has a copy of the code at home and wants to play a “hilarious prank” on you.</p>
+
+<p>I expect Puppet can do this too, but it looks like you need to do some <a href="http://www.craigdunn.org/2011/10/secret-variables-in-puppet-with-hiera-and-gpg/">manual work</a> to get it going. I didn’t need to use this feature for my Puppet project.</p>
+
+<h3 id="knife">Knife</h3>
+
+<p>Knife is amazing. I don’t mean that in the over-used “everything good is amazing” sort I way, I mean I was genuinely amazed by this too. Knife works with Chef Server to manage your servers. Here are some cool commands:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td class="code"><pre>$ knife ec2 server create \
+    -S projectname -i ~/.ssh/projectname.pem \
+    -G www,default \
+    -x ubuntu \
+    -d ubuntu12.04-gems \
+    -E prod \
+    -I ami-82fa58eb \
+    -f m1.small \
+    -r "role[base],role[frontend]" 
+</pre></td></tr></tbody></table>
+</div>
+
+<p>That makes me a frontend production server with the exact specs that I need. I walk off and get a coffee, come back and that server is sat there ready to go.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ knife ssh -E stag "roles:base" "sudo chef-client"
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Update my entire staging environment, with the latest code pulled from GitHub and whatever software I need to run.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ knife ec2 server list
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Gets a list of all servers on the account. This is amazeballs when you have a whole bunch of servers hiding behind load balancers and you want to know whats what.</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>Server provisioning is brilliant. While some people think it might be overcomplicating setting up a server, it’s amazingly useful and I would be having a hard time doing my new job properly without it.</p>
+
+<p>It means I can provision my local VM to be identical to my staging servers, use the exact same versions of software, keep my workstation clean, package and bundle all of the tech for the whole company into one repo with a few submodules, distribute that same code to multiple servers and set up freelancers no matter what OS they have in minutes instead of hours or days, all thanks to some crazy Ruby code.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>As for “Puppet or Chef” there is no real answer, they are two different tools that do the same thing in slightly different ways, to make a better environment for yourself than just running (W</td>
+      <td>X</td>
+      <td>M)AMP and assuming your code will work when its deployed. Ideally you’d be provisioning your production site too (and I know its not always possible). Provisioning a large network of sites with Chef Server does seem to work very nicely, specially if you are using EC2 with the knife plugin. Give them both a whirl and see what tickles your fancy.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="further-reading">Further Reading</h3>
+
+<ul>
+  <li><a href="http://net.tutsplus.com/tutorials/php/vagrant-what-why-and-how/">Vagrant: What, Why, and How</a></li>
+  <li>
+    <p><a href="http://www.jasongrimes.org/2012/06/managing-lamp-environments-with-chef-vagrant-and-ec2-1-of-3/">Managing LAMP environments with Chef, Vagrant, and EC2</a></p>
+
+  </li>
+</ul>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Puppet or Chef?&amp;url=https://philsturgeon.uk/devops/2012/10/28/puppet-or-chef/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Puppet or Chef?&amp;u=https://philsturgeon.uk/devops/2012/10/28/puppet-or-chef/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2012/10/11/bye-bye-php-5-2/">Bye Bye PHP 5.2</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/devops/2012/12/02/distributed-architecture-faking-with-vagrant/">Distributed Architecture Faking with Vagrant</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-10-28 20:13:00 UTC">2012-10-28 20:13:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

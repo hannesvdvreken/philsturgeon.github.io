@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>PHP Wars: Attack of the Clones | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="In the last article I said I wanted to write about when its a good idea to release a component. A lot of this comes down to: is there one out there that does what I want, and if so, can I use it?">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="PHP Wars: Attack of the Clones | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="In the last article I said I wanted to write about when its a good idea to release a component. A lot of this comes down to: is there one out there that does what I want, and if so, can I use it?">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">PHP Wars: Attack of the Clones</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-10-20 16:20:00 UTC">
+                Oct 20 2014
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>In the last article I said I wanted to write about when its a good idea to release a component. A lot of this comes down to: is there one out there that does what I want, and if so, can I use it?</p>
+
+<p>This blog post is going to touch on a lot of points already made well by Anthony Ferrara. His article <a href="http://blog.ircmaxell.com/2012/08/reinvent-wheel.html">Reinvent The Wheel!</a> says many of the same things, so if you only have time to read one article right now, go and read that.</p>
+
+<p>I’ve been talking with various people on Twitter about how I see a lot of people building what I consider to be clones. Common packages like routers, HTTP clients, validation, currency converters, dependency injection containers, etc.</p>
+
+<p>Sometimes these are carbon copies of other packages, but often they are feature-weak versions of established packages.</p>
+
+<p>While talking about this sort of thing, people seem to jump to some incorrect conclusions. I would like to take this chance to highlight what I am not talking about first:</p>
+
+<ul>
+  <li>Panic that the Internet might run out of space</li>
+  <li>Concern that GitHub will use up all their repos</li>
+  <li>I think I can tell people what code to write</li>
+  <li>I want to stop people building what they want</li>
+  <li>I’m super angry that people are building things I don’t like</li>
+  <li>I hate innovation</li>
+</ul>
+
+<p>It should go without saying that I’m not trying to quash innovation; I just don’t think building identical shit over and over again is innovation. I see people wasting their time, and I know that time could go to better use.</p>
+
+<p>Just like with framework dependent code, building out clones forces developers to spin their wheels. It forces developers that should be collaborating, to work in parallel. Splitting users, developer resource, documentation efforts, etc.</p>
+
+<p>These problems are still found in the community due to NIH. Despite huge leaps forward in framework agnostic code, the same time-wasting is still happening. Instead of laravel-foo and fuelphp-foo, we just have 18 pages of foo with no discernible differences.</p>
+
+<h2 id="not-against-innovation">Not Against Innovation</h2>
+
+<p>People are providing Laravel as an argument against these views. They say that it started its life rather similar to CodeIgniter and FuelPHP.</p>
+
+<p>Folks concern with my “don’t reinvent the wheel” approach is that it would have stopped Laravel from progressing. I think that frameworks are bad example, and not what I am talking about. Frameworks cover such vast areas that alternatives are much more likely, especially with these factors taken into account:</p>
+
+<ul>
+  <li>Is it convention based or configuration based</li>
+  <li>Does it provide a default application structure or let you freeform</li>
+  <li>Does it focus more on “developer speed” or performance?</li>
+  <li>Does the dev team move at a blinding pace adding new features but breaking the API, or does it play it cool and focus more on maintaining BC</li>
+</ul>
+
+<p>Many of these things are mutually exclusive, so you often have two different components or frameworks based on one difference. CodeIgniter might have failed to add anything useful for years, but it was reliable due to its lack of BC breaks. Other similar frameworks broke themselves in half with rewrites, but provided bleeding edge functionality for those not fussed about longevity (RAD types) or those in a position to keep up.</p>
+
+<p>This overlaps with another article I want to write, on the topic of “Your software is not better.” Due to the existence of these factors, its impossible for any one approach to be “better” as they are all contradictory.</p>
+
+<p>I would like to remove larger systems like frameworks and CMS’ from the conversation at this point, to focus on components. Due to their much smaller size, there is often not such a need for multiples.</p>
+
+<p>Different here is key, and in the realm of a component it can often be hard to innovate. I see a lot of insanely similar code thrown on Packagist and Reddit, and get a bunch emailed directly to me for feedback. Maybe they could have worked together with the author of another package if they did a quick look around. Checking out the existing solutions should of course be step 1 for anyone anyway. Sadly, when I ask “How does this differ from X”, the response is very often “Oh, I didn’t see X!” or “Well… I prefer $route-&gt;get() over $route-&gt;register(‘GET’…)”, or something else equally trivial.</p>
+
+<p>The golden rule is: If they are different, then awesome! One example here would be Nikita Popov’s <a href="https://github.com/nikic/FastRoute">FastRoute</a>, which is quicker than any other router around. It’s got a slightly tricky API and is missing a dispatcher, so <a href="https://github.com/orno/route">Orno\Route</a> wraps it and gives it a pretty API. This means we have two routers, but one is super fast and one is just a wrapper.</p>
+
+<p>Other than using a crazy approach to make the router more efficient, there are cannot be many innovations left in routing. Certainly not enough to demand <a href="https://packagist.org/search/?q=router">18 pages worth</a> of routers on Packagist.</p>
+
+<p><em>Since I started writing this yesterday we’re now up to 19 pages of routers. Are you kidding me?</em></p>
+
+<p>If I search for <a href="https://packagist.org/search/?q=routing">routing</a> then there are 23 pages. There might be some cross-over from people using “router” and “routing”, but many are different. These too are only the components that brand themselves as a “router”, and not the “micro-frameworks” which are just an autoloader, router, dispatcher and view layer slapped together.</p>
+
+<h2 id="learning-by-building">Learning by Building</h2>
+
+<p>If you are familiar with Anthony’s article linked in the intro, you will know he approved of people learning by building.</p>
+
+<p>I fully agree. Some people learn by seeing and some by doing. If you’re a do’er then building a router, a dependency container, a geocoder, etc will give you a great understanding of how it all works. His article also explains that you probably should not release those experiments.</p>
+
+<p>Remember, there is a difference between shoving something on GitHub and releasing it. That normally suggests a website, Packagist, even a damn logo in some instances. This also suggests maintenance, and the expectation of others using it. That is a big investment you’re making, and you have a responsibility to your users too.</p>
+
+<p>Further to that, why do you <em>need</em> to know how every moving part works? If you are a beginner, you do not need to know how every moving part inside a router or validation package works. You’d be better invested in building applications and getting your problem solving skills improved, than wasting your time mulling over something that’s been done to death already.</p>
+
+<p>After you have experience with how things work in general, it might be a great time to investigate things that interest you. At that point, pick apart any package you’re interested in to see how it works. I learned how to code by pulling things apart and improving them. It’s how I ended up building forum software, content management systems, HTTP clients and much more.</p>
+
+<h2 id="use-first">Use First</h2>
+
+<p>People suggested that unless people tried building their own components, they’d never get ideas for innovation.</p>
+
+<p>I do not entirely agree with this. Using existing components gives you the ability to see room for improvement much better than just building your own thing and landing in the same pit a month down the road.</p>
+
+<p>Back to frameworks for a quick example; Using CodeIgniter and Kohana is what gave us the ideas for FuelPHP. We knew the system, we know how to improve it, and knew that we could not simply improve the original. If the improvements were trivial we could have PRed, but because they were large and politics was at play, we had to fork. The FuelPHP team built on top of those concepts and learned from their mistakes. The same should be true of components.</p>
+
+<p>I would recommend searching for existing solutions first. Take the most popular on Packagist, or one with a whole load of stars on GitHub. Whatever metric you use, give it a go first.</p>
+
+<p>If you find yourself coming up with ideas, send them a pull request. If you find you ideas are not welcomed, see if there is another similar component you could contribute to.</p>
+
+<p>If there is still nothing, it sounds like you have a great new idea, and maybe the PHP world will love your work!</p>
+
+<p>This approach of trying not to start over gives you a lot of benefits.</p>
+
+<ul>
+  <li>If your new ideas are only minor API tweaks, you might just get used to their API and eventually prefer it anyway.</li>
+  <li>IF you still want to improve the API, send them a pull request and see if the maintainers like it.</li>
+  <li>Contributing to popular open-source projects will get your name out there. That for me has lead to work and some great speaking opportunities.</li>
+  <li>Adding a few features is quicker than building the whole thing.</li>
+  <li>You don’t have to write as many unit-tests, because somebody else did that already.</li>
+  <li>If you contribute regularly, you might make a few friends.</li>
+  <li>There are other people around who can help with issues, not just you.</li>
+</ul>
+
+<p>There is nothing wrong with building your own solution to a problem, but my advice is that you really do try to find a solution first.</p>
+
+<h2 id="curation">Curation</h2>
+
+<p>The solution to many to solve any of these “arg there are 10,000 X’s, which one do I pick!” is to provide “better curation.” I don’t disagree here, but there are concerns.</p>
+
+<p>If Packagist for example ordered search results by ranking then it would end up being a constant feedback loop for whichever package happened to have the most at the time. In the future, new packages would have a hard time getting their foot in the door against competitors with more installs.</p>
+
+<p>A few people (including Jordi off of Composer) suggested that The PHP League could be a curated list of third-party packages. That’s something that might end up happening, just as a way to shepherd people in the general direction of good quality code. That I think would lead to even more <a href="/blog/2014/10/what-is-the-league-of-extraordinary-packages">random complaints</a> than the organisation has already been getting, so I can’t be sure.</p>
+
+<p>Either way, hiding the fact that we have a huge chunk of our community wasting their time building out the same stuff over and over, is not the same as trying to suggest that we… just don’t do that. These are two different areas that need improving, and it is not one or the other.</p>
+
+<h2 id="other-communities">Other Communities</h2>
+
+<p>I’ve been using Ruby and Python for the last few years now, alongside the PHP work I’ve been doing. I often found myself porting Rails applications to PHP after their original developer gives up, and the client wants something they feel more at home with.</p>
+
+<p>One of the most common problems I had was finding equivalent packages to those in the Rails community in PHP. This lead to a lot of what we now have in <a href="http://thephpleague.com/">The League of Extraordinary Packages</a>.</p>
+
+<p>We had <a href="https://github.com/fzaninotto/Faker">Faker</a>, but it wasn’t enough. Factory Girl is a great gem, and I ended up finding something called “Factory Muff.” Muff is kinda offensive in the UK, and the code was fairly rough. I tried PRing a bunch of things, and in the end it found a new home at The League, with the maintainer moving it over and giving it a new name: <a href="http://factory-muffin.thephpleague.com/">Factory Muffin</a>.</p>
+
+<p>Rails has <a href="http://api.rubyonrails.org/classes/ActiveModel/Serialization.html">ActiveModel Serializers</a> and Python had a few similar things, but PHP didn’t have squat. I ended up making <a href="http://fractal.thephpleague.com/">Fractal</a> as I needed to fill that gap.</p>
+
+<p>Ruby has <a href="http://fog.io/">Fog</a>, we now thanks to Frank have <a href="http://flysystem.thephpleague.com">Flysystem</a>.</p>
+
+<p>Beyond what The League is up to, something the PHP world has been missing is any sort of focus on asynchronous behavior at a component level.</p>
+
+<p>I mean, yes, there is <a href="https://php.net/curl_multi_exec">curl_multi_exec()</a>, but the API for that is rough as a badgers arse, and it’s only useful in some cases. Things like pthreads are available as an extension for threading, but thats a bit different.</p>
+
+<p><a href="http://mtdowling.com/blog/2014/09/28/guzzle-ring/">Guzzle 5</a> has shown how promises can create an asynchronous workflow, and this is an example others should follow.</p>
+
+<p><a href="http://reactphp.org/">ReactPHP</a> has made great strides in this arena too, allowing me to <a href="/blog/2013/11/benchmarking-codswallop-nodejs-v-php">create a benchmark</a> showing PHP to be competitive to NodeJS in parsing the DOM of remote sites.</p>
+
+<p>These are all things that we didn’t have until recently, and all while we are still missing a half reasonable bloody Twitter client!</p>
+
+<p>I feel like there are so many amazing things we could be building together as a community, and now instead of siloing our efforts based on framework, we’re just building out clones for the sake of it.</p>
+
+<p>I want to see the PHP community focus more on teamwork.</p>
+
+<p>I want to see people merging projects, and sending more PRs to exiting ones.</p>
+
+<p>Maybe even more importantly, I want to see people deprecating awful old code that has no place in our modern ecosystem.</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>Gonna take <a href="https://twitter.com/philsturgeon">@philsturgeon</a>&#39;s advise and ditch my shitty GitHub API client and use an established one so I can get other shit done.</p>&mdash; Kristopher Wilson (@mrkrstphr) <a href="https://twitter.com/mrkrstphr/status/523544363713179648">October 18, 2014</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>You are undoubtedly free to do whatever it is that you want. Experiment with any code you want. Put anything on GitHub that you want. Put anything on Packagist that you want.</p>
+
+<p>That said, please do not release this stuff just for the sake of it. Releasing the 10,000th version of some basic component will not make you rich and famous. It won’t help anyone, and it will probably waste a lot of your time.</p>
+
+<p>Why build another clone, if you could instead go out and build something truly useful that the PHP community does not yet have?</p>
+
+<p>That will get you some attention.</p>
+
+<p>I might try and poach you for the League, but regardless, you’ll have something great to blog about and to talk about at conferences. Nobody wants to hear another talk about yet another bloody router component, but Frank has been touring Flysystem all over!</p>
+
+<p>Build new and exciting things, and show the other communities we can build amazing components instead of releasing the same crap over and over again.</p>
+
+<p>Post a comment with anything new you’ve built which you think is unique. Alternatively let me know if you’ve deprecated a component because of this post.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=PHP Wars: Attack of the Clones&amp;url=https://philsturgeon.uk/php/2014/10/20/php-wars-attack-of-the-clones/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=PHP Wars: Attack of the Clones&amp;u=https://philsturgeon.uk/php/2014/10/20/php-wars-attack-of-the-clones/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2014/10/16/what-is-the-league-of-extraordinary-packages/">What is The League of Extraordinary Packages?</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2014/10/21/describe-your-php-component/">Describe Your PHP Component</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-10-20 16:20:00 UTC">2014-10-20 16:20:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

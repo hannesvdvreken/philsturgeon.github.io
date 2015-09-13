@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Dredd: Do Your HTTP API Justice | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="If you have documentation for any sort of HTTP-based API, from a micro-service to a non-trivial RESTful API, if it has existed for more than a week it has got some mistakes in it. Documentation degrades over time. This article aims to help you ensure that your API documentation keeps entirely in line with the implementation, utilizing two tools: API Blueprint and Dredd.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Dredd: Do Your HTTP API Justice | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="If you have documentation for any sort of HTTP-based API, from a micro-service to a non-trivial RESTful API, if it has existed for more than a week it has got some mistakes in it. Documentation degrades over time. This article aims to help you ensure that your API documentation keeps entirely in line with the implementation, utilizing two tools: API Blueprint and Dredd.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Dredd: Do Your HTTP API Justice</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-01-28 07:14:00 UTC">
+                Jan 28 2015
+              </time>
+              <a href="/tags/http/">#http</a>
+              <a href="/tags/api/">#api</a>
+              <a href="/tags/dredd/">#dredd</a>
+              <a href="/tags/apiblueprint/">#apiblueprint</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>If you have documentation for any sort of HTTP-based API, from a micro-service to a non-trivial RESTful API, if it has existed for more than a week it has got some mistakes in it. Documentation degrades over time. This article aims to help you ensure that your API documentation keeps entirely in line with the implementation, utilizing two tools: <a href="https://apiblueprint.org/">API Blueprint</a> and <a href="https://github.com/apiaryio/dredd">Dredd</a>.</p>
+
+<p>If you are not familiar with API Blueprint, maybe you know of <a href="http://apiary.io/">Apiary</a>. API Blueprint is the Markdown-based format used by Apiary to create their API documentation - along with other various features. Dredd is a tool that will check for discrepancies between your documentation and the actual implementation.</p>
+
+<h2 id="http-api-documentation-errors">HTTP API Documentation Errors</h2>
+
+<p>Documentation errors could be a new field added or removed from the API request or response, but not reflected in the documentation. Using serializers such as <a href="http://fractal.thephpleague.com">Fractal (PHP)</a>, <a href="http://railscasts.com/episodes/409-active-model-serializers">Active Model Serializers (Rails)</a> or <a href="http://marshmallow.readthedocs.org/">Marshmallow (Python)</a> can help you notice field changes, but there are many more areas to think about. Maybe a new query string has been added which was not listed, or a new JSON-API style link (relationship) is being presented that was not available before. What about response headers? So many things can change.</p>
+
+<p>To make sure API documentation is 100% matching the implementation at <a href="http://ride.com/">Ride</a>, and to avoid a number of angry Colombians kicking my ass next time they’re in up in NYC on a team building trip, I have spent quite some time implementing <a href="https://github.com/apiaryio/dredd">Dredd</a>.</p>
+
+<h2 id="testing-with-dredd">Testing with Dredd</h2>
+
+<p>My previous explanation of Dredd might sound a bit magic. To me at first this is exactly how it sounded, but really it is so simple. Dredd is just a CLI NodeJS application which looks at every Request and Response documented in your API Blueprint file and treats it like an integration test. The API Blueprint file is put into the git repo by Apiary by messing about with the settings, meaning it can be updated in pull requests along with the code that is being changed, which makes CI integration much easier.</p>
+
+<p>Dredd will look at the headers, status code, response format and the exact body returned, and let you know if there are differences in any of those areas. An error message will be output, meaning you can debug an application locally or dispense quick and brutal justice on your continuous integration build.</p>
+
+<p>Setting this up took me about three weeks, but we have an incredibly non-trivial API at Ride. There are complex user roles, we are pre-1.0 meaning there were a lot of bugs to fix and are in a rapid development phase meaning I was coding against moving goal posts.</p>
+
+<p><img alt="Commits showing slow progress on the Dredd integration. These are the ones before I started using multiple swearwords per commit." src="/assets/article_images/2015-01-28-dredd-api-testing-documentation/dredd-commits.jpg" /></p>
+
+<p>You can do this much quicker.</p>
+
+<p>First, read <a href="http://blog.apiary.io/2013/10/17/How-to-test-api-with-api-blueprint-and-dredd/">How To Test REST API with API Blueprint and Dredd</a>.</p>
+
+<p>Next, I’ll outline everything I had to consider and implement to make this work which is not listed there at all.</p>
+
+<h3 id="step-1-a-useful-run-script">Step 1: A Useful Run Script</h3>
+
+<p>In the Apiary article they have an example <code>scripts/test</code> file:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>#!/bin/sh
+./node_modules/coffee-script/bin/coffee app.coffee &amp;
+sleep 5
+PID=$!
+dredd apiary.apib http://localhost:3000/
+RESULT=$?
+kill -9 $PID
+exit $RESULT
+</pre></td></tr></tbody></table>
+</div>
+
+<p>I tweaked that and made a <code>bin/run_dredd</code> script to fit in with the other Rails executables:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td><td class="code"><pre>#!/bin/sh
+RAILS_ENV=test bundle exec rake db:reset
+RAILS_ENV=test bundle exec rake db:fixtures:load
+RAILS_ENV=test bundle exec rake db:seed
+RAILS_ENV=test bundle exec rails server -p 3001 &amp;
+sleep 5
+PID=$!
+dredd apiary.apib http://localhost:3001/ --sorted
+RESULT=$?
+kill -9 $PID
+exit $RESULT
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This helped make dredd set itself up with a useful database, run a server in the test environment, look at the <code>apiary.apib</code> file then kill its process. A very handy script.</p>
+
+<h3 id="step-2-test-data">Step 2: Test Data</h3>
+
+<p>I <a href="/blog/2013/11/build-apis-part-1-useful-database-seeding/">wrote about seeding a database in PHP/Laravel</a> and there are a few new tools like <a href="https://factory-muffin.thephpleague.com/">Factory Muffin</a> to make this really easy. Regardless of the language or framework, however you seed your database for other integration tests will probably work fairly well as a start.</p>
+
+<p>At Ride as you can see above we use Rails fixtures for tests already, so I got a long way off of that. I ended up writing a custom <code>db:seed</code> logic which would make custom users, custom OAuth tokens, and basic related data to be used solely by Dredd.</p>
+
+<h3 id="step-3-running-different-users">Step 3: Running Different Users</h3>
+
+<p>When I first started with Dredd I was trying to send it the same access token for everything using <code>dredd apiary.apib --header FOO-TOKEN</code>, forgetting that various endpoints expect tokens to belong to either users, or one of a few different OAuth clients that represent internal services.</p>
+
+<p>Our API would complain that the token was not for a user, or was not for that specific service.</p>
+
+<p>To make this work, I added some</p>
+
+<p>~~~js text %}
+## Credit Card collection [/credit_cards]</p>
+
+<h3 id="create-a-credit-card-post">Create a Credit Card [POST]</h3>
+
+<ul>
+  <li>Request (application/json; charset=utf-8)
+    <ul>
+      <li>
+        <p>Headers</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>  Authorization: Bearer passenger_access_token ~~~
+</pre></td></tr></tbody></table>
+</div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>We also have <code>driver_access_token</code> and <code>foo_service_access_token</code>. This can be a bit misleading as it looks like we are saying <em>only users</em> on an endpoint that might allow users <em>and</em> services, but that can be explained for humans in the description.</p>
+
+<h3 id="step-4-leaky-data">Step 4: Leaky Data</h3>
+
+<p>Some integration test frameworks will let you insert fixtures into the database before each test, then reset the database to its previous condition via transactions or whatever afterwards to ensure a fresh state for each test. Dredd will not make your life that easy. It will continue to have knock-on effects on other endpoints in whatever order it runs in.</p>
+
+<p>Using the <code>dredd --sorted</code> switch will very likely reduce the number of resources that try to delete content before reading it. The tests will be run in this order: <code>CONNECT</code>, <code>OPTIONS</code>, <code>POST</code>, <code>GET</code>, <code>HEAD</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>TRACE</code>. This is probably not a magic bullet, but it reduced my errors by about 30%.</p>
+
+<p>To combat the other 70% I experimented with <a href="https://github.com/apiaryio/dredd/wiki/Writing-Hooks">writing hooks</a> for Dredd, which are a way you can use CoffeeScript - uck - to run NodeJS script - uck - before and after various tests. I found some examples to run code before every test, so I wondered if I could hook up a <code>db:reset</code> and a <code>db:seed</code> before each Dredd test.</p>
+
+<p>I knew this would be slow if it worked, but it ended up running the child processes async meaning the seeds would not finish before it tried to run the test. After a few hours of messing around I dropped this approach, instead aiming to focus on compartmentalizing the users so their actions would have no affect on each other.</p>
+
+<p>Following the approach in Step 3, I just made a <code>billy_no_mates_access_token</code> which had no matched users, meaning I could add and change addresses without deleting any other data.</p>
+
+<h3 id="step-5-continuous-integration">Step 5: Continuous Integration</h3>
+
+<p>CircleCI was perfectly happy to run Dredd with minimal cocking around:</p>
+
+<p>~~~js yaml %}
+dependencies:
+  post:
+    - npm install -g dredd
+test:
+  override:
+    - bundle exec rake test
+    - bundle exec ./bin/run_dredd
+~~~</p>
+
+<p>I had to override the default command to allow multiple commands, and obviously <code>dredd</code> had to be installed via npm, but after that it just used the same <code>./bin/run_dredd</code> I’d been using locally.</p>
+
+<h3 id="extra-syntax-errors">Extra: Syntax Errors</h3>
+
+<p>JSON syntax errors in examples, Markdown syntax errors and other problems can really mess you up, and Dredd is not always that hot at reporting them. There is another tool called <a href="https://github.com/apiaryio/snowcrash">Snowcrash</a>, which you can use directly once installed. If anything goes weird in your tests, try this command:</p>
+
+<p>~~~js sh %}
+$ snowcrash apiary.apib
+~~~</p>
+
+<p>This gives some great feedback on all sorts of potential screw-ups in your documentation, which otherwise might go unreported.</p>
+
+<h2 id="limitations">Limitations</h2>
+
+<p>If you have no integration tests then this can be a good start, but it should not be relied on as your complete test-suite. There are a few reasons, but in part it comes down to API Blueprint; it is great, but it has limitations.</p>
+
+<p>For example, you can only have one request for each “URL” + “HTTP Method” combination. This has been a pain in the past when I have wanted to document multiple <code>POST /oauth/tokens</code> requests showing the various inputs and outputs for different OAuth grant types, but API Blueprint wouldn’t let me.</p>
+
+<p>Also, documenting multiple errors can be tricky. You can only have one error response example per HTTP Status Code. For example, you can only have one <code>422</code> response for <em>all</em> validation errors on that endpoint.</p>
+
+<p>This makes Dredd terrible for proper integration testing, and that is fine as it is not what Dredd is for. Dredd is testing your documentation is accurate using the API, it is not for testing your API. That is just a handy side benefit. Dredd has caught actual bugs that our unit and integration tests did not, but again, you can’t <em>just</em> use Dredd. <strong>You need a real test suite too.</strong></p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Getting Dredd setup can be rather hard work depending on the size of your HTTP API, but it is very much worth it. It has helped me avoid a kicking from the API clients once or twice, and no doubt it will help more in the future. That said, I would have preferred to spend three weeks working on features instead of trying to crowbar this into our workflow.</p>
+
+<p>Hopefully you can get it done a little quicker with this advice.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Dredd: Do Your HTTP API Justice&amp;url=https://philsturgeon.uk/api/2015/01/28/dredd-api-testing-documentation/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Dredd: Do Your HTTP API Justice&amp;u=https://philsturgeon.uk/api/2015/01/28/dredd-api-testing-documentation/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2015/01/10/developer-fallacies-2014/">Developer Fallacies of 2014</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/api/2015/02/11/meet-the-league/">Meet the League</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2015-01-28 07:14:00 UTC">2015-01-28 07:14:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

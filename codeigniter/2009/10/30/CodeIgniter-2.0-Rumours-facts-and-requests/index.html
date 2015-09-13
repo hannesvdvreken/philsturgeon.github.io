@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>CodeIgniter "2.0": Rumours, facts and requests | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="_ Update 22/03/2010: Now that CodeIgniter 2.0 development code has been release this article is irrelevant. Please have a look at CodeIgniter 2.0: Everything you need to know._">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="CodeIgniter "2.0": Rumours, facts and requests | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="_ Update 22/03/2010: Now that CodeIgniter 2.0 development code has been release this article is irrelevant. Please have a look at CodeIgniter 2.0: Everything you need to know._">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">CodeIgniter &quot;2.0&quot;: Rumours, facts and requests</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-10-30 12:45:00 UTC">
+                Oct 30 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>_ <strong>Update 22/03/2010:</strong> Now that CodeIgniter 2.0 development code has been release this article is irrelevant. Please have a look at <a href="/blog/2010/03/codeigniter-2">CodeIgniter 2.0: Everything you need to know</a>._</p>
+
+<p>Ever since it was announced that ExpressionEngine 2.0 would be running on CodeIgniter, the forums have been jammed full of “CodeIgniter 2.0” questions. I have answer this so many times I wanted to clear things up. I have jammed this post full of “CodeIgniter 2.0” keywords so hopefully this will be the first thing these muppets spot - if they are smart enough to even Google search a query before posting it on the forums… again.</p>
+
+<p>What started this off was Yet Another CI 2 question on the forums titled _ <a href="http://codeigniter.com/forums/viewthread/133529/">CodeIgniter 2.0</a>_. This blew a restraint fuse and I had a bit of a rant.</p>
+
+<blockquote>
+  <p>It’s not happening just yet. All the awesome features written for EE 2.0 are entirely separate to the CodeIgniter codebase. They have just extended and overridden the system to hell and will EVENTUALLY backport the features to CodeIgniter, therefore creating something that COULD be called CodeIgniter 2.0. It may be CodeIgniter 1.8, who knows.</p>
+</blockquote>
+
+<p>This started off a brilliant follow-up topic, named _ <a href="http://codeigniter.com/forums/viewthread/133546/">CodeIgniter 2.1</a>_ and it seems I have now been marked as “The go-to guy” for CodeIgniter 2 questions (mainly to piss me off).</p>
+
+<p>I figured, instead of just ranting about it, I could use this opportunity to discuss what is, what is not and what <strong>should</strong> be going into CodeIgniter over the next few versions. This list is compiled from the Bug Report section of the forums, #codeigniter IRC chat room and a few replies to <a href="http://twitter.com/philsturgeon">@philsturgeon</a>.</p>
+
+<p>_ <strong>Note:</strong> I have filtered quite a few “Can I haz YouTubes?!” from this list._</p>
+
+<h3 id="confirmed-features">Confirmed features</h3>
+
+<p>These features will make it into the CodeIgniter repository <strong>at some point</strong> after ExpressionEngine 2 is released.</p>
+
+<h4 id="modular-mvc">Modular MVC</h4>
+
+<p>This is a feature I have wanted in CodeIgniter for a <em>long</em> time, and at <a href="http://eeci2009.com/">EECI2009</a> Derek Allard has confirmed it (unofficially, wandering through a back alley on the way to a pub). Details on what features this will support are rather vague, but assuming it will be similar to a basic Matchbox or HMVC does not seem ridiculous. Modularity in CodeIgniter basically allows your controllers, models, views and other files to be grouped not just by type, but by module and then type - allowing you to keep your application broken down into logical groups which we call “modules”. Eg: blog, users, gallery, etc would all be a separate module.</p>
+
+<h4 id="javascript-library">JavaScript library</h4>
+
+<p>My first reaction to having a JavaScript library within CodeIgniter was “Why?!”. After time my feelings have lessened to a “Hmm…” but they will probably never get to the stage of “Yay!!!1”. Basically this library abstracts common JavaScript framework functions such as show, hide, fade, basic event binding, etc. This to me seemed useless as server-side code cannot respond to the client-side events it builds, but after thinking it over for a while there may be a ways to take advantage of this.</p>
+
+<h3 id="missing-features">Missing features</h3>
+
+<p>There are features I need in nearly every application I work on that I have extended libraries to include. It drives me mad that some of these are not included in the core as they are not drastic changes to the core and are already developed and tested by many developers.</p>
+
+<h4 id="add-download-to-ftp-library">Add download() to FTP library</h4>
+
+<p>I have to add this in every time I work with FTP on a project. We have upload(), why not download()? I wrote this very simple method over 2 years ago and it was never included into the core. Why? Who knows.</p>
+
+<h4 id="ftp-groups-like-db-groups-for-connecting-to-common-servers">FTP groups (like DB groups) for connecting to common servers</h4>
+
+<p>FTP connections to multiple servers right now is a pain. You have to either place multiple config arrays around your controllers or find some other solution to doing it. This should be supported out of the box in the same was as connections to database servers. This code has also been written up and can be found <a href="http://codeigniter.com/forums/viewthread/57498/">here</a> along with my download() function.</p>
+
+<h4 id="delete-with-join-in-db-class">DELETE with JOIN in DB-class</h4>
+
+<p>Another handy feature is SQL <em>DELETE</em> via join. This allows you to delete lots of joined data spread over different tables without having to run separate queries. Those of you lucky enough to be using cascading foriegn keys in your tables need not worry about this, but for the rest of us it is a pain to use multiple queries. Supporting JOIN is a feature supported by MySQL, Oracle and PostgreSQL but it looks like MSSQL may have a bit more trouble.</p>
+
+<p>A <a href="http://codeigniter.com/forums/viewreply/366063/">workaround</a> that I have tested to work with MySQL is available from <a href="http://www.haughin.com/">Elliot Haughin</a>. This was written a while ago but looks like nobody ever got behind it enough to get it included into the core.</p>
+
+<h4 id="prepurl-ignores-https-ftp-etc">prep_url() ignores https:// ftp:// etc</h4>
+
+<p>When using prep_url() if your pass a link https://example.com you will end up with http://https://example.com. Enough said.</p>
+
+<h3 id="minor-syntax-changes">Minor syntax changes</h3>
+
+<p>Small tweaks to simplify the syntax of things we do all the time.</p>
+
+<h4 id="allow-libraries-to-accept-non-array-params-in-constructor">Allow libraries to accept non-array params in constructor</h4>
+
+<p>Mainly just because I get pissed off writing <em>$this-&gt;load-&gt;library(‘piwik’, array(‘server’ =&gt; ‘http://something.com/’));</em> when <em>$this-&gt;load-&gt;library(‘piwik’, ‘http://something.com/’);</em> would do the job just as well. Not every library needs multiple constructor parameters. CodeIgniter not only does not support strings, ints and floats in the constructor but actively removes anything that is not an array.</p>
+
+<h4 id="language-helper-support-for-sprintf">Language helper support for sprintf()</h4>
+
+<p>It’s not very often you have a language string that is entirely static. For example, if you want to write “Hello username and welcome to the site” you can either do it as two language strings with a variable in between, or the smooth “Hello %s and welcome to the site” and implement it with sprintf(lang(‘whole_string’), $variable). I would like to see something like slang(‘whole_string’, $variable) just to make it neater and easier for new users to pick up.</p>
+
+<h3 id="crazy-but-helpful">Crazy but helpful</h3>
+
+<h4 id="add-hook-to-the-end-controller-constructor">Add hook to the end Controller constructor</h4>
+
+<p>CodeIgniter already has several hooks, the most used being pre_controller and post_controller_constructor. The problem for me is that pre_controller exists very early in the system flow and has no access to the database or a great deal of the CodeIgniter instance. The pre_controller_constructor hook has access to everything CodeIgniter has to offer, but it runs <em>after</em> your controller constructor meaning any code in the constructor will ignore whatever you have done in the Hook.</p>
+
+<p>To pick an example here, my pick_language.php hook uses $_SESSION and $_GET to work out language then sets it using load_class(‘Config’). I have no access to the database so users cannot pick a language and store it in the db. Why not use a post_controller_constructor hook? Well by that point I have loaded my language files, run database queries and all sorts of logic that is shared across all methods in a controller. With this new hook it would run after the CodeIgniter instance is loaded, but before any of my Controller code has started.</p>
+
+<h4 id="form-validation-and-javascript-library-integration-to-build-validation-rules">Form validation and JavaScript library integration to build validation rules</h4>
+
+<p>Using the JavaScript library as an abstraction layer over the framework libraries such as jQuery, the Form Validation library could use the provided validation rules to build up a string of JavaScript that could help validate your work. It would require a little configuration but imagine the benefits of automatically generated client-side <em>and</em> server-side validation that you only need to write once. I had planned to do this quite some time ago, but with the addition of the JavaScript library this could be made a whole lot easier.</p>
+
+<h3 id="what-we-wont-see">What we wont see</h3>
+
+<p>EllisLab will not drop PHP 4 overnight and rewrite the whole core. We wont be seeing any “Automatic DRUD generators” that require one command line prompt and integration with telepathic control. And we wont be seeing anything amazing until some time after the ExpressionEngine release at he start of December ‘09. So stop asking everyone and be patient. The only people who know wont tell you, and as soon as the code is available it will be in the SVN.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=CodeIgniter &quot;2.0&quot;: Rumours, facts and requests&amp;url=https://philsturgeon.uk/codeigniter/2009/10/30/CodeIgniter-2.0-Rumours-facts-and-requests/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=CodeIgniter &quot;2.0&quot;: Rumours, facts and requests&amp;u=https://philsturgeon.uk/codeigniter/2009/10/30/CodeIgniter-2.0-Rumours-facts-and-requests/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/codeigniter/2009/10/16/Speaking-at-EECI2009-in-Leiden-Holland/">Speaking at EECI2009 in Leiden, Holland</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/2009/11/18/When-this-developer-designs/">When this developer designs</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-10-30 12:45:00 UTC">2009-10-30 12:45:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Phil Sturgeon</title>
+  <subtitle>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</subtitle>
+  <id>https://philsturgeon.uk/</id>
+  <link href="https://philsturgeon.uk/"/>
+  <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
+  <updated>2015-09-03T06:47:00-07:00</updated>
+  <author>
+    <name>Phil Sturgeon</name>
+  </author>
+  <entry>
+    <title>Auto-Incrementing IDs: Giving your Data Away</title>
+    <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/"/>
+    <id>https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/</id>
+    <published>2015-09-03T06:47:00-07:00</published>
+    <updated>2015-09-12T14:00:50-07:00</updated>
+    <summary type="html">Something we’re always taught as developers, usually by tutorials or via the defaults in various ORM tools, is every SQL table needs an auto-incrementing ID. This is a weirdly common fallacy, enforced by old tutorials, new tutorials and half-arsed tooling in various forms. Why are auto-incrementing IDs a problem? Because it means people can download your database.</summary>
+    <content type="html">&lt;p&gt;Something we’re always taught as developers, usually by tutorials or via the defaults in various ORM tools, is every SQL table needs an auto-incrementing ID. This is a weirdly common fallacy, enforced by old tutorials, new tutorials and half-arsed tooling in various forms. Why are auto-incrementing IDs a problem? Because it means people can download your database.&lt;/p&gt;
+
+&lt;p&gt;This is not a new problem, it’s been covered well over the last twenty years, but it is a problem I tell people about in my API talks and it seems new to many. People want to know how to avoid it, and how API data can ever be safe.&lt;/p&gt;
+
+&lt;h2 id="a-case-study"&gt;A Case Study&lt;/h2&gt;
+
+&lt;p&gt;I contracted for a startup going through an accelerator, where one of the teams were building a unique database of user-generated photographs, and these photos were of artwork. Artwork like awesome graffiti, unknown installations, etc., and this data was not available anywhere else on the Internet.&lt;/p&gt;
+
+&lt;p&gt;They had these two URLs on their API:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code&gt;GET /artworks/234&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;GET /users/6138&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;What are the problems here?&lt;/p&gt;
+
+&lt;h3 id="leaking-success-to-competitors"&gt;Leaking “Success” to Competitors&lt;/h3&gt;
+
+&lt;p&gt;As a startup, you often have competitors. Letting those competitors know the size of your data set, and how many users you have in your system, could lead to some pretty embarrassing situations.&lt;/p&gt;
+
+&lt;p&gt;Looking at the URL &lt;code&gt;GET /users/6138&lt;/code&gt;, I can go to &lt;code&gt;GET /users/1&lt;/code&gt;. If that shows me data, I can reasonably assume they have &lt;em&gt;at least&lt;/em&gt; 6138 users, but to find the total I can easily make a script that &lt;code&gt;++$id&lt;/code&gt; and counts every HTTP status &lt;code&gt;200&lt;/code&gt;, and also counts things like 404 or 410, to give a accurate number of how many active users there are, and how many closed their account.&lt;/p&gt;
+
+&lt;p&gt;That could embarrass a larger company, or utterly destroy a small startup.&lt;/p&gt;
+
+&lt;h3 id="leaking-datasets-to-competitors-or-assholes"&gt;Leaking Datasets to Competitors (or Assholes)&lt;/h3&gt;
+
+&lt;p&gt;Leaking statistics to your enemies might not be something that keeps you up at night, but what about giving away your actual data?&lt;/p&gt;
+
+&lt;p&gt;In our case study, these people had unique data, available nowhere else. If other people want this data, they can use the same &lt;code&gt;++$id&lt;/code&gt; approach to grab a hold of that data, and populate their own app, making a new competitor quite easily, and with a slightly better app could potentially put them out of business.&lt;/p&gt;
+
+&lt;p&gt;Balls.&lt;/p&gt;
+
+&lt;h2 id="alternatives"&gt;Alternatives&lt;/h2&gt;
+
+&lt;p&gt;There are some alternatives to this, which can be used in pretty much any scenario.&lt;/p&gt;
+
+&lt;h3 id="id-obfuscation"&gt;ID Obfuscation&lt;/h3&gt;
+
+&lt;p&gt;If you’re stuck with 1, 2, 3 in your DB due to a picky ORM, or due to not wanting to change an existing schema and all the data that goes with it, you can keep your IDs and just “hide” them.&lt;/p&gt;
+
+&lt;p&gt;Obfuscation allows you to turn a &lt;code&gt;1&lt;/code&gt; into a &lt;code&gt;"df234FSafd"&lt;/code&gt; and a &lt;code&gt;"p363fdte7"&lt;/code&gt; into a &lt;code&gt;2364&lt;/code&gt;. Your IDs stay the same, but the user cannot &lt;code&gt;++$id&lt;/code&gt; anymore because &lt;code&gt;"df234FSafd" + 1&lt;/code&gt; isn’t a thing.&lt;/p&gt;
+
+&lt;p&gt;They use a hidden secret key, without which the strings are not reversible, so they’re relatively safe.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;PHP&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://github.com/zackkitzmiller/tiny-php/"&gt;Tiny&lt;/a&gt; - based on code used by &lt;a href="http://zurb.com/forrst"&gt;Forrst&lt;/a&gt;, and built by the excellent &lt;a href="https://twitter.com/zackkitzmiller"&gt;Zack Kitzmiller&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Ruby&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://github.com/namick/obfuscate_id"&gt;obfuscate_id&lt;/a&gt; - Rails only sorry other people, but looks good&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://github.com/marekweb/opaque-id"&gt;Opaque ID&lt;/a&gt; - Obfuscation for integer IDs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;JavaScript, Python, Ruby, PHP, Java, Scala, Perl, Swift, Clojure, Objective-C, C, C++11, Go, Erlang, Lua, Haskell, Elixir, Rust, ColdFusion, Groovy, Kotlin, Nim, VBA, ActionScript, CoffeeScript, Bash and for Node.js &amp;amp; .NET&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="http://hashids.org/"&gt;HashIDs&lt;/a&gt; - Apparently they’re not so secure and the salt can be guessed from about 30 hashes, so probably don’t use them, but if you’re stuck for anything else…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id="universally-unique-ids"&gt;Universally Unique IDs&lt;/h3&gt;
+
+&lt;p&gt;UUID is a cool way to make some really unique identifiers for your records, without relying on the DB to auto-increment to make it unique.&lt;/p&gt;
+
+&lt;p&gt;These can be used in place of usual IDs. They look a little bit like this:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;de305d54-75b4-431b-adb2-eb6b9e546014&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That, again, is not &lt;code&gt;++$id&lt;/code&gt;-able.&lt;/p&gt;
+
+&lt;p&gt;On top of that, two records made at the exact same split second will not have the same UUID, which is where the “universally” bit comes in. You can use this for offline support, meaning you make an item locally, give it an UUID, then sync up with the database when your user gets out of the subway and you’ve maintained integrity of your IDs and your data at large.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Performance for UUIDs was brought up on Twitter, and there is a common misconception that UUIDs are slow or terrible. Firstly, do not store UUIDs as a string (varchar or char). Store them as binary, and if you use something that prefers PKs to be ordered then you can use &lt;a href="https://www.percona.com/blog/2014/12/19/store-uuid-optimized-way/"&gt;ordered UUIDs&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;PHP&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://packagist.org/packages/ramsey/uuid"&gt;ramsey/uuid&lt;/a&gt; - PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 UUIDs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Ruby&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="http://ruby-doc.org/stdlib-2.2.3/libdoc/securerandom/rdoc/SecureRandom.html#method-c-uuid"&gt;SecureRandom.uuid&lt;/a&gt; - Built in!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://docs.python.org/2/library/uuid.html"&gt;uuid&lt;/a&gt; - Built in!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="but-if-your-app-can-get-it-so-can-the-user"&gt;But if your app can get it, so can the user&lt;/h2&gt;
+
+&lt;p&gt;Maybe, but how do your users get to the data?&lt;/p&gt;
+
+&lt;p&gt;In the case of pageable content, like a “Recent Events” list, simply limit the history of the data you can search through to a few days.&lt;/p&gt;
+
+&lt;p&gt;In the case of geo data searched for by proximity (stuff near you), set a limit on the number of records that can be returned, and how far out they can zoom. They’d have to script a bot to get it all which would take a while and is something you can probably program to detect.&lt;/p&gt;
+
+&lt;p&gt;Also rate limiting. If you require folks to register an app, you can limit their credentials on the free tier to stop them downloading everything.&lt;/p&gt;
+
+&lt;p&gt;Then, if they do start trying to download your whole data set, it’ll at least take them a long time, and again, hopefully give you a chance to notice suspect activity.&lt;/p&gt;
+
+&lt;p&gt;How? Look for apps regularly hitting their rate limit. Look for stuff that is randomly search geo boxes moving across the map in an unnatural way (people don’t move in a sweeping left to right grid pattern).&lt;/p&gt;
+
+&lt;p&gt;Automate those detections, and fire off an email to the bastards trying to download your dataset. You’ll have their email because they signed up, and if they’re really daft they’ll use their work email. I’ve seen that happen, and we had a nice little chat.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;If you want more advice on HTTP/API stuff, grab a copy of my book &lt;a href="http://apisyouwonthate.com/"&gt;Build APIs You Won’t Hate&lt;/a&gt;. You can get that eBook for free if you donate $10 to my next &lt;a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;amp;participantID=2035"&gt;charity bike ride&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>No Booze for a Month</title>
+    <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/20/no-booze/"/>
+    <id>https://philsturgeon.uk/charity/2015/08/20/no-booze/</id>
+    <published>2015-08-20T10:30:00-07:00</published>
+    <updated>2015-09-12T14:00:50-07:00</updated>
+    <summary type="html">In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, nobody not so many people are interested in forking out. Luckily, I have a plan!</summary>
+    <content type="html">&lt;p&gt;In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, nobody not so many people are interested in forking out. Luckily, I have a plan!&lt;/p&gt;
+
+&lt;p&gt;In addition to &lt;a href="/charity/2015/08/11/geeks-giving-for-aids-again/"&gt;offering tech/PHP related rewards&lt;/a&gt; for cool free stuff, I thought I would go one step further to shock people into grabbing their wallets.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ONE MONTH, NO BOOZE!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Yeah you heard me. Usually there is nothing but cider pumping through my veins. Terrible, sickly sweet, American cider these days, but booze all the same.&lt;/p&gt;
+
+&lt;p&gt;In the name of raising a boatload of cash for charity, I am going to go sober for one whole month.&lt;/p&gt;
+
+&lt;p&gt;I am 5 days in. This runs August 15th, to September 15th.&lt;/p&gt;
+
+&lt;p&gt;Last week was a trial run of 7 days, which I did succeed but tbh it has only made this month harder.&lt;/p&gt;
+
+&lt;p&gt;Anyone who knows me knows how hard this is going to be, especially as I have two conferences to attend and a 26 hour flight to New Zealand to get through next week.&lt;/p&gt;
+
+&lt;p&gt;But, jokes aside, my reliance on booze and the inconvenience of going without it is nothing compared to what those living with HIV/Aids have to go through, and I’m doing this to raise money for them.&lt;/p&gt;
+
+&lt;p&gt;Please put your hand in your pocket and &lt;a href="http://fundraising.housingworks.org/participant/philstu-15"&gt;donate some cash for an amazing cause&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>The Ratio of Women Speakers in Tech</title>
+    <link rel="alternate" href="https://philsturgeon.uk/feminism/2015/08/17/women-speaker-ratio-conversation-loop/"/>
+    <id>https://philsturgeon.uk/feminism/2015/08/17/women-speaker-ratio-conversation-loop/</id>
+    <published>2015-08-17T14:00:00-07:00</published>
+    <updated>2015-09-12T16:54:52-07:00</updated>
+    <summary type="html">There are a lot of my opinions and viewpoints that have changed over time. Some slowly and naturally, and some sharp and sudden like a wet mackerel to the face. One is on the ratio of women speakers when it comes to tech conferences.</summary>
+    <content type="html">&lt;p&gt;There are a lot of my opinions and viewpoints that have changed over time. Some slowly and naturally, and some sharp and sudden like a wet mackerel to the face. One is on the ratio of women speakers when it comes to tech conferences.&lt;/p&gt;
+
+&lt;p&gt;I previously held an opinion like many of the folks in the PHP community, who are discussing this stuff now, which is: well there just &lt;em&gt;aren’t&lt;/em&gt; that many women programmers!&lt;/p&gt;
+
+&lt;p&gt;That seems fair right? There aren’t many women speakers because there aren’t many women programmers. Us menfolk have been to loads of conferences and seen hardly any women, we’ve worked in our startups and there might have been one, but the meetups are all dudes and everywhere we go it’s mostly dudes! Right?&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;That used to be my opinion, and I’ve run multiple conferences in the past that were extremely male: cast, crew and audience. I could make my excuses, but I’m going to accept that I was ignorant and lazy. Everything in this article is the 180 mental flip I’ve come to over the last year or two with the help of some good friends.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Take the above viewpoint for a minute (dumb and entirely anecdotal as it is) and go with it, because it’s one I see a &lt;em&gt;lot&lt;/em&gt; of people hold.&lt;/p&gt;
+
+&lt;p&gt;If we’re going to say that we think there being 1 or 2 women speakers at a conference of 10 or 20 speakers is representative of the ratio of women actually in the field, then we’re making an argument for accurate representation. We’re saying the gender ratio on stage is that of the ratio in real life.&lt;/p&gt;
+
+&lt;p&gt;Assuming the gender ration is 10% women in the field then having 1 or 2 at a conference of 10 or 20 speakers would be accurate, but here is a little statistic:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Women comprise 34% of web developers; 23% of programmers; 37% of database administrators; 20% of software developers; and 15% of information security analysts. (Department of Labor Current Population Survey, 2012)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So if we’re going with the representative argument, at conferences about web development, I’d expect 34% of the speakers to be women. At programming conferences I’d expect 23% of the speakers to be women. At database adminstrator conferences I’d expect… you get the idea.&lt;/p&gt;
+
+&lt;p&gt;Simply put, the ratio argument does not hold up to the real world. We have a discrepancy.&lt;/p&gt;
+
+&lt;p&gt;Whenever anything is said in this conversation about the discrepancy, there are a lot of common responses that are traipsed out.&lt;/p&gt;
+
+&lt;h2 id="getting-50-is-just-not-possible"&gt;Getting 50% is just not possible&lt;/h2&gt;
+
+&lt;p&gt;Some people act like 50% is an unreasonable goal, and so give up on the whole idea and shut down anyone who talks about improving the situation at all.&lt;/p&gt;
+
+&lt;p&gt;50% does not have to be the goal right now. Let’s try and get way the hell past 10%.&lt;/p&gt;
+
+&lt;h2 id="quota-filling"&gt;Quota Filling&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Why should the conference be responsible for quota filling instead of selecting based on skill&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Basically the thought process for some conference organizers (speaking as somebody who ran three ~100 person events) goes like this:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Do a CFP&lt;/li&gt;
+  &lt;li&gt;Reach out to some folks to get them to submit&lt;/li&gt;
+  &lt;li&gt;Realize you don’t have many women&lt;/li&gt;
+  &lt;li&gt;???&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Some would say that at step 4, if you turn down some guys who &lt;em&gt;would&lt;/em&gt; give good talks to find women, then you are quota filling.&lt;/p&gt;
+
+&lt;p&gt;Firstly, “quota filling” suggests that you’re just throwing some women in there to avoid getting shouted at.&lt;/p&gt;
+
+&lt;p&gt;Let me be clear. Placing women on the stage &lt;em&gt;for the sake of having some women up there&lt;/em&gt; is not what many reasonable people are asking for. It’s offensive to suggest that is why a decent ratio of women speakers is an objective. It is also quite obviously offensive (I would hope) to ask somebody to speak just because they are a women.&lt;/p&gt;
+
+&lt;p&gt;It can also be damaging. If you have experienced men and a few inexperienced women you found to fill your “quota” then you’re going to make those women look bad in front of a lot of people.&lt;/p&gt;
+
+&lt;p&gt;Getting any women you can find is not the point. Saying “oops, it looks like we got a bunch of dudes so far, lets see if we can make this a bit more balanced” is &lt;em&gt;not&lt;/em&gt; quota filling. It’s rebalancing the scales of equality that are - for a myriad of reasons - way off base right now.&lt;/p&gt;
+
+&lt;p&gt;Secondly, quota filling is a shit idea because it gives folks a ready to use slippery slope argument.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Once we add five women, are we sure that one of them is a single mom? We wouldn’t want to leave out that demographic and have people assume the only women who can make a conference panel are single ones without kids or ones with partners at home to lessen their load.&lt;/p&gt;
+
+  &lt;p&gt;There’s also no African Americans on the Edge Conference’s roster. I don’t see any people of (obvious) Hispanic descent. Why is no one up in arms over that?
+&lt;em&gt;– &lt;a href="https://sugarrae.com/rants-in-bitchland/women-tech-conferences-and-bs/"&gt;Women, Tech Conferences and the BullSh!t Surrounding It&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ha, right. If we start jamming people in based on one criteria, we’re gonna have to start jamming people in based on another.&lt;/p&gt;
+
+&lt;p&gt;It’s not about catering to every checkbox you can imagine, it’s more about questioning why all of your speakers are of such a narrow demographic, and attempting to make things be a bit more representative of the field.&lt;/p&gt;
+
+&lt;p&gt;Just like with our stats on women in the field, surprisingly enough 95% of programmers are not white men, and conferences sure do make it seem that way.&lt;/p&gt;
+
+&lt;h2 id="beholden-to-the-cfp"&gt;Beholden to the CFP&lt;/h2&gt;
+
+&lt;p&gt;Some conference speaker selections are invitation based.&lt;/p&gt;
+
+&lt;p&gt;Some conference speaker selections are CFP based.&lt;/p&gt;
+
+&lt;p&gt;Most are realistically both, even if they do not advertise it.&lt;/p&gt;
+
+&lt;p&gt;If a conference is not doing a CFP and it only selects dudes then you fucked up. Let’s assume there is a CFP, because many of the conferences lacking in diverse lineups use this defense:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Women just aren’t submitting [as much as men] and we take our submissions from CFP&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This may be true, and it may be down to a huge number of reasons. It may be that your conference board is just a bunch of dudes and they can’t be bothered with another brofest. It could be you don’t have a Code of Conduct and they’re uninterested in supporting that, or it could be that your Twitter followship doesn’t have many women in it for whatever reason and your marketing efforts were a bit lacking beyond you and your friends tweeting about it.&lt;/p&gt;
+
+&lt;p&gt;Whatever the reasons, saying “We don’t have any/many women because none/not many applied.” is a total cop out and sometimes a bit of a convenient lie.&lt;/p&gt;
+
+&lt;p&gt;I’ve been approached a bunch of times by conference organizers – everything from local conferences in far away lands to some of the largest PHP conferences – saying “Hey Phil, we’d like you to speak at our conference.”&lt;/p&gt;
+
+&lt;p&gt;I didn’t go to all of them, but with the ones I did, sometimes I put a CFP in after they asked me to, sometimes they just ignored the CFP step entirely and signed me up.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;So it’s not always a CFP.&lt;/li&gt;
+  &lt;li&gt;Why is it ok to ignore CFP sometimes, but be beholden to it when discussing women speakers?&lt;/li&gt;
+  &lt;li&gt;Why can’t they approach smart women they know?&lt;/li&gt;
+  &lt;li&gt;If they don’t know more women why don’t they try broadening their social circles?&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="we-got-a-few-from-sponsors-and-we-had-no-say"&gt;We Got A Few [from sponsors and we had no say]!&lt;/h2&gt;
+
+&lt;p&gt;Often at conferences, the larger sponsors send people to speak, and a lot of these folks - in my experience - have been women (#NotAllDevEvangelists). This means that some (or depressingly sometimes all) of the female line-up is filled with sponsor provided folks.&lt;/p&gt;
+
+&lt;p&gt;Now, sponsor provided people are not a problem. Sure sometimes they just try and flog you their stuff, but many of these speakers are amazing, insightful and don’t just bang on about their company.&lt;/p&gt;
+
+&lt;p&gt;Sadly when there are sponsor provided people flogging the product, the reaction depends on the gender of the speaker. When a guy is up there sales pitching his heart out, most folks just think “that guy is spammy” and wander off or open the laptop. When a women is doing it, and they see no/few other women at the conference, they end up thinking some pretty negative stuff about women in tech, if they realize it or not.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="XKCD on &amp;quot;That guy sucks&amp;quot; vs. &amp;quot;Women suck&amp;quot;" src="http://imgs.xkcd.com/comics/how_it_works.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Just like with “quota filling”, if there are just a few woman and they are not giving highly technical, it leaves a general bad impression of women as a whole.&lt;/p&gt;
+
+&lt;p&gt;Besides, if as a conference you can’t get past 10% when you have sponsor provided women speakers, then you’re really fucking something up at a fundamental level.&lt;/p&gt;
+
+&lt;h2 id="hiding-the-real-problems"&gt;Hiding the Real Problems&lt;/h2&gt;
+
+&lt;p&gt;There are certainly huge problems to solve in why the number of women programmers are so far below 50%, like all the reasons in this study showing the &lt;a href="http://anitaborg.org/insights-tools/infographics/how-to-retain-women-technologists/"&gt;high attrition rate of women in tech&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One of my friends quit programming courses because the lecturers gave her zero help and a lot of shit, while bending over backwards to help the boys.&lt;/p&gt;
+
+&lt;p&gt;One of my friends quit a job because it was a bit of a boys club, and the CEO did not know how to change that. They both just decided it was easier for her to work somewhere else.&lt;/p&gt;
+
+&lt;p&gt;The best developer at the last startup I worked for nearly didn’t get hired because she “Wasn’t a good fit for the team.” No idea what that meant, but she was a fucking excellent programmer who used parts of PHP I didn’t know existed to smash out fizz-buzz in no time, while some of the other guys couldn’t even get it done.&lt;/p&gt;
+
+&lt;p&gt;All this stuff is a problem, but aiming for a more representative number of female speakers at conferences is not an either/or situation. Schools and startups can work on those problems, while conferences work on theirs.&lt;/p&gt;
+
+&lt;h2 id="conferences-are-a-business"&gt;Conferences are a Business&lt;/h2&gt;
+
+&lt;p&gt;I totally get this, being there in the past myself.&lt;/p&gt;
+
+&lt;p&gt;Conferences gotta make money. Conferences gotta get attendees to get that money. Attendees wanna see people that know smart stuff to convince their bosses or partners the money is worth being spent.&lt;/p&gt;
+
+&lt;p&gt;This argument is used to explain that the hunt for a diverse lineup is irrelevant, because you just need to get bums on seats and known names are the best way to do that.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Reputation does not equate to skill. I’m a half decent developer who has been given the chance to speak at way too many conferences.&lt;/li&gt;
+  &lt;li&gt;An awful lot of these known names - myself included of course - are white dudes, way up into the 90% range.&lt;/li&gt;
+  &lt;li&gt;Recycling the same old names every time can’t be doing a huge amount for business, especially when most of these folks are fairly young and unlikely to die or retire soon. Fresh blood should be considered a must.&lt;/li&gt;
+  &lt;li&gt;If a woman speaker is high on skill and low on reputation, lend her some privilege and get her on the secondary stage, then bring her back next year on the main stage if she kills it.&lt;/li&gt;
+  &lt;li&gt;If you want to bring as many people as you can, a more diverse lineup will lead to a more diverse potential demographic, meaning you can make more money…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The latter point does presume that people of a certain demographic are more likely to attend if they are represented, but I don’t feel like that is unreasonable. I doubt many people are sat there waiting for a diversity checklist to hit 3 boxes before they grab a ticket, but I do think a lot of people are tired of seeing white-dude lineup after white-dude lineup.&lt;/p&gt;
+
+&lt;p&gt;Also on the last point, think of it this way: Even if you’re a misogynistic ass-hat who doesn’t care about gender equality or diversity, there is an economic incentive to doing this. Nobody will know if that is your reasoning, and maybe they don’t need to know, but if all you care about is running a business then widening your demographic seems like a pretty solid way to do it.&lt;/p&gt;
+
+&lt;p&gt;Finally, if &lt;em&gt;you&lt;/em&gt; could not do any better at your conference, maybe some outside help could change the situation next time.&lt;/p&gt;
+
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;I don’t think anyone here is trying to be a bad person.&lt;/p&gt;
+
+&lt;p&gt;I think the vast majority conference organizers are good people who are stressed out, and maybe aren’t taking as many things into consideration as they could.&lt;/p&gt;
+
+&lt;p&gt;I don’t think we need to shout at any conference organizers that don’t have 50% women on their lineup.&lt;/p&gt;
+
+&lt;p&gt;I think we should probably be having polite (probably private) words with conference organizers who fail to hit 25%.&lt;/p&gt;
+
+&lt;p&gt;I think it would be good if people raised the questions of why a conference is 95% white-dudes, but I think onlookers need to stop traipsing out the above shitty arguments when they do.&lt;/p&gt;
+
+&lt;p&gt;I think most conference organizers need to expand their followship to include more women, and advertise outside their usual networks by approaching groups and organizations that are there to help with this.&lt;/p&gt;
+
+&lt;p&gt;I think conference speakers should try to lend their privilege to others who are less known in general. Invited to speak at a conference but can’t make it? Suggest a friend, who might not be a white-dude.&lt;/p&gt;
+
+&lt;p&gt;I think a lot of us need to re-evaluate how many women there really are in programming, and start asking why we don’t see them around as much. What is it conferences, meet-ups, startups, etc. are doing that makes it be so dude-centric?&lt;/p&gt;
+
+&lt;p&gt;And while we all know /r/php can be a festering pile of bile-flavoured nonsense at times, &lt;a href="https://www.reddit.com/r/PHP/comments/30wati/looking_for_women_speakers_at_php_new_zealand/"&gt;this thread&lt;/a&gt; is the problem with this conversation being had. So much ignorance in there, and one of the moderators &lt;a href="https://www.reddit.com/r/PHP/comments/30wati/looking_for_women_speakers_at_php_new_zealand/cpx17ul"&gt;jumped in&lt;/a&gt; saying all this stuff and more. Apparently I am unfairly hostile to white-dudes.&lt;/p&gt;
+
+&lt;p&gt;I have a lot of work to do with &lt;a href="http://phptownhall.com/"&gt;my podcast&lt;/a&gt; to stop it being such a cavalcade of white-dudes too. There’s no high horse here, just a plea for attempts at progress, instead of a never-ending stream of “Nah, it’s fine!”.&lt;/p&gt;
+
+&lt;h2 id="further-reading"&gt;Further Reading&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="http://www.callbackwomen.com/home.html"&gt;CallbackWomen&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://geekfeminism.org/2012/05/21/how-i-got-50-women-speakers-at-my-tech-conference/"&gt;How I Got 50% Women Speakers at My Tech Conference&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://2012.jsconf.eu/2012/09/17/beating-the-odds-how-we-got-25-percent-women-speakers.html"&gt;Beating the Odds — How We got 25% Women Speakers for JSConf EU 2012&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://blog.sqisland.com/2015/08/droidcon-nyc-22-percent-female-speakers.html"&gt;Droidcon NYC: 22% women speakers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Also, &lt;a href="http://2015.sunshinephp.com/speakers"&gt;SunshinePHP&lt;/a&gt; achieved about 30% women speakers last time around, so maybe give &lt;a href="https://twitter.com/adamculp"&gt;Adam Culp&lt;/a&gt; a shout if you’re organizing something. Good job!&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Avoid Hardcoding HTTP Status Codes</title>
+    <link rel="alternate" href="https://philsturgeon.uk/http/2015/08/16/avoid-hardcoding-http-status-codes/"/>
+    <id>https://philsturgeon.uk/http/2015/08/16/avoid-hardcoding-http-status-codes/</id>
+    <published>2015-08-16T14:00:00-07:00</published>
+    <updated>2015-09-12T14:00:50-07:00</updated>
+    <summary type="html">A lot of things in programming are argued to death, but one subject where people almost unanimously agree is that magic numbers can be a pain in the ass, and they should be avoided whenever possible. Sadly when it comes to HTTP status codes, people keep on hardcoding them, and it leads to all sorts of confusion.</summary>
+    <content type="html">&lt;p&gt;A lot of things in programming are argued to death, but one subject where people almost unanimously agree is that magic numbers can be a pain in the ass, and they should be avoided whenever possible. Sadly when it comes to HTTP status codes, people keep on hardcoding them, and it leads to all sorts of confusion.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Remembering which code is which is incredibly difficult, even when you have spent 5 years of your life building APIs&lt;/li&gt;
+  &lt;li&gt;There are an awful lot of codes&lt;/li&gt;
+  &lt;li&gt;Even if you remember them, you are inviting trouble when new programmers are let loose on the codebase&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;What is 409?&lt;/p&gt;
+
+&lt;p&gt;If you answer without looking it up on &lt;a href="https://kapeli.com/dash"&gt;Dash&lt;/a&gt; or &lt;a href="http://httpstatusdogs.com"&gt;HTTP Status Dogs&lt;/a&gt; then you are a machine.&lt;/p&gt;
+
+&lt;p&gt;Go has these built right into their main &lt;code&gt;net/http&lt;/code&gt; library:&lt;/p&gt;
+
+&lt;div class="highlight go"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusBadRequest&lt;/span&gt;&lt;span class="x"&gt;
+&lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusOK&lt;/span&gt;&lt;span class="x"&gt;
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Ruby on Rails utilizes Rack to help solve this problem. The &lt;a href="http://guides.rubyonrails.org/layouts_and_rendering.html#the-status-option"&gt;render option of Rails&lt;/a&gt; offers a &lt;code&gt;:status&lt;/code&gt; attribute, which defaults to &lt;code&gt;:ok&lt;/code&gt; and can be set to any of the following options:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Status&lt;/th&gt;
+      &lt;th&gt;Symbol&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;300&lt;/td&gt;
+      &lt;td&gt;:multiple_choices&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;301&lt;/td&gt;
+      &lt;td&gt;:moved_permanently&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;302&lt;/td&gt;
+      &lt;td&gt;:found&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;303&lt;/td&gt;
+      &lt;td&gt;:see_other&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;304&lt;/td&gt;
+      &lt;td&gt;:not_modified&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;305&lt;/td&gt;
+      &lt;td&gt;:use_proxy&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;306&lt;/td&gt;
+      &lt;td&gt;:reserved&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;307&lt;/td&gt;
+      &lt;td&gt;:temporary_redirect&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;308&lt;/td&gt;
+      &lt;td&gt;:permanent_redirect&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The list goes on, and is built on &lt;a href="https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L470"&gt;a big old array in Rack&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Rack (and Rails) are not the only frameworks in the world to provide these options, &lt;a href="https://github.com/symfony/HttpFoundation/blob/master/Response.php"&gt;Symfony has a go too&lt;/a&gt; in &lt;code&gt;HttpFoundation&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class="highlight php"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;public function someAction(Request $request)
+{
+  return new Response('', Response::HTTP_NO_CONTENT);
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I’d say that seeing &lt;code&gt;HTTP_NO_CONTENT&lt;/code&gt; is quite a lot more useful than seeing &lt;code&gt;204&lt;/code&gt; right? And any half decent IDE will let you know that &lt;code&gt;HTTP_NO_CONTENT&lt;/code&gt; has the value of &lt;code&gt;204&lt;/code&gt; anyway.&lt;/p&gt;
+
+&lt;p&gt;Sadly, the PHP tools outside of Symfony have been a bit lacking.&lt;/p&gt;
+
+&lt;p&gt;Laravel has a bunch of hardcoded status codes in &lt;a href="http://laravel.com/docs/5.1/errors#http-exceptions"&gt;Custom HTTP Error Documention&lt;/a&gt;, even though their responses are built on top of HttpFoundation.&lt;/p&gt;
+
+&lt;p&gt;Guzzle, and all PSR-7 stuff, provides the status code and the reason phrase (which can theoretically change if your API developer is a smart-ass), so again you’re working with magic numbers.&lt;/p&gt;
+
+&lt;div class="highlight php"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;$response = $client-&amp;gt;get('http://www.amazon.com')-&amp;gt;send();
+
+echo $response-&amp;gt;getStatusCode();      // &amp;gt;&amp;gt;&amp;gt; 200
+echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Most folks who become fed up with hardcoding status codes end up implementing their own solution, but this is just more code that needs to be tested and I’ve seen a few people actually get some of the codes wrong…&lt;/p&gt;
+
+&lt;p&gt;The solution here is to provide a reusable package, which contains the constants without needing all of Symfony HttpFoundation available to work.&lt;/p&gt;
+
+&lt;p&gt;Recently one turned up on &lt;a href="https://groups.google.com/forum/#!topic/thephpleague/iBfghcg3TJc"&gt;The League mailing list&lt;/a&gt; which ended up being built as &lt;a href="https://github.com/lukasoppermann/http-status"&gt;lukasoppermann/http-status&lt;/a&gt;. Since then I noticed another one, called &lt;a href="https://github.com/shrikeh/teapot"&gt;Teapot&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class="highlight php"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="cp"&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nx"&gt;\Teapot\StatusCode&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;$response&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;getStatusCode&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;NOT_FOUND&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;FORBIDDEN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;MOVED_PERMANENTLY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;CREATED&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Nice and simple.&lt;/p&gt;
+
+&lt;p&gt;There is some room for the PHP-FIG to improve this situation I think, as the PHP community does not have a single Rack-like system where all this stuff is done already.&lt;/p&gt;
+
+&lt;p&gt;I don’t mind how you go about avoiding hardcoded HTTP status codes in your projects, but please avoid doing it somehow.&lt;/p&gt;
+
+&lt;p&gt;If you want more advice on HTTP/API stuff, grab a copy of my book &lt;a href="http://apisyouwonthate.com/"&gt;Build APIs You Won’t Hate&lt;/a&gt;. You can get that eBook for free if you donate $10 to my next &lt;a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;amp;participantID=2035"&gt;charity bike ride&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Geeks Giving for Aids: 2015</title>
+    <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/11/geeks-giving-for-aids-again/"/>
+    <id>https://philsturgeon.uk/charity/2015/08/11/geeks-giving-for-aids-again/</id>
+    <published>2015-08-11T14:30:00-07:00</published>
+    <updated>2015-09-12T14:00:50-07:00</updated>
+    <summary type="html">Back in 2013 I did a three-day ride from Boston to New York, along with hundreds of amazing people. Everyone was in various levels of fitness and with various levels of interest in cycling, all who had come together with the aim of helping raise a shitload of money to help those living with HIV/Aids.</summary>
+    <content type="html">&lt;p&gt;Back in 2013 I did a three-day ride from Boston to New York, along with hundreds of amazing people. Everyone was in various levels of fitness and with various levels of interest in cycling, all who had come together with the aim of helping raise a shitload of money to help those living with HIV/Aids.&lt;/p&gt;
+
+&lt;p&gt;After a messed up 2014, I’m back to riding bikes, and I am happy to say that I will be doing the ride again this September. It should be 285 miles, if I don’t get lost and end up doing 300 like last time.&lt;/p&gt;
+
+&lt;p&gt;To reach the lofty goal of &lt;a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;amp;participantID=1212"&gt;$6,000 last year&lt;/a&gt; I enlisted &lt;a href="/blog/2013/07/geeks-giving-for-aids/"&gt;a huge chunk of the tech community&lt;/a&gt; to help. I know you’re all nice people and want to donate money to any cause that will stop people from suffering, but sometimes getting something back in return can help you fit that donation into your budgets.&lt;/p&gt;
+
+&lt;p&gt;There are some awesome rewards in here, and a few copies of my book of course:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;$10&lt;/strong&gt; - Any &lt;em&gt;one&lt;/em&gt; of the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A free copy of &lt;a href="http://apisyouwonthate.com/"&gt;&lt;em&gt;Build APIs You Won’t Hate&lt;/em&gt;&lt;/a&gt; eBook&lt;/li&gt;
+  &lt;li&gt;20% off of any &lt;a href="https://gumroad.com/serversforhackers"&gt;&lt;em&gt;Servers for Hackers&lt;/em&gt;&lt;/a&gt; eBook bundle&lt;/li&gt;
+  &lt;li&gt;A free copy of &lt;a href="http://www.amazon.com/Smart-Gets-Things-Done-Technical/dp/1590598385?ie=UTF8&amp;amp;s=books&amp;amp;qid=1181076229&amp;amp;sr=8-1"&gt;&lt;em&gt;Smart and Gets Things Done&lt;/em&gt;&lt;/a&gt; paperback&lt;/li&gt;
+  &lt;li&gt;A free copy of &lt;a href="https://leanpub.com/vagrantcookbook"&gt;&lt;em&gt;Vagrant CookBook&lt;/em&gt;&lt;/a&gt; eBook&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;$25&lt;/strong&gt; - Any &lt;em&gt;one&lt;/em&gt; of the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;50% off of any &lt;a href="https://gumroad.com/serversforhackers"&gt;&lt;em&gt;Servers for Hackers&lt;/em&gt;&lt;/a&gt; eBook bundle&lt;/li&gt;
+  &lt;li&gt;50% off of any &lt;em&gt;&lt;a href="http://grumpy-learning.com/"&gt;Grumpy Learning&lt;/a&gt;&lt;/em&gt; eBooks&lt;/li&gt;
+  &lt;li&gt;A free StackOverflow t-shirt* (Men’s and Women’s available)&lt;/li&gt;
+  &lt;li&gt;A free copy of the &lt;a href="https://leanpub.com/php-pandas"&gt;&lt;em&gt;PHP Pandas&lt;/em&gt;&lt;/a&gt; eBook&lt;/li&gt;
+  &lt;li&gt;A free copy of the &lt;a href="https://leanpub.com/b/vagrantapis"&gt;&lt;em&gt;Vagrant CookBook and Build APIs You Won’t Hate&lt;/em&gt;&lt;/a&gt; eBook bundle&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img alt="StackOverflow t-shirts" src="/assets/article_images/2015-08-11-geeks-giving-for-aids-again/stackoverflow-tshirts.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;$60&lt;/strong&gt; - Any &lt;em&gt;one&lt;/em&gt; of the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;50% off of a &lt;a href="http://pnwphp.com/"&gt;PNWPHP 15 Conference&lt;/a&gt; ticket, worth $199 usually. I’ll see you there.&lt;/li&gt;
+  &lt;li&gt;100% off of any &lt;a href="https://gumroad.com/serversforhackers"&gt;&lt;em&gt;Servers for Hackers&lt;/em&gt;&lt;/a&gt; eBook bundle&lt;/li&gt;
+  &lt;li&gt;50% off of a &lt;a href="http://statamic.com/"&gt;Statamic&lt;/a&gt; Professional License&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Interested? &lt;a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;amp;participantID=2035"&gt;Make a donation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I’m also offering consulting like last time around, but I’m not so sure anyone is as excited about that as they used to be when CodeIgniter was still a thing.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;$200&lt;/strong&gt; - One hour of Skype consultation on PHP, Rails, API design, Chef, Git, deployment tactics, whatever, for you, or a group of your choosing.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Help me help other people. $5k is a huge amount of money, and I’ve only got a few weeks to get it done. Last minute and all that, but I’ve been injured for about 6 months now and had no idea if I could make it until a few days ago.&lt;/p&gt;
+
+&lt;p&gt;All the money sent via that portal goes straight to the charity, and they have a huge number of volunteers keeping costs of the ride the lowest I’ve seen. It’s an amazing group of people and I’m excited to be riding with them again, but we have big goals to hit and we need you to help.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;Make a &lt;a href="http://fundraising.housingworks.org/participant/philstu-15"&gt;donation&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Find out more about the &lt;a href="http://brakingaidsride.org/"&gt;BrakingAids Ride&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Find out more about &lt;a href="http://www.housingworks.org/"&gt;HousingWorks&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;P.S:&lt;/strong&gt; If you would like to offer some rewards for these donations to help the charity get even more money, and get yourself a bit of marketing and increased sales as an extra reward, please &lt;a href="&amp;#109;&amp;#097;&amp;#105;&amp;#108;&amp;#116;&amp;#111;:&amp;#109;&amp;#101;&amp;#064;&amp;#112;&amp;#104;&amp;#105;&amp;#108;&amp;#116;&amp;#117;&amp;#114;&amp;#103;&amp;#101;&amp;#111;&amp;#110;&amp;#046;&amp;#117;&amp;#107;"&gt;get in touch&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Laughs with the Google Maps API</title>
+    <link rel="alternate" href="https://philsturgeon.uk/geo/2015/07/26/autocomplete-google-maps-api/"/>
+    <id>https://philsturgeon.uk/geo/2015/07/26/autocomplete-google-maps-api/</id>
+    <published>2015-07-26T11:53:00-07:00</published>
+    <updated>2015-09-12T14:00:50-07:00</updated>
+    <summary type="html">I’ve been working at Ride.com since October 2014, and I’ve got to do some awesome stuff with them. As far as my job has been concerned, the first 4-5 months were entirely green field development. As a team we built multiple services to compliment a central API, and with the help of some other gophers at the company I built most of a little Go service to handle various autocomplete requirements.</summary>
+    <content type="html">&lt;p&gt;I’ve been working at &lt;a href="https://ride.com/"&gt;Ride.com&lt;/a&gt; since October 2014, and I’ve got to do some awesome stuff with them. As far as my job has been concerned, the first 4-5 months were entirely green field development. As a team we built multiple services to compliment a central API, and with the help of some other gophers at the company I built most of a little Go service to handle various autocomplete requirements.&lt;/p&gt;
+
+&lt;p&gt;One of the autocomplete endpoints was for addresses, allowing us to switch map API providers without totally breaking our iOS and web apps.&lt;/p&gt;
+
+&lt;p&gt;I had a few clashes with the Google Maps API along the way. Some were my fault, some were their fault, and some I just blame on imperfections in U.S. address system. To be fair, the U.K. is not much better, but the U.S had a more recent opportunity to get things a bit better and they still fucked it.&lt;/p&gt;
+
+&lt;h2 id="address-autocomplete-requirements"&gt;Address Autocomplete Requirements&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Users sign up via web/iOS clients, enter their home address and enter their work address.&lt;/li&gt;
+  &lt;li&gt;These clients call the autocomplete service with the user input.&lt;/li&gt;
+  &lt;li&gt;See what Google Maps thinks of the input.&lt;/li&gt;
+  &lt;li&gt;Spit out some formatted JSON for the clients to display for the user to pick.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I pretty much want to get this for homes and places of work:&lt;/p&gt;
+
+&lt;div class="highlight javascript"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="s2"&gt;"addresses"&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;
+    &lt;span class="s2"&gt;"formatted_address"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"568 Broadway, New York, NY 10012, USA"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"street_address_1"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"Broadway"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"street_address_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"street_number"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"568"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"neighborhood"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"Lower Manhattan"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"locality"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"New York"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"sublocality_level_1"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"Manhattan"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"sublocality_level_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"sublocality_level_3"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"administrative_area_level_1"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"New York"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"administrative_area_level_1_short"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"NY"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"administrative_area_level_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"New York County"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"administrative_area_level_3"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"country"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"United States"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"postal_code"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"10012"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"lat"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;40.7242802&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"lng"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;73.9973541&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"google_places_id"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;
+  &lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Simple enough right?&lt;/p&gt;
+
+&lt;p&gt;Heh.&lt;/p&gt;
+
+&lt;h2 id="location-biasing"&gt;Location Biasing&lt;/h2&gt;
+
+&lt;p&gt;A feature the web/iOS clients and business all requested rather early on was location-based biasing. This is the art of assuming that things near you are more relevant than things far away, which is pretty fair. Somebody in Florida probably doesn’t drive to work in Texas, and definitely doesn’t need to see shit in Alaska.&lt;/p&gt;
+
+&lt;p&gt;If we were using the Google Places API then we’d be golden because you can just give them a &lt;code&gt;?near=lat,lng&lt;/code&gt; and they’ll work it out for you. Sadly, the Google Places API is not useful for us. Many work places outside of major companies are not on the places API, and obviously not many people have their homes in that API either.&lt;/p&gt;
+
+&lt;p&gt;We had to stick with the Google Maps API and that does not have the same functionality. Balls. Time for a dumb hack:&lt;/p&gt;
+
+&lt;div class="highlight go"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;func&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;vertexToBoundingBox&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;Vertex&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="x"&gt;
+  &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Vertex&lt;/span&gt;&lt;span class="p"&gt;{})&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="x"&gt;
+    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="x"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="x"&gt;
+  &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;fmt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="x"&gt;
+    &lt;/span&gt;&lt;span class="s"&gt;"%f,%f|%f,%f"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lat&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="m"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lng&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lat&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="m"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lng&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="x"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="x"&gt;
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This has worked well enough that most people seem happy with it. It makes a rather wide box which is big enough to contain a large US city and some surrounding suburbs.&lt;/p&gt;
+
+&lt;p&gt;If the coordinates Google has for the address are considered to be a hair over the line of that bounding box then the address might as well be a on the other side of the country for all it cares.&lt;/p&gt;
+
+&lt;p&gt;Not ideal.&lt;/p&gt;
+
+&lt;h2 id="one-bowerman-drive"&gt;1 One Bowerman Drive&lt;/h2&gt;
+
+&lt;p&gt;When doing research on some big corporate buildings we’d likely have people wanting to drive to, some folks at Ride spotted a problem.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Nike HQ and their vanity road &amp;quot;One Bowerman Drive&amp;quot;" src="/assets/article_images/2015-07-26-autocomplete-google-maps-api/1-one-bowerman-drive.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nike HQ have a vanity road called &lt;code&gt;One Bowerman Drive&lt;/code&gt;, which in and of itself would not be a problem other than one thing: they advertise &lt;code&gt;One Bowerman Drive&lt;/code&gt; as their address on all their media, not their real address of &lt;code&gt;1 One Bowerman Drive&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The autocomplete was taking their search results, Google was returning a road, the autocomplete was throwing it away. That’s how I programmed it, to throw away anything Google offers me which is not a &lt;code&gt;street_address&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Think about it, having a road instead of an actual address could be madness for calculating how far people need to drive, and would throw off our pricing calculations.&lt;/p&gt;
+
+&lt;p&gt;To offer an extreme example, if you as a driver enter “Route 66” as a destination, if you stop short of wherever Google places the pin then you are going to be drastically overcharging any passengers, and the opposite problem occurs if you drive past the pin: you’ll be losing money. Our petrol costs based on milage would be screwed, even if only by a fraction in real-world usage.&lt;/p&gt;
+
+&lt;p&gt;As with many things in programming, we are faced with various shit options. I presenting the shit options to business:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Allow roads to be used as a destination address and let people potentially be miles off of their actual destination.&lt;/li&gt;
+  &lt;li&gt;Do not support Nike HQ and any similar building which advertises their vanity road as an address.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Yaaaaaay.&lt;/p&gt;
+
+&lt;h2 id="bank-of-america-plaza"&gt;Bank of America Plaza&lt;/h2&gt;
+
+&lt;p&gt;Google returns components with a &lt;code&gt;types&lt;/code&gt; array, which can have a plethora of values.&lt;/p&gt;
+
+&lt;p&gt;For a while I didn’t actually know about this type array, and was foolishly throwing away results that did not have a street_address or a route. This kicked me in the face when we realised that the Bank of America Plaza in Atlanta does not actually have a street address or route &lt;em&gt;at all&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Bank of America Plaza Atlanta, one a nameless vanity road" src="/assets/article_images/2015-07-26-autocomplete-google-maps-api/no-road.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking at the building on the map you can see it has a road, but that little road has no name. It is not considered to be on Peachtree St NE, nor is it on U.S. Highway 78, it is just on bloody nothing.&lt;/p&gt;
+
+&lt;p&gt;If I were to remove the check that said “no street address or route = invalid address”, the code would not only allow Bank of America Plaza Atlanta, but it would also let any town or city into the results, meaning you could easily say your pickup or destination address was &lt;code&gt;West Chester, NY&lt;/code&gt;, leaving the driver to do laps around a town of a few thousand trying to find you…&lt;/p&gt;
+
+&lt;p&gt;Google has us covered here. Allow any of the following component types:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;route&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;street_address&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;premise&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you can think of any more then please send answers on the back of a postcard.&lt;/p&gt;
+
+&lt;h2 id="one-bowerman-drive-again"&gt;1 One Bowerman Drive Again&lt;/h2&gt;
+
+&lt;p&gt;This bloody road.&lt;/p&gt;
+
+&lt;p&gt;At Ride we not only allow people to carpool to the same building, but we have a bit of wiggle room in there. Theoretically, if you work right next to somebody, in the same building, the next building, or the same business park, then carpooling should be an option for you.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Some companies are against that for security reasons, but we have a switch to turn it on or off for various companies.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Anyway, we allow a radius of 50 meters for now, and yes, looking at the image below that is a “square radius”. Shut up, I didn’t want to get PostGIS involved and slow down this query for a temporary feature as the geo search is being moved out of the API anyway.&lt;/p&gt;
+
+&lt;p&gt;See if you can spot what is happening in this image.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Nike HQs actual address vrs. their advertised address" src="/assets/article_images/2015-07-26-autocomplete-google-maps-api/51-meter-difference.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yup, you guessed it. 1 One Bowerman Drive is 50.5 meters away from the seemingly arbitrary point on the map that Google decides to put the pin for the road One Bowerman Drive.&lt;/p&gt;
+
+&lt;p&gt;I can’t remember exactly what happened, but I have a sneaking suspicion we bumped our “square-radius” to 52 meters and called it a day.&lt;/p&gt;
+
+&lt;p&gt;You couldn’t write this stuff.&lt;/p&gt;
+</content>
+  </entry>
+</feed>

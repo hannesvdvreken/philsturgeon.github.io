@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Managing CodeIgniter Packages with Git Submodules | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="With CodeIgniter moving to GitHub we are starting to see a lot of CodeIgniter developers wanting to learn more about Git, specifically how they can use it to improve their workflows, manage their applications and move away from the horrible days of copying and pasting updated libraries off a wiki. UCK. Sparks are helping us on the whole, but there is another method that we can use to manage our packages: Git Submodules.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Managing CodeIgniter Packages with Git Submodules | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="With CodeIgniter moving to GitHub we are starting to see a lot of CodeIgniter developers wanting to learn more about Git, specifically how they can use it to improve their workflows, manage their applications and move away from the horrible days of copying and pasting updated libraries off a wiki. UCK. Sparks are helping us on the whole, but there is another method that we can use to manage our packages: Git Submodules.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Managing CodeIgniter Packages with Git Submodules</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2011-09-25 11:09:00 UTC">
+                Sep 25 2011
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>With CodeIgniter moving to GitHub we are starting to see a lot of CodeIgniter developers wanting to learn more about Git, specifically how they can use it to improve their workflows, manage their applications and move away from the horrible days of copying and pasting updated libraries off a wiki. UCK. Sparks are helping us on the whole, but there is another method that we can use to manage our packages: Git <a href="http://book.git-scm.com/5_submodules.html">Submodules</a>.</p>
+
+<p>For those who have not heard of submodules in Git, I’ll let the Git Book explain it:</p>
+
+<blockquote>
+  <p>Git’s submodule support allows a repository to contain, as a subdirectory, a
+checkout of an external project. Submodules maintain their own identity;
+the submodule support just stores the submodule repository location and
+commit ID, so other developers who clone the containing project
+(“superproject”) can easily clone all the submodules at the same revision.
+Partial checkouts of the superproject are possible: you can tell Git to
+clone none, some or all of the submodules.</p>
+</blockquote>
+
+<p>Great! So we can have our main application and other little packages can be installed as submodules which have their own repositories.</p>
+
+<h3 id="why-bother">Why bother?</h3>
+
+<p>It’s a good question. This all sounds like a lot of extra work but if like me you are working on 5 different applications at any one time you might have started to notice something:</p>
+
+<p>In each project you work on your are probably creating libraries or packages that can be used in multiple places. For example I recently built the <a href="https://github.com/philsturgeon/codeigniter-oauth2">oauth2</a> package which I was using in two different applications. These were totally different applications for different clients on different servers and there was no way I could get away with symlinking, sharing folder structures, etc and I noticed that if i fixed a bug in one location I would have to copy it over to the other application. If I had 10 projects using the oauth2 package that would be a LOT of copying and pasting with huge potential for pooching the system.</p>
+
+<p>Even if you are not in a situation where you need to copy between applications, you want to release your code to the world without having to copy it to a special “oauth2” folder which just contains those specific files. This is how I was releasing code for years: copy and paste. Bah!</p>
+
+<p>Instead I created a new repo on GitHub for the oauth2 package, pushed my files in and set it up as a submodule in my clients application:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$ cd Sites/example.com/
+$ git submodule add git://github.com/philsturgeon/codeigniter-oauth2.git application/third_party/oauth2
+</pre></td></tr></tbody></table>
+</div>
+
+<p>So we’ve put this into our application/third_party folder, but this could just as easily have been in application/packages if you prefer the name. Whatever - the autoload.php config file can be changed to have whatever directory you want:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$autoload['packages'] = array(APPPATH.'third_party');
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now we need to commit this so other developers have access to the code:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>$ git status
+
+
+# On branch oauth2
+# Changes to be committed:
+#
+#    new file:   .gitmodules
+#    new file:   application/third_party/oauth2
+</pre></td></tr></tbody></table>
+</div>
+
+<p>The .gitmodules file has been added and keeps a reference of all submodules in your application.</p>
+
+<h3 id="my-designer-just-pulled-and-its-broked">“My designer just pulled and it’s broked!”</h3>
+
+<p>Me too! So submodules can be a little funny when people pull for the first time. The .gitmodule file will know there is a new submodule but Git won’t actually bother to do anything about it. This may seem odd but is easy to get around:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$ git submodule init
+$ git submodule update
+</pre></td></tr></tbody></table>
+</div>
+
+<p>The first command will initialize any submodules listed in the .gitmodule file that is not already set up, and update will grab the latest commit for it.</p>
+
+<h3 id="committing-fixes-in-your-submodules">Committing fixes in your submodules</h3>
+
+<p>While developing an application with a submodule you are no doubt adding new stuff as you go. Whether this is fixing bugs or adding new features you’re application is the best place to add these new features to your package because you can see when things are working.</p>
+
+<p>If you have made some changes in your submodule you will notice that git status shows you this:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7</pre></td><td class="code"><pre>$ git status
+
+
+# On branch master
+# Changes not staged for commit:
+#
+#    modified:   application/third_party/oauth2 (modified content)
+</pre></td></tr></tbody></table>
+</div>
+
+<p>We changed stuff! So let’s go and commit it to our submodule.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>$ cd application/third_party/oauth2
+$ git status
+
+
+# Not currently on any branch.
+# Changes not staged for commit:
+#
+#    modified:   libraries/OAuth2.php
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Woah there, not currently on any branch? What the dickens?</p>
+
+<p>Each submodule has a specific commit used to reference which is the “current” commit that other applications should be on when they run git submodule update. Think of this much like a tag, but not actually a “tag”. We want to move out of this “no branch” and use master (or develop if you wan’t to get all crazy with Git-Flow).</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ git checkout master
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Awesome, now commit as usual and push back to the repo. If you cloned using a read-only remote (suggested if you want to deploy to PHPFog, etc) then you will need to do something like:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ git remote add upstream git@github.com:philsturgeon/codeigniter-oauth2.git
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This will add the read/write remote to your system, but mean that deployment systems can still read the public remote when they look at origin. After that you push with:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ git push upstream master
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Finally, if we hop back up to the root level of our application we’ll see:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7</pre></td><td class="code"><pre>$ git status
+
+
+# On branch master
+# Changes not staged for commit:
+#
+#    modified:   application/third_party/oauth2
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Commit that and you’re done. Yay!</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>As with everything in Git it is initially confusing and potentially a little scary to try and work out, but once you get past the “WTFPALMFACE” section of learning you’ll love this feature and find yourself using it all over the place.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Managing CodeIgniter Packages with Git Submodules&amp;url=https://philsturgeon.uk/codeigniter/2011/09/25/managing-codeigniter-packages-with-git-submodules/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Managing CodeIgniter Packages with Git Submodules&amp;u=https://philsturgeon.uk/codeigniter/2011/09/25/managing-codeigniter-packages-with-git-submodules/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/fuelphp/2011/09/17/ninjauth-social-integration-php/">NinjAuth: The Social Integration Package PHP has been dying for</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/codeigniter/2011/10/06/new-codeigniter-documentation/">New CodeIgniter Documentation = Unicorn Party</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2011-09-25 11:09:00 UTC">2011-09-25 11:09:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

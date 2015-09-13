@@ -1,0 +1,17 @@
+
+          <html>
+            <head>
+              <link rel="canonical" href="/git/2010/02/23/Deploying-websites-with-Git/" />
+              <meta name="robots" content="noindex,follow" />
+              <meta http-equiv="cache-control" content="no-cache" />
+              <script>
+                // Attempt to keep search and hash
+                window.location.replace("/git/2010/02/23/Deploying-websites-with-Git/"+window.location.search+window.location.hash);
+              </script>
+              <meta http-equiv=refresh content="0; url=/git/2010/02/23/Deploying-websites-with-Git/" />
+            </head>
+            <body>
+              <a href="/git/2010/02/23/Deploying-websites-with-Git/">You are being redirected.</a>
+            </body>
+          </html>
+        

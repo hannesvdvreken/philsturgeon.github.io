@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Composer: It's ALMOST Always About the Lock File | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Davey Shafik wrote a great article for EngineYard called Composer: It’s All About the Lock File.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Composer: It's ALMOST Always About the Lock File | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Davey Shafik wrote a great article for EngineYard called Composer: It’s All About the Lock File.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Composer: It&#x27;s ALMOST Always About the Lock File</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-11-04 22:14:00 UTC">
+                Nov  4 2014
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p><a href="https://twitter.com/dshafik">Davey Shafik</a> wrote a great article for <a href="https://engineyard.com/">EngineYard</a> called <a href="https://blog.engineyard.com/2014/composer-its-all-about-the-lock-file">Composer: It’s All About the Lock File</a>.</p>
+
+<p>The point of his article is to try and suggest people get a lot more used to committing their <code>composer.lock</code> files.</p>
+
+<p>Please, do go read his article now and for the love of god please start committing your lock files to applications. If you and your employees are a little vague with your <code>composer.json</code> specifications and you don’t have a <code>composer.lock</code> then you can end up on different versions between you. Theoretically, if component developers are using <a href="http://semver.org/">SemVer</a> and you’re being careful then you should be fine, but keeping your lock in version control will make sure that the same version is on your dev teams computers. This will happen every time you run <code>$ composer install</code>. If you are on Heroku or EngineYard then this will be used for the deployment of your production components as a built in hook, which is <em>awesome</em>.</p>
+
+<p>Side bonus: It makes composer installs much quicker, and checks your checksums too so you don’t have issues where some muppet retagged a version of the component and now BOOM weird change. These things happen.</p>
+
+<p>You can learn a lot more about careful version selection and other bits of Composer advice from <a href="https://twitter.com/rdohms">Rafael Dohms</a>, who wrote recently about <a href="http://blog.doh.ms/2014/10/13/installing-composer-packages/">Installing Composer Packages</a>.</p>
+
+<p>Now, I had one little bit of feedback to Davey’s article:</p>
+
+<blockquote>
+  <p>Always commit composer.lock for applications.<br />
+Never commit composer.lock for components.</p>
+</blockquote>
+
+<p>When asked to explain that, I ended up realizing I was just parroting some Ruby logic I’d had knocking around in the back of my brain since 2010 when I was building out a few projects with Rails.</p>
+
+<p>The <a href="http://yehudakatz.com/2010/12/16/clarifying-the-roles-of-the-gemspec-and-gemfile/">advice in the Ruby community</a> regarding lock files has always been to commit the <code>Gemfile</code> for applications, but to ignore the <code>Gemfile.lock</code> for building gems. This solves a lot of problems, from dependency hell, to just generally being a bit annoying.</p>
+
+<p>My realization that I was just parroting this Ruby logic, I thought a bit harder and I’ve now moved from:</p>
+
+<blockquote>
+  <p>Never commit composer.lock for components.</p>
+</blockquote>
+
+<p>…to:</p>
+
+<blockquote>
+  <p>Maybe commit composer.lock for components.</p>
+</blockquote>
+
+<p>Why only sometimes? Well, there are two main problems here. Committing a <code>composer.lock</code> will solve one problem, but create another.</p>
+
+<p>Some background.</p>
+
+<h2 id="component-development">Component Development</h2>
+
+<p>When <a href="/blog/2013/05/testing-contributing-composer-packages">developing and contributing to Composer packages</a>, you could be working somewhere like <code>~/src/some-package</code>, where you just checked out the repo. You can also do it inside an application that is using Composer components, so if your component lived at <code>~/src/some-app/vendor/phil/some-package</code> then you could run <code>$ composer install</code> <em>in there</em> and it would install <code>~/src/some-app/vendor/phil/some-package/vendor/phil/another-package</code>.</p>
+
+<p>Composer doesn’t care about that extra level of nested stuff, as it’s just a folder structure. Wherever you are, <code>$ composer install</code> will look for a <code>composer.lock</code> or a <code>composer.json</code> and make a <code>./vendor/</code> directory to shove your dependencies in.</p>
+
+<p>If you have a <code>composer.lock</code> file inside the <code>some-package</code> codebase and the lock file is demanding <code>1.1.5</code>, it doesn’t matter at all if your <code>some-app</code> is demanding <code>1.1.5</code> or <code>2.0.0</code> of that same package. At all.</p>
+
+<p>This means you can have a lock for your component, and it only affects those working directly with that component. It does not force anyone installing that component into their application to in turn use the version of a dependency you have specified in that <code>composer.lock</code>. This might be a good idea for the development team working on a component, but it might cause another problem.</p>
+
+<h2 id="how-strict-is-too-strict">How Strict Is Too Strict?</h2>
+
+<p>A component is supposed to work with a reasonable range of it’s dependencies. For example, a component using Guzzle should be able to work with <code>4.0</code>, <code>4.1</code> or <code>4.2</code> without any confusion about whether it works.</p>
+
+<p>Now, if I commit a lock file and 4.2.0 happens to contain a breaking change - despite promising SemVer compliance, I’m going to start getting complaints from users that my package does not work with 4.2.0. If I’m traveling for a month thats going to be a right PITA. I wouldn’t even know it fails because my component is specifically requiring <code>4.1.2</code> to run its tests on Travis-CI, as thats the last version that was out when my <code>composer.lock</code> was written to, and it would never have a chance to try and download <code>4.2.0</code>. Others depending on my package would get the newer version because their <code>$ composer install</code> is not looking deep enough into the folders to see my components <code>composer.lock</code> file, so they are ahead of my very strict requirements.</p>
+
+<p>If I had been a little more loose with my components dependencies, I would have seen it error much sooner. Possibly on the first pull request that a contributor wrote, and who knows - maybe they’d fix that issue for me too as part of their PR. Then I can just click the green button and get on with my day, instead of sifting through changelogs to find out what the package happened to break.</p>
+
+<p>After that breaking change is catered for, I’d then need to bump my requirements for Guzzle from <code>~4.1</code> to <code>~4.2</code> in the <code>composer.json</code>, which would force users to upgrade too, which in turn <em>could</em> end up leading to dependency hell.</p>
+
+<p>My only solution would be to avoid doing <code>~4.1</code> in the first place, and stick to <code>4.1.*</code> for everything, which sucks for the 99% of cases where minor upgrades <em>do not</em> break the API.</p>
+
+<p>It is by no means unheard of for popular software projects to break backwards compatibility for components. SemVer is a promise at best. While it’s a good promise, it’s a promise that is sometimes broken. Sometimes intentionally and you just didn’t realize a dependency didn’t care about SemVer, or sometimes by a dependency that <em>does</em> promise SemVer then accidentally breaks it.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I think committing your <code>composer.lock</code> file is <em>always</em> an incredibly good idea for <strong>applications</strong>.</p>
+
+<p>But, I would think really hard about whether you want to be that specific for your components. Maybe you do want to really lock it down, and you like the idea of specifying the <em>exact</em> version of a dependency that your component is last known to work with. It could certainly make testing easier, reduces “works on my machine”, and you could force people to send in the update as part of the PR. All of that said, for me, it is a level of strictness that I am not interested in for my components.</p>
+
+<p>Maybe that’ll change for me over time. But for now, I’ll keep the <code>.gitignore</code> entry for  <code>composer.lock</code> in my components.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Composer: It&#x27;s ALMOST Always About the Lock File&amp;url=https://philsturgeon.uk/php/2014/11/04/composer-its-almost-always-about-the-lock-file/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Composer: It&#x27;s ALMOST Always About the Lock File&amp;u=https://philsturgeon.uk/php/2014/11/04/composer-its-almost-always-about-the-lock-file/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2014/10/21/describe-your-php-component/">Describe Your PHP Component</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/personal/2014/11/15/alien-status-extraordinary-again/">Alien Status: Extraordinary Again</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-11-04 22:14:00 UTC">2014-11-04 22:14:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

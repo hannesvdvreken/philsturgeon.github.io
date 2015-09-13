@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>CodeIgniter 2.0: Everything you need to know | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="It has been 6 months since the last CodeIgniter minor update and 18 months since the last major update. Through all this time we were given no information about the next release of CodeIgniter, but finally 2.0 is on the way.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="CodeIgniter 2.0: Everything you need to know | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="It has been 6 months since the last CodeIgniter minor update and 18 months since the last major update. Through all this time we were given no information about the next release of CodeIgniter, but finally 2.0 is on the way.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">CodeIgniter 2.0: Everything you need to know</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2010-03-11 17:42:00 UTC">
+                Mar 11 2010
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>It has been 6 months since the last CodeIgniter minor update and 18 months since the last major update. Through all this time we were given no information about the next release of CodeIgniter, but <em>finally</em> 2.0 is on the way.</p>
+
+<p>The EllisLab team have decided to drop <a href="http://subversion.apache.org/">Subversion</a>, use <a href="http://mercurial.selenic.com/">Mercurial</a>, track their tickets on <a href="http://www.assembla.com/">Assembla</a> and host their code on <a href="http://bitbucket.org/ellislab/codeigniter/">BitBucket</a></p>
+
+<h3 id="so-what">So what?</h3>
+
+<p>The change of Version Control System to us (the general public) makes no real difference, but it wil let the team work much quicker.</p>
+
+<p>The change to Mercurial would not be as interesting if it was not for the fact they were hosting the code on BitBucket, which is the Mercurial equivalent of GitHub. This is potentially the best piece of news in this entire article.</p>
+
+<p>By moving to a social-coding platform like this, CodeIgniter can face the same attention from the community that jQuery and CakePHP have recently received. jQuery 1.4 massively benefited by being moved to GitHub, as v1.4 was made up almost entirely of community patches and suggestions.</p>
+
+<p>Essentially, if you spot a bug then you can fork CodeIgniter and make the change. Then if they like it, it may well get added in. Win!</p>
+
+<h3 id="what-about-the-code">What about the code?</h3>
+
+<p>Well, there are a LOT of changes in the Changelog for 2.0 so far. Many of these are small tweaks, but the best?</p>
+
+<blockquote>
+  <p>PHP 4 support is deprecated. Features new to 2.0.0 may not be support PHP 4, and all legacy features will no longer support PHP 4 as of 2.1.0.</p>
+</blockquote>
+
+<p>Well thank fuck for that. It was not a huge surprise as ExpressionEngine 2.0 had dropped support for PHP 4, but the fact it has come down to CodeIgniter is brilliant. It means slowly but surely CodeIgniter can progress forwards with great new features without having to worry about coding it in a long-winded PHP 4 compatible fashion.</p>
+
+<p>_ <strong>Update 11/11/2010:</strong> Support for PHP4 is now no longer deprecated, but totally removed. You must now use PHP 5.1.x and change your parent::Controller()’s to parent::__construct()._</p>
+
+<h3 id="drivers">Drivers</h3>
+
+<p>Drivers are a really useful feature that Kohana has had implemented for a while, but is rather difficult to explain. I’ll let EllisLab do it for me:</p>
+
+<blockquote>
+  <p>Drivers are a special type of Library that has a parent class and any number of potential child classes. Child classes have access to the parent class, but not their siblings. Drivers provide an elegant syntax in your <a href="file:/Users/phil/Sites/classes/codeigniter-pre2/user_guide/general/controllers.html">controllers</a> for libraries that benefit from or require being broken down into discrete classes.</p>
+</blockquote>
+
+<p>A great example of this is the new JavaScript library. That is the main “parent” class, then the jQuery “driver” inherits and does more specific code.</p>
+
+<p>Another example could be a Cache class, which then has File, Memcache, APC, etc as drivers.</p>
+
+<h3 id="application-packages">Application “Packages”</h3>
+
+<p>This is a feature I have wanted for as long as I have been using CodeIgniter. It basically allows you to set extra directories that contain libraries, models, helpers, etc.</p>
+
+<p>Example:</p>
+
+<blockquote>
+  <p>/system/application/third_party/foo_bar</p>
+
+  <p>config/<br />
+helpers/<br />
+language/<br />
+libraries/<br />
+models/</p>
+</blockquote>
+
+<p>Using $this-&gt;load-&gt;add_package_path() you can set any full server path to use any shared location you like. No more faffing with symlinks or infecting system/libraries with your third party code.</p>
+
+<h3 id="core-libraries">Core libraries</h3>
+
+<p>Core libraries like Router, Loader, Output, etc are all system/core, but look like they can still be extended/replaced by placing yours in system/application/core.</p>
+
+<h3 id="reserved-controller-names">Reserved Controller Names</h3>
+
+<p>The “reserved controller name” list is now tiny (if you are using PHP 5). They can be anything other than:</p>
+
+<ul>
+  <li>_ci_initial</li>
+  <li>Default</li>
+  <li>index</li>
+</ul>
+
+<p>That gives you a LOT more flexibility on what you can call your controllers after the massive list in PHP 4 support.</p>
+
+<h3 id="more-database-config">More database config</h3>
+
+<ul>
+  <li><strong>swap_pre</strong> - A default table prefix that should be swapped with <var>dbprefix</var>. This is useful for distributed applications where you might run manually written queries, and need the prefix to still be customizable by the end user.</li>
+  <li><strong>autoinit</strong> - Whether or not to automatically initialize the database.</li>
+  <li><strong>stricton</strong> - TRUE/FALSE (boolean) - Whether to force “Strict Mode” connections, good for ensuring strict SQL while developing an application.</li>
+</ul>
+
+<p>The most exciting of the lot there for me is <strong>stricton</strong>. I have had some real problems with <a href="http://pyrocms.com/">PyroCMS</a> on MySQL Strict Mode installations as my local environment is not strict. Using this switch you can just turn MySQL Strict Mode on and make sure it lets you know about any possible errors that <em>would occur if you were running using Strict Mode.</em></p>
+
+<h3 id="goodbye-plugins">Goodbye plugins!</h3>
+
+<p>Plugins have been removed which should really help with the “Library, Helper or Plugin?” confusion. Now your code can be boiled down much eaiser:</p>
+
+<p><strong>Helpers</strong> - One or more functions<br />
+<strong>Libraries</strong> - Lots of functions that share properties (and therefore needs to be a class)</p>
+
+<p>Now the ambiguous “Plugins” have been replaced this is a much easier choice, as previously a plugin could be a function or a class. This should be the hardest upgrade step, but essentially all you need to do is find &amp; replace “load-&gt;plugin(“ with “load-&gt;helper(“ and move <em>system/application/plugins/foo_pi.php</em> to <em>system/application/helpers/foo_helper.php</em> - no biggy.</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>By the looks of it, CodeIgniter 2.0 brings along some brilliant new changes, a heap of bug-fixes for us to be content with. Nothing massive, nothing scary and nothing incompatible. With PHP 4 support on the way out we can all dance a little jig and look forward to a much more interesting future in CodeIgniter feature development.</p>
+
+<p>For now, check out the <a href="http://bitbucket.org/ellislab/codeigniter/src/tip/user_guide/changelog.html">Changelog</a> and subscribe to the <a href="http://bitbucket.org/ellislab/codeigniter/rss/?token=b1ff7f584323d32165103f65e1bc60d6">RSS feed</a> or follow the <a href="http://bitbucket.org/ellislab/codeigniter/">BitBucket project</a> to keep up to date with the progress.</p>
+
+<p><strong>Edit:</strong> <a href="http://www.michaelwales.com/2010/03/codeigniter-2-0-and-mercurial-transition/">Michael Wales</a> and <a href="http://www.haughin.com/2010/03/11/codeigniter-2-critical-changes-implications/">Elliot Haughin</a> have also written their views on the new CodeIgniter 2.0 announcement. Read their articles to get a good base of opinions on the subject.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=CodeIgniter 2.0: Everything you need to know&amp;url=https://philsturgeon.uk/codeigniter/2010/03/11/codeigniter-2/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=CodeIgniter 2.0: Everything you need to know&amp;u=https://philsturgeon.uk/codeigniter/2010/03/11/codeigniter-2/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/git/2010/02/23/Deploying-websites-with-Git/">Deploying websites with Git</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/codeigniter/2010/03/24/modular-separation-codeigniter-2/">Modular Separation for CodeIgniter 2</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2010-03-11 17:42:00 UTC">2010-03-11 17:42:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

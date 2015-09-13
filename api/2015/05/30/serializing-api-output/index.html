@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>The Importance of Serializing API Output | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="I’ve given the API Pain Points talk a bazillion times over the last year. In just 2015 I gave it at:">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="The Importance of Serializing API Output | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="I’ve given the API Pain Points talk a bazillion times over the last year. In just 2015 I gave it at:">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">The Importance of Serializing API Output</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-05-30 18:04:00 UTC">
+                May 30 2015
+              </time>
+              <a href="/tags/http/">#http</a>
+              <a href="/tags/serialization/">#serialization</a>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/fractal/">#fractal</a>
+              <a href="/tags/rails/">#rails</a>
+              <a href="/tags/ams/">#ams</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>I’ve given the <a href="https://www.youtube.com/watch?v=3W7bQj6OdLU">API Pain Points</a> talk a bazillion times over the last year. In just 2015 I gave it at:</p>
+
+<ul>
+  <li><a href="https://joind.in/talk/view/13552">Lone Star PHP</a></li>
+  <li><a href="https://joind.in/talk/view/13899">OpenWest</a></li>
+  <li><a href="https://joind.in/talk/view/13621">ConFoo</a></li>
+</ul>
+
+<p>One section that seems to get a lot of feedback and questions is when I talk about serialization, which I refer to as “adding a presentation layer to your data”.</p>
+
+<p>MSDN says it like this:</p>
+
+<blockquote>
+  <p>Serialization is the process of converting an object into a stream of bytes in order to store the object or transmit it to memory, a database, or a file. Its main purpose is to save the state of an object in order to be able to recreate it when needed. The reverse process is called deserialization. – <strong>Source:</strong>  <a href="https://msdn.microsoft.com/en-us/library/ms233843.aspx">MSDN Programming Concepts</a></p>
+</blockquote>
+
+<p>To PHP developers, they often consider serialization to be using the <a href="http://php.net/serialize"><code>serialize()</code> function</a>. Yes, this is one form of serialization, but it’s not the only one. Another common serialization approach is of course to use the <a href="http://php.net/json_encode"><code>json_encode()</code> function</a>. These days modern frameworks will automatically convert any array returned from a controller method to JSON, meaning you don’t even need to call <code>json_encode()</code> yourself.</p>
+
+<p>This can be a handy shortcut, but if you are building HTTP API (AJAX/RESTful/Hypermedia), then you need to be a bit more specific with what you are returning.</p>
+
+<p>The most common offender is this:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">PlaceController</span> <span class="k">extends</span> <span class="nx">CoreController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">show</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">Place</span><span class="o">::</span><span class="na">find</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Excuse the drastically simplified chunk of code here, but the point is we’re taking a model (probably using an ORM) and returning the result directly.</p>
+
+<p>This seems fairly innocent, but leads to a range of problems.</p>
+
+<h2 id="no-more-secrets">No More Secrets</h2>
+
+<p>Every single field you add to your data store is going to end up being output to the API callee. If this is an internal API then maybe that is ok, but if your information goes anywhere near the browser, or another outside location like a mobile device, you’re going to have a really bad time.</p>
+
+<p>The most obvious examples are users passwords. Sure they’re encrypted but you <em>obviously</em> do not want to be handing those out to strangers.</p>
+
+<p>Slightly more obscure things like password reset tokens being leaked can also lead to your users being hacked.</p>
+
+<p>But it can get even more obscure. In this ‘place’ example, maybe a requirement filtered down from business asking you to add a ‘contact email’ which is for internal use only. If you’ve spent months getting these places on board and have built some unique contacts, you might not want to leak all of those email address to potential competitors.</p>
+
+<p>Yes, many ORMs have ‘hidden’ or ‘visable’ options to blacklist or whitelist various properties, but as time goes on the chances of keeping every potentially value hidden gets more and more unlikely, especially if you have a junior who doesn’t know that one of these fields is taboo, and a tired peer reviewer lets it sneak through on a busy day.</p>
+
+<p>An example of <a href="http://fractal.thephpleague.com/">Fractal</a> - a PHP serialization library I built to help me serialize my APIs - has this simple example:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></td><td class="code"><pre><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">League\Fractal\Manager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">League\Fractal\Resource\Collection</span><span class="p">;</span>
+
+<span class="c1">// Create a top level instance somewhere
+</span><span class="nv">$fractal</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Manager</span><span class="p">();</span>
+
+<span class="c1">// Ask the ORM for 10 books
+</span><span class="nv">$books</span> <span class="o">=</span> <span class="nx">Book</span><span class="o">::</span><span class="na">take</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">();</span>
+
+<span class="c1">// Turn this collection 
+</span><span class="nv">$resource</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Collection</span><span class="p">(</span><span class="nv">$books</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="k">array</span> <span class="nv">$book</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="s1">'id'</span>      <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$book</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">,</span>
+        <span class="s1">'title'</span>   <span class="o">=&gt;</span> <span class="nv">$book</span><span class="o">-&gt;</span><span class="na">title</span><span class="p">,</span>
+        <span class="s1">'year'</span>    <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$book</span><span class="o">-&gt;</span><span class="na">yr</span><span class="p">,</span>
+        <span class="s1">'author'</span>  <span class="o">=&gt;</span> <span class="p">[</span>
+        	<span class="s1">'name'</span>  <span class="o">=&gt;</span> <span class="nv">$book</span><span class="o">-&gt;</span><span class="na">author_name</span><span class="p">,</span>
+        	<span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="nv">$book</span><span class="o">-&gt;</span><span class="na">author_email</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s1">'links'</span>   <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="s1">'rel'</span> <span class="o">=&gt;</span> <span class="s1">'self'</span><span class="p">,</span>
+                <span class="s1">'uri'</span> <span class="o">=&gt;</span> <span class="s1">'/books/'</span><span class="o">.</span><span class="nv">$book</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">]</span>
+    <span class="p">];</span>
+<span class="p">});</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Yes, again it is overly simplified and uses callbacks instead of classes for the logic, but the general idea holds.</p>
+
+<p>There are tools out there for every language under the sun. I’ve worked with <a href="https://github.com/rails-api/active_model_serializers">ActiveModel Serializer</a> and it’s almost identical.</p>
+
+<p>Regardless of the language you’re using this week, I’d like to explain why doing this is so important. You can learn the how later, but this article is about the why.</p>
+
+<h2 id="attribute-data-types">Attribute Data Types</h2>
+
+<p>Many languages - PHP included - are pretty dumb when it comes to their data binding drivers. Things like MySQL and PostgreSQL have many data types: integer, float, boolean, etc, but everything that gets through to userland is just a string.</p>
+
+<p>Instead of <code>true</code> and <code>false</code> you see <code>"1"</code> and <code>"0"</code>, or maybe even <code>"t"</code> and <code>"f"</code>. Floats come out as <code>"-41.235"</code> instead of <code>-41.235</code>.</p>
+
+<p>To a weakly typed language that might not seem particularly important, but strictly typed languages will fall over if this is to ever change. A few times I have seen a numeric string change to an integer due to some math being done in an <a href="http://laravel.com/docs/4.2/eloquent#accessors-and-mutators">ORM accessor</a>, in which <code>"1" + "2" = 3</code>. Such a change could potentially pass your unit tests if they’re vague enough, but it will break the shit out of your iOS app.</p>
+
+<p>ActiveRecord in Rails will track what data type fields should be as they are added to the schema via migrations, but if these change - via accessors or by changing schema type - it will still cause problems.</p>
+
+<p>Using serialization like the example above, you can typecast your data to ensure it is the expect type on output, and that type will only change if you change it in the serializer.</p>
+
+<h2 id="renaming-fields">Renaming Fields</h2>
+
+<p>Renaming fields in the data store should not break your API. If you think having to update all of your integration tests is annoying, think how more annoying it will be for mobile app developers and other frontend teams who have to update and deploy new applications. Maybe you don’t even remember to lock-step the deploy. If you don’t then you’re gonna have broken apps for end users, and even if you push an update to iOS it will be broken until they update their app.</p>
+
+<p>All you need to avoid this renamed field hell is a serialization layer, which will let you update the reference to the field without changing the outside representation.</p>
+
+<h2 id="multiple-data-stores">Multiple Data Stores</h2>
+
+<p>Lots of these ORMish serialization solutions have one major assumption: all of your data lives in the same data store. What happens when some of your data leaves SQL and gets moved off to Redis or something else?</p>
+
+<p>Even if you aren’t moving partial data from SQL to Redis, maybe you’ve split your one table into two, or are using pivot tables now. Most ORM serializers will land on their face if you try this.</p>
+
+<p>Instead, maybe using the repository pattern which has become so popular in Laravel, you can pass all of this data from whatever stores they are in to the serialization library, and the serializer will maintain a consistent output.</p>
+
+<h2 id="versioning-serializers">Versioning Serializers</h2>
+
+<p>In the past I have versioned serializers for major versions. v1 and v2 of <code>FooSerializer</code> can both exist, which have different tests, and satisfy multiple API client needs perfectly.</p>
+
+<h2 id="serializer-formats">Serializer Formats</h2>
+
+<p>Something that Fractal has not yet smoothly achieved, but aims to fix for v1.0, is multiple format “adapters”. This has been done pretty well in the Rails community, and you can send different headers to get totally different formats.</p>
+
+<ul>
+  <li><a href="http://jsonapi.org/">JSON-API</a></li>
+  <li><a href="http://stateless.co/hal_specification.html">HAL</a></li>
+  <li><a href="http://emberjs.com/api/data/classes/DS.RESTAdapter.html">EmberData</a></li>
+</ul>
+
+<p>Depending on the mime-type you send, you can tell your serializer to send back that format, without having to clog up your entire codebase with potentially complex logic.</p>
+
+<h2 id="solutions">Solutions</h2>
+
+<p>I could probably bang on with more reasons for days, but todays flight landed at 5am and the folks next to me kept me up all night.</p>
+
+<p>I have covered the ‘why’ for serialization, but not the ‘how’. For that, take a look at these solutions:</p>
+
+<ul>
+  <li><a href="http://fractal.thephpleague.com/">Fractal</a> - PHP</li>
+  <li><a href="http://jmsyst.com/bundles/JMSSerializerBundle">JMSSerializerBundle</a> - PHP + Symfony2</li>
+  <li><a href="http://marshmallow.readthedocs.org/">Marshmallow</a> - Python</li>
+  <li><a href="https://github.com/rails-api/active_model_serializers">ActiveModel Serializer</a> - Ruby + Rails</li>
+  <li><a href="https://github.com/rails/jbuilder">JBuilder</a> - Ruby + Rails</li>
+  <li><a href="https://github.com/apotonick/roar">Roar</a> - Ruby</li>
+</ul>
+
+<p>I saw a great talk at RailsConf 2015 by my new friend <a href="https://twitter.com/joaomdmoura">João Moura</a> called <a href="https://www.youtube.com/watch?v=PqgQNgWdUB8">AMS, API, Rails and a developer, a Love Story</a>, which will show off some of the cool functionality.</p>
+
+<p>Whichever system you pick, they all have roughly the same idea.</p>
+
+<p>If you’re making any sort of API, <em>please</em> do this.</p>
+
+<p>An API is not just a proxy for SQL commands, it should be planned, considered and maintained carefully, and a simple change to your data store should not take down the entire network of applications and services.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=The Importance of Serializing API Output&amp;url=https://philsturgeon.uk/api/2015/05/30/serializing-api-output/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=The Importance of Serializing API Output&amp;u=https://philsturgeon.uk/api/2015/05/30/serializing-api-output/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/career/2015/05/21/happily-stepping-into-the-shadows/">Happily Stepping into the Shadows</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/">Twatty Fallacies when Fox and Friends talk Flags</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2015-05-30 18:04:00 UTC">2015-05-30 18:04:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

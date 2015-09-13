@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>How to: Install Transmission CLI to Ubuntu Server | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="I made this guide as I had a little trouble finding all the correct information required to get this set up. Some of it was scattered around the Transmission Wiki, some on random blogs and some was just missing. This guide will help compile everything into one place to hopefully save some of you a little time.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="How to: Install Transmission CLI to Ubuntu Server | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="I made this guide as I had a little trouble finding all the correct information required to get this set up. Some of it was scattered around the Transmission Wiki, some on random blogs and some was just missing. This guide will help compile everything into one place to hopefully save some of you a little time.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">How to: Install Transmission CLI to Ubuntu Server</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2009-02-27 19:14:00 UTC">
+                Feb 27 2009
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>I made this guide as I had a little trouble finding all the correct information required to get this set up. Some of it was scattered around the Transmission Wiki, some on random blogs and some was just missing. This guide will help compile everything into one place to hopefully save some of you a little time.</p>
+
+<p>The repositories we will be using are unofficial repositories maintained by “kas”. The original post can be found <a href="http://forum.transmissionbt.com/viewtopic.php?f=13&amp;t=5604">here</a>. This needs to be done so we can get the newest stable version of Transmission, as the newest version you can get from the Ubuntu Server 8.10 default list of repositories is 1.32 and sadly that version is no longer supported by the Transmission team.</p>
+
+<h3 id="main-setup">Main setup</h3>
+
+<p>Adding the Unofficial Transmission repository</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo vim /etc/apt/sources.list
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Enter the two lines below that correspond to your Ubuntu Server version. Press A to start writing using vim.</p>
+
+<h4 id="hardy-heron---804">Hardy Heron - 8.04</h4>
+<blockquote>
+  <p>deb http://ppa.launchpad.net/transmissionbt/ubuntu hardy main deb-src http://ppa.launchpad.net/transmissionbt/ubuntu hardy main</p>
+</blockquote>
+
+<h4 id="intrepid-ibex---810">Intrepid Ibex - 8.10</h4>
+<blockquote>
+  <p>deb http://ppa.launchpad.net/transmissionbt/ubuntu intrepid main deb-src http://ppa.launchpad.net/transmissionbt/ubuntu intrepid main</p>
+</blockquote>
+
+<h4 id="jaunty-jackalope---904">Jaunty Jackalope - 9.04</h4>
+<blockquote>
+  <p>deb http://ppa.launchpad.net/transmissionbt/ubuntu jaunty main deb-src http://ppa.launchpad.net/transmissionbt/ubuntu jaunty main</p>
+</blockquote>
+
+<p>When you are done hit ESC then :wq and Enter to write and quit the file.</p>
+
+<p>Now you need to import the GPG signing key for the stable repository. Enter these two lines into the terminal:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$ gpg --keyserver keyserver.ubuntu.com --recv 976b5901365c5ca1
+$ gpg --export --armor 976b5901365c5ca1 | sudo apt-key add -
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now that you have added these repositories we must update apt</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo apt-get update
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Run the following code to install the transmission-cli package along with the transmission-common package which provides shared code between the CLI and GUI versions.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo apt-get install transmission-cli transmission-common
+</pre></td></tr></tbody></table>
+</div>
+
+<p>After the scrolling madness you should be able to spot the following:</p>
+
+<blockquote>
+  <p>Setting up transmission-common (1.50-0ubuntu0~intrepid0) … Setting up transmission-cli (1.50-0ubuntu0~intrepid0) …</p>
+</blockquote>
+
+<p>This means you have the newest version (at time of writing this guide) so things are going correctly so far.</p>
+
+<p>Now, lets start setting it up. The Transmission developers recommend we run transmission with it’s own user for various security reasons, this also means we can put transmission configuration into its own home directory.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$ sudo adduser --disabled-password transmission
+$ sudo su transmission
+</pre></td></tr></tbody></table>
+</div>
+
+<p>To create the settings file, we can start the daemon and tell it where to put the files. This command will run forever waiting for incoming connections, so as soon as it sits still press Ctrl + C to cancel out of it.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ transmission-daemon -g /home/transmission/.config/transmission-daemon -f
+</pre></td></tr></tbody></table>
+</div>
+
+<p>When you have canceled this process you will see it says - amongst other things - the following text:</p>
+
+<blockquote>
+  <p>Saved “/home/transmission/.config/transmission-daemon/settings.json</p>
+</blockquote>
+
+<p>Exit out of being the transmission user and return to your usual login.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ exit
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now you need to decide where you want to put your download files. Unlike rtorrent which I was previously using, transmission-cli is not able to use different directories for unfinished files and whatnot (without hackery). So instead create a single folder that will contain partial and complete downloads. This happens to be where I put mine:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre>$ sudo mkdir /mediaserver/torrents/Downloads
+$ sudo chmod 777 /mediaserver/torrents/Downloads
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now we can change these settings using vim again. Most of these can be left alone, but if you want the web interface to work you will need to modify a few.</p>
+
+<p>Set the download-dir setting to the path you just created above:</p>
+
+<blockquote>
+  <p>“download-dir”: “\/mediaserver\/torrents\/Downloads”,</p>
+</blockquote>
+
+<p>Now, if you are going to be using the web interface you will need to configure how you want access to work.</p>
+
+<p>Local network users only:</p>
+
+<blockquote>
+  <p>“rpc-whitelist”: “127.0.0.*,192.168.*.*”, “rpc-whitelist-enabled”: 1,</p>
+</blockquote>
+
+<p>Log in from anywhere (with a password):</p>
+
+<blockquote>
+  <p>“rpc-authentication-required”: 1, “rpc-enabled”: 1, “rpc-password”: “password01”, “rpc-port”: 9091, “rpc-username”: “username”, “rpc-whitelist”: “*”, “rpc-whitelist-enabled”: 0,</p>
+</blockquote>
+
+<p>Now that the transmission daemon is all configured it can be started.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ transmission-daemon
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Check running by filtering the running process list for any process with the word “transmission” in it.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ ps aux | grep transmission
+</pre></td></tr></tbody></table>
+</div>
+
+<h3 id="stoppingrestarting-the-daemon">Stopping/Restarting the daemon</h3>
+
+<p>If you need to stop transmission-daemon for any reason such as to edit the config files, the only method I have found (without adding in a custom start-script) is to kill it which seams a little mean.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ ps aux | grep transmission
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This command once again checks for any transmission processes by matching the name. Look for the first number in the line that will look similar to the one below and use that number in the second command to kill it.</p>
+
+<blockquote>
+  <p>username <strong>8785</strong> 0.1 0.5 15928 3052 ? Ssl 16:43 0:00 transmission-daemon</p>
+</blockquote>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ kill -9 8785
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Then you can edit it and start it up again with:</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ transmission-daemon
+</pre></td></tr></tbody></table>
+</div>
+
+<h3 id="testing">Testing</h3>
+
+<p>To trial run the torrents are working it is a good idea to use a heavily seeded torrent such as an ubuntu release. This is a random one I picked for my testing, use any torrent you like.</p>
+
+<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>$ wget http://releases.ubuntu.com/8.10/ubuntu-8.10-desktop-amd64.iso.torrent
+$ transmission-remote --add ubuntu-8.10-desktop-amd64.iso.torrent
+$ sudo rm ubuntu-8.10-desktop-amd64.iso.torrent
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Now finally, if you are using the weub GUI you can access it using the server’s IP address and the URL below:</p>
+
+<blockquote>
+  <p>http://server.ip.address:9091/transmission/web/</p>
+</blockquote>
+
+<p><em>To mask this URL and port (e.g <code>http://torrents.example.com/</code>) check out my guide on <a href="/blog/2008/11/Creating-proxies-with-Apache">creating Apache proxies</a>.</em></p>
+
+<h3 id="setting-it-to-run-on-boot">Setting it to run on boot</h3>
+
+<p>So far we have a working torrent client that will run whenever we ask it, but that is probably not 100% useful for most media server users. If you want this to start on boot, the Transmission developers have provided us Debian/Ubuntu users with an init.d script to run. You can find the <a href="http://trac.transmissionbt.com/wiki/Scripts/initd">Transmission init.d boot script here</a>, so copy the content of the script at the bottom, enter the command below, press “a” to start editing and paste it in.</p>
+
+<p><code>
+ $ sudo vim /etc/init.d/transmission-daemon
+ </code>&gt; Press A to edit.<br />
+&gt; Paste (different in all terminals, start with a right click and take it form there).<br />
+&gt; Press Esc<br />
+&gt; Type “:wq” to write and quit</p>
+
+<p>Now you need to give it permission to be executed as a script and add it to the boot up procedure.</p>
+
+<p><code>
+ $ chmod +x /etc/init.d/transmission-daemon
+ $ sudo update-rc.d transmission-daemon start 51 S .
+ </code></p>
+
+<p>Done! Restart your machine and test it out. I will be writing a follow up article on how to add some great extra features to this program shortly, so keep an eye on the RSS feed.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=How to: Install Transmission CLI to Ubuntu Server&amp;url=https://philsturgeon.uk/linux/2009/02/27/How-to-Install-Transmission-CLI-to-Ubuntu-Server/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=How to: Install Transmission CLI to Ubuntu Server&amp;u=https://philsturgeon.uk/linux/2009/02/27/How-to-Install-Transmission-CLI-to-Ubuntu-Server/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/codeigniter/2009/02/06/Watch-CodeIgniter-errors-reported-as-they-happen/">Watch CodeIgniter error's reported as they happen</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/git/2009/03/31/Getting-on-the-GitHub-bandwaggon/">Getting on the GitHub bandwaggon</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2009-02-27 19:14:00 UTC">2009-02-27 19:14:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

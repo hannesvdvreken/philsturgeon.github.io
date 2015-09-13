@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>The State of Markdown | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="The answer to “What is the State of Markdown?” is “Yes, it’s a f**king state.”">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="The State of Markdown | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="The answer to “What is the State of Markdown?” is “Yes, it’s a f**king state.”">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">The State of Markdown</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-11-30 13:19:00 UTC">
+                Nov 30 2014
+              </time>
+              <a href="/tags/markdown/">#markdown</a>
+              <a href="/tags/commonmark/">#commonmark</a>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/league/">#league</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>The answer to “What is the State of Markdown?” is “Yes, it’s a f**king state.”</p>
+
+<p><a href="http://daringfireball.net/projects/markdown/">Markdown</a> has been around for a long time, since John Gruber released it in 2004.</p>
+
+<p>Since then everyone and their dog has come up with extensions, some of which are built as implementations 
+then referenced almost like standards by other implementations.</p>
+
+<ul>
+  <li><a href="https://michelf.ca/projects/php-markdown/extra/">PHP Markdown Extra</a> - “Markdown Extra is an extension to PHP Markdown implementing some features currently not available with the plain Markdown syntax.”</li>
+  <li><a href="https://packagist.org/packages/nazar-pc/php-markdown-next">PHP Markdown Next</a> - “PHP Markdown Next parser, based on PHP Markdown Extra and PHP Markdown Extra Extended.”</li>
+  <li><a href="http://fletcherpenney.net/multimarkdown/">MultiMarkdown</a> - “MMD is a superset of the Markdown syntax, originally created by John Gruber. It adds multiple syntax features (tables, footnotes, and citations, to name a few), in addition to the various output formats listed above (Markdown only creates HTML).”</li>
+  <li><a href="https://github.com/bhollis/maruku">Maruku</a> - “Maruku is a Markdown-superset interpreter. Maruku implements the original Markdown syntax, all the improvements in PHP Markdown Extra and a new meta-data syntax.”</li>
+  <li><a href="http://kramdown.gettalong.org">kramdown</a> - “… supports standard Markdown (with some minor modifications) and various extensions that have been made popular by the PHP Markdown Extra package and Maruku.”</li>
+</ul>
+
+<p>A Ruby implementation mentioning a PHP implementation and an obsolete Ruby implementation to try
+and make it clear what functionality it has itself? What an utter mess.</p>
+
+<p>These are not the only implementations, but are some of the most commonly referenced amongst others. There are in fact so many implementations with completely differing results that something called <a href="http://johnmacfarlane.net/babelmark2/">Bablemark 2</a> has 
+been set up to compare the outputs of the interpreters.</p>
+
+<p>Some of the differences in these syntaxes are insane.</p>
+
+<ul>
+  <li><a href="http://johnmacfarlane.net/babelmark2/?text=1.++one%0A++++-+a%0A%0A++++-+b%0A2.++two">Nested lists with an empty line</a></li>
+  <li><a href="http://johnmacfarlane.net/babelmark2/?normalize=1&amp;text=under+a+lciense+from+AT%26T%3B+however%2C%0A">Unknown entities</a></li>
+  <li><a href="http://johnmacfarlane.net/babelmark2/?normalize=1&amp;text=hello++%0A-----%0A%0A%0A">Setext header with two spaces at the end</a></li>
+  <li><a href="http://johnmacfarlane.net/babelmark2/faq.html#other">More…</a></li>
+</ul>
+
+<p>Maybe those examples seem like edge-cases or contrived examples, but I have run into a few of those and more.</p>
+
+<h2 id="every-day-issues">Every Day Issues</h2>
+
+<p>The most recent issues for me came from switching this website from <a href="https://www.pyrocms.com/">PyroCMS</a> to <a href="http://jekyllrb.com/">Jekyll</a>. The content was mostly in Markdown already so this was fairly easy, but more specifically it was using <a href="https://michelf.ca/projects/php-markdown/extra/">PHP Markdown Extra</a>.</p>
+
+<p>I ran into a few issues with <a href="http://kramdown.gettalong.org">kramdown</a> and <a href="https://github.com/vmg/redcarpet">Redcarpet</a> both building a version of my content that was
+subtly broken in various ways. One specific issue was with <a href="https://github.com/gettalong/kramdown/issues/185">lists inside blockquotes</a>.</p>
+
+<div class="highlight html"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre>&gt; With PSR-0, multiple classes actually map to the same file. For example, all of the following map to the same file (Foo/Bar/Baz.php): 
+&gt;  - \Foo\Bar\Baz
+&gt;  - \Foo\Bar_Baz
+&gt;  - \Foo_Bar_Baz
+</pre></td></tr></tbody></table>
+</div>
+
+<p>The result of that Markdown when run through kramdown looked like this:</p>
+
+<div class="highlight html"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre><span class="nt">&lt;blockquote&gt;</span>
+  <span class="nt">&lt;p&gt;</span>With PSR-0, multiple classes actually map to the same file. For example, all of the following map to the same file (Foo/Bar/Baz.php): 
+ - \Foo\Bar\Baz
+ - \Foo\Bar_Baz
+ - \Foo_Bar_Baz<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/blockquote&gt;</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Notice how the list items are not parsed at all and just shoved in as plain-text.</p>
+
+<p>I’m not just picking on kramdown here, as this one particular block of text comes out <a href="http://johnmacfarlane.net/babelmark2/?text=%3E+With+PSR-0%2C+multiple+classes+actually+map+to+the+same+file.+For+example%2C+all+of+the+following+map+to+the+same+file+(Foo%2FBar%2FBaz.php)%3A+%0A%3E++-+%5CFoo%5CBar%5CBaz%0A%3E++-+%5CFoo%5CBar_Baz%0A%3E++-+%5CFoo_Bar_Baz">incredibly differently</a>
+in most implementations when compared on Babelmark 2.</p>
+
+<p>Pandoc just chews half of the content out of the list items and leaves some dashes in place:</p>
+
+<div class="highlight html"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre><span class="nt">&lt;blockquote&gt;</span>
+<span class="nt">&lt;p&gt;</span>With PSR-0, multiple classes actually map to the same file. For example, all of the following map to the same file (Foo/Bar/Baz.php): - - _Baz - _Bar_Baz<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/blockquote&gt;</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Redcarpet and PHP Markdown have some boundary issues with underscores being converted to italics:</p>
+
+<div class="highlight html"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre><span class="nt">&lt;blockquote&gt;</span>
+<span class="nt">&lt;p&gt;</span>With PSR-0, multiple classes actually map to the same file. For example, all of the following map to the same file (Foo/Bar/Baz.php): 
+ - \Foo\Bar\Baz
+ - \Foo\Bar<span class="nt">&lt;em&gt;</span>Baz
+ - \Foo<span class="nt">&lt;/em&gt;</span>Bar_Baz<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/blockquote&gt;</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Maruku is a little heavy on the whitespace but gets it spot on as far as the HTML goes:</p>
+
+<div class="highlight html"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td><td class="code"><pre><span class="nt">&lt;blockquote&gt;</span>
+<span class="nt">&lt;p&gt;</span>With PSR-0, multiple classes actually map to the same file. For example, all of the following map to the same file (Foo/Bar/Baz.php):<span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;ul&gt;</span>
+<span class="nt">&lt;li&gt;</span>\Foo\Bar\Baz<span class="nt">&lt;/li&gt;</span>
+
+<span class="nt">&lt;li&gt;</span>\Foo\Bar_Baz<span class="nt">&lt;/li&gt;</span>
+
+<span class="nt">&lt;li&gt;</span>\Foo_Bar_Baz<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/blockquote&gt;</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Ask 100 different implementations to parse the same Markdown, and you’ll get about 56 different answers.</p>
+
+<p><strong>Markdown and the ecosystem around it is broken.</strong></p>
+
+<h2 id="commonmark">CommonMark</h2>
+
+<p>An attempt has been made by various people involved with companies that use Markdown, to make a single 
+specification that is <a href="http://spec.commonmark.org/0.12/#why-is-a-spec-needed">far less ambiguous</a> when it comes down to what should be output from some of these tricky combinations of syntax.</p>
+
+<ul>
+  <li>John MacFarlane, jgm@berkeley.edu</li>
+  <li>David Greenspan, david@meteor.com</li>
+  <li>Vicent Marti, vicent@github.com</li>
+  <li>Neil Williams, neil@reddit.com</li>
+  <li>Benjamin Dumke-von der Ehe, ben@stackexchange.com</li>
+  <li>Jeff Atwood, jatwood@codinghorror.com</li>
+</ul>
+
+<p>This does not include John Gruber, the chap who originally made Markdown, and that has been the source of 
+much controversy.</p>
+
+<p>That controversy is mostly in the past now the <a href="http://talk.commonmark.org/t/call-it-yamf-leaven-the-brand-sell-it-on-its-merits-not-its-name/410">“what to call it”</a> conversation is resolved, and John Gruber has 
+agreed with them that “CommonMark” is an acceptable name.</p>
+
+<p>CommonMark is now at v1.0 and is considered “complete.” It is still being worked on, and currently misses 
+functionality that some people expect it to have.</p>
+
+<p>The premise of CommonMark was to remove ambiguity in the original specification and so far it has mostly done
+that. At this point though there is a big step for them to face, and that is the matter of all the extra 
+syntax and functionality people have come to expect from working with Markdown.</p>
+
+<h2 id="tables-and-other-extra-functionality">Tables, and other “Extra” functionality</h2>
+
+<p>CommonMark does not have any support for tables, other than through using HTML <code>&lt;table&gt;</code> tags. Gruber’s 
+Markdown does not have special syntax for tables either, but people are used to tables thanks to “PHP 
+Markdown Extra”, “GitHub-favored Markdown” and many other implementations supporting them.</p>
+
+<p>In a <a href="http://talk.commonmark.org/t/tables-in-pure-markdown/81">thread about tables on the CommonMark site</a>, the reason cited is this:</p>
+
+<blockquote>
+  <p>This is meant to be a specification of core markdown features.
+Extensions, including tables, can come later, but let’s get the
+core settled first! <strong>– <a href="">John MacFarlane</a></strong></p>
+</blockquote>
+
+<p>It looks CommonMark plans to completely cover “core Markdown” - which means Gruber’s Markdown - before moving onto any “extra syntax” like tables. That sounds reasonable enough, but a few people are <a href="http://talk.commonmark.org/t/tables-vs-fenced-code-blocks-when-is-something-common/411">a bit annoyed</a> about <a href="http://talk.commonmark.org/t/tables-in-pure-markdown/81/4">fenced code blocks</a> being added and tables still not being done. It seems a bit inconsistent to 
+add some new syntax but refuse others, but I understand that they are trying hard not to become divergent. Really they have <a href="http://talk.commonmark.org/t/what-changed-in-commonmark/15">not changed all that much</a>.</p>
+
+<p>Plenty of Markdown-like languages have cropped up that started off similar to Markdown, but became so 
+different that they are not commonly used. Remember <a href="http://www.wikicreole.org">Creole</a>? Probably not. CommonMark might have added 
+fenced code blocks, but that is not a huge leap from Gruber’s Markdown having <a href="http://daringfireball.net/projects/markdown/syntax#precode">indented code blocks</a>, so
+this could be considered an acceptable addition.</p>
+
+<p>Looking forwards, extensions or extras are going to be very important to avoid any further problems around
+what goes in and what stays out. Luckily a few options are being discussed.</p>
+
+<blockquote>
+  <p>I suggest someone should create a topic about how best to include simple extensibility points for extensions, ways to namespace them and handle order so they don’t conflict, etcetera. That is the best thing to discuss right now. <strong>– <a href="http://talk.commonmark.org/t/the-inevitable-markdownextra-topic/42/18">Jeff Atwood</a></strong></p>
+</blockquote>
+
+<p>How CommonMark extensions or extras end up being implemented will be interesting, and there are a few 
+conversations discussing how it might work.</p>
+
+<ol>
+  <li><a href="http://talk.commonmark.org/t/optional-syntax/515">Optional Syntax</a></li>
+  <li><a href="http://talk.commonmark.org/t/multiple-levels-of-commonmark-specification/541">Multiple levels of CommonMark specification</a></li>
+  <li><a href="http://talk.commonmark.org/t/generic-directives-plugins-syntax/444">Generic directives/plugins syntax</a></li>
+</ol>
+
+<p><strong>Any and all of these approaches to adding extensions or extras would solve a lot of problems in the Markdown and CommonMark eco-systems.</strong></p>
+
+<h2 id="multiple-levels-of-commonmark">Multiple Levels of CommonMark</h2>
+
+<p><a href="http://www.php-fig.org/psr/psr-1">PSR-1</a> and <a href="http://www.php-fig.org/psr/psr-2">PSR-2</a> might not be your favorite PHP standards, but splitting them in two worked out very well
+for the PHP-FIG. By having PSR-1 we could get people using the same method naming style, leading to 
+consistent public APIs for classes, without enforcing tabs v spaces rules on other developers.</p>
+
+<p>Very similarly, having “CommonMark Core” and “CommonMark Extra” with extra things like tables would be great.</p>
+
+<p>Those still sticking to Gruber as having the one-true source of Markdown can just use the CommonMark tests
+as a way to make their implementations more logical and consistent whenever it does something weird.</p>
+
+<p>Those interested in extra Markdown functionality like that in kramdown, PHP Markdown Extra, etc can work 
+together on defining tables and whatnot for us all to use with a documented syntax and result, which
+transcends specific implementations regardless of programming language.</p>
+
+<h2 id="directives">Directives</h2>
+
+<p>LeanPub have decided to make yet another standard based on what they used to call <a href="https://leanpub.com/help/manual">LeanPub Markdown</a>, called
+<a href="http://markua.org/">Markua</a>. That is different to Maruku, the Ruby parser mentioned earlier.</p>
+
+<p>The idea is that while LeanPub are happy with Markdown, and their end-users - like myself - are happy to use
+Markdown, they need to have a few extra bits of syntax for asides, warning boxes, tips, etc.</p>
+
+<p>I strongly disagree that they need to make their Markdown “flavor” into a whole new spec, but they could 
+simplify Markua by making it into “CommonMark + custom LeanPub directives.” LeanPub have already 
+<a href="https://leanpub.com/markua/read#leanpub-auto-relationship-of-the-markua-specification-to-gruber-markdown-and-commonmark">expressed an interest</a> in keeping “close” to CommonMark, but being literally CommonMark with Markua being a
+set of CommonMark directives would be much easier for everyone.</p>
+
+<h2 id="make-things-better">Make Things Better</h2>
+
+<p>Here is the path I see out of this mess, and it can be improved by both the end-users, and the implementation
+creators.</p>
+
+<h3 id="implementation-maintainers">Implementation Maintainers</h3>
+
+<p>PHP packages on Packagist can mark themselves as deprecated, and recently a few Markdown packages have
+started to do that. I convinced a few people to remove old forks, and <a href="https://packagist.org/packages/dflydev/markdown">dflydev/markdown</a> 
+has been marked as deprecated. This should help to channel people towards the solutions that want to
+improve, and steer them away from solutions that are not being actively developed.</p>
+
+<p>If you want to keep working on your Markdown implementations, then implement the shit out of as much of the 
+<a href="http://spec.commonmark.org/">CommonMark specification</a> as you can. Any deviation is going to cause trouble, so the closer the better.
+Most of these deviations are going to be bugs or parser logic errors, so it’s not hard to use the spec and 
+test-suite to improve your own implementations.</p>
+
+<p>Also, people need to stop making new flavors of Markdown. Remember I mentioned <a href="https://packagist.org/packages/nazar-pc/php-markdown-next">PHP Markdown Next</a>?</p>
+
+<blockquote>
+  <p>PHP Markdown Next parser, based on PHP Markdown Extra and PHP Markdown Extra Extended</p>
+</blockquote>
+
+<p>Stop. Reading that hurt my brain. No more of these please.</p>
+
+<h3 id="end-users">End-Users</h3>
+
+<p>Use CommonMark. Pick an implementation for your blog, book or whatever that actively mentions supporting
+CommonMark; either as the only supported specification or as a driver. Here are a list of <a href="https://github.com/jgm/CommonMark/wiki/List-of-CommonMark-Implementations">CommonMark 
+compliant implementations</a> in various languages.</p>
+
+<p>If you are working with PHP, grab a copy of <a href="https://github.com/colinodell/commonmark-php">colinodell/commonmark-php</a>, which will soon be moving over to
+<a href="http://thephpleague.com">The League of Extraordinary Packages</a>. It’s specification compliant and will be 
+following the progress of CommonMark as they work out however they’re gonna do directives or extensions.</p>
+
+<p>If you notice a weird result from some specific Markdown syntax in an existing project and changing to use a
+CommonMark compliant library is not possible or successful, send a pull request or post an issue to that
+implementation and make it work according to CommonMark.</p>
+
+<p>If CommonMark is doing something weird, send them a pull request too. The specification is not finished yet,
+but it’s <em>considerably</em> less ambiguous than the other implementations, most of which are just doing whatever
+they feel like doing.</p>
+
+<h2 id="xkcd">XKCD</h2>
+
+<p>I talk about standards a lot, and every single time I mention anything to do with standards, some hilarious 
+comedian links me to <a href="https://xkcd.com/927/">XKCD: Standards #927</a>.</p>
+
+<p><img alt="Fortunately, the charging one has been solved now that we've all standardized on mini-USB. Or is it micro-USB? Shit." src="/assets/article_images/2014-11-30-state-of-markdown/standards.png" /></p>
+
+<p>If StackOverflow, GitHub and the others hashing out CommonMark all had their own flavors before,
+then they are reducing the number of flavors out there purely by letting these folks get on with it.</p>
+
+<p>If end-users ignore CommonMark then the only gain might be making a few websites work the same with user-
+entered Markdown, but think again about implementations. The fact that every single implementation
+right now is doing something entirely different, we actually have hundreds of “standards.”</p>
+
+<p>With implementations starting to lean towards CommonMark as a definitive guide of how to handle certain 
+situations, we will slowly have fewer and fewer differing results and we won’t be in the situation XKCD 
+describes.</p>
+
+<p>This XKCD comic is closer to how things should be going:</p>
+
+<p><img alt="ISO 8601" src="/assets/article_images/2014-11-30-state-of-markdown/iso_8601.png" /></p>
+
+<h2 id="summary">Summary</h2>
+
+<p>None of this is that far-fetched. No library maintainer wants their implementation to be the worst ranked on 
+Babelfish, so implementing more and more of CommonMark over time is going to definitely make their tool
+better.</p>
+
+<p>Having a <a href="/php/2014/10/20/php-wars-attack-of-the-clones/">shit-load of clones</a> for a single problem domain 
+is bad enough, but these Markdown implementations aren’t even clones. They’re fundamentally different in
+completely unexpected ways, and a specification like CommonMark is the only way we can fix that.</p>
+
+<p>Comment here with any progress you see on Markdown implementations getting closer to CommonMark, or spot new 
+problems with crooked results that diverge from the specification.</p>
+
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=The State of Markdown&amp;url=https://philsturgeon.uk/markdown/2014/11/30/state-of-markdown/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=The State of Markdown&amp;u=https://philsturgeon.uk/markdown/2014/11/30/state-of-markdown/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/php/2014/11/25/treehouse-standards-best-practices/">Treehouse: PHP Standards and Best Practices</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2015/01/10/developer-fallacies-2014/">Developer Fallacies of 2014</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-11-30 13:19:00 UTC">2014-11-30 13:19:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

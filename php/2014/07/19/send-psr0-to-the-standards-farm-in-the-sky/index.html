@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Send PSR-0 to the Standards Farm in the Sky | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="This article attempts to convince you that deprecating the PSR-0 auto-loading standard in favor of the PSR-4 auto-loading standard is not only a good idea, but a problem-less wonderland of happy benefits, in the hope that when I try to get this done on the FIG mailing list, people will be happy about it instead of sad or rage-mode.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Send PSR-0 to the Standards Farm in the Sky | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="This article attempts to convince you that deprecating the PSR-0 auto-loading standard in favor of the PSR-4 auto-loading standard is not only a good idea, but a problem-less wonderland of happy benefits, in the hope that when I try to get this done on the FIG mailing list, people will be happy about it instead of sad or rage-mode.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Send PSR-0 to the Standards Farm in the Sky</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2014-07-19 16:21:00 UTC">
+                Jul 19 2014
+              </time>
+              <a href="/tags/psr0/">#psr0</a>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/phpfig/">#phpfig</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>This article attempts to convince you that deprecating the PSR-0 auto-loading standard in favor of the PSR-4 auto-loading standard is not only a good idea, but a problem-less wonderland of happy benefits, in the hope that when I try to get this done on the FIG mailing list, people will be happy about it instead of sad or rage-mode.</p>
+
+<p>In December 2013, the PHP-FIG voted PSR-4 into place, which Paul Jones and a few others always billed as an “alternative” to PSR-0. I believe it was talked about as an alternative at the time because we <em>knew</em> that the PHP community would drop their collective bricks if we tried to pull PSR-0 out from under them, right as they were just slowly getting used to using it. It was always going to be bumped off at some point - in my head, but left to co-exist with PSR-0 for a while to ease the transition.</p>
+
+<p>In February 2014, the PHP-FIG <a href="https://groups.google.com/forum/#!searchin/php-fig/amendment$20bylaw/php-fig/4ivPkEZZlPo/lZXwusvNdoYJ">approved</a> the <a href="https://github.com/php-fig/fig-standards/blob/master/bylaws/006-psr-amendments.md">Amendments Bylaw</a>, which was pushed by me for two reasons:</p>
+
+<ol>
+  <li>PSR-1 had a hard dependency on PSR-0, and I wanted PSR-4 <a href="https://www.youtube.com/watch?v=hd9t6jgGcYE">to be able to play</a> too. They’re basically compatible.</li>
+  <li>I knew that at some point, I would want to put a bolt through PSR-0.</li>
+</ol>
+
+<h2 id="why-the-hate-for-psr-0">“Why the hate for PSR-0?”</h2>
+
+<p>I am actually very impressed with PSR-0 in general. Thanks to Composer, in the last two years PSR-0 adoption has gone through the roof, and it has revolutionized auto-loading in the PHP community. As of some time a few months ago (when I pestered Jordi for some obscure but apparently very important statistics for my O-1 US visa), of the 20,097 packages hosted on Composer, 15,668 of them use PSR-0.</p>
+
+<p>That is nuts.</p>
+
+<p><strong>75% of the PHP community agreed on something.</strong></p>
+
+<p>Literally never happened.</p>
+
+<h2 id="so-why-deprecate-a-great-standard">“So why deprecate a great standard?”</h2>
+
+<p>Well imaginary interviewer who has been constructed purely as a narrative device, PSR-0 might have done some great things but with the power of hindsight, various people have come to realize that PSR-0 is not all unicorn farts and rainbow kisses.</p>
+
+<p>PSR-0 was made back in 2009 when the group was smaller, less experienced (it was their first standard), and it had some troubles that only came to light at a later date.</p>
+
+<p>Anthony Ferrara <a href="http://blog.ircmaxell.com/2011/11/on-psr-0-being-included-in-phps-core.html">listed a bunch of troubles</a>. He was mostly talking about why it should not be included in the core of PHP, and - as a quick side-note - I agree with that part entirely. If PSR-0 is ever deprecated at some point then having it baked into PHP means it will be stuck with us for about 15 years. No ta.</p>
+
+<p>Other than the “why it shouldn’t be in the core” arguments, he listed some inconsistencies:</p>
+
+<blockquote>
+  <p>If a file doesn’t exist, PSR-0 doesn’t play nice with other auto-loaders. It will try to require the file, but then the require will fail and fatal error out. This is a problem since a later autoloader may know how to load it. So it’s not following the normal convention of “if you can’t load it, don’t error out”.</p>
+</blockquote>
+
+<p>That is only the “sample implementation” which the PHP-FIG consider to be only an example, not a canonical piece of code, but yeah he is right, PSR-0 looks pretty broken in that example.</p>
+
+<p>PSR-4 fixed that.</p>
+
+<blockquote>
+  <p>With PSR-0, multiple classes actually map to the same file. For example, all of the following map to the same file (Foo/Bar/Baz.php):</p>
+
+  <ul>
+    <li>\Foo\Bar\Baz</li>
+    <li>\Foo\Bar_Baz</li>
+    <li>\Foo_Bar_Baz</li>
+  </ul>
+</blockquote>
+
+<p>Absolutely, that is a mess. I explained this in the <a href="https://github.com/philsturgeon/psr0-naming-oddity">PSR-0 Naming Oddity</a>. This has only once caused me a problem in development and never any sort of issue in production, but it is a WTF that should be taken care of.</p>
+
+<p>PSR-4 fixed that.</p>
+
+<h2 id="ok-i-get-that-psr-4-is-awesome-but-we-still-need-psr-0">“Ok I get that PSR-4 is awesome, but we still need PSR-0!”</h2>
+
+<p>Absolutely, PSR-0 will not be going anywhere. I asked for feedback about deprecating PSR-0 and got a lot of responses I wasn’t expecting, like this one:</p>
+
+<blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/philsturgeon">@philsturgeon</a> <a href="https://twitter.com/benmarks">@benmarks</a> deprecating it would mean to set every framework lib and app to be depricates who still uses it</p>&mdash; Daniel Fahlke (@Flyingmana) <a href="https://twitter.com/Flyingmana/statuses/490474082262339584">July 19, 2014</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>That is simply not true. Deprecating the standard has no effect on existing projects. It would have no effect on the usage of Composer, Packagist, existing code, Travis or GitHub any more than it would mess with the migratory patterns of dolphins in mating season. Deprecating PSR-0 does literally nothing, other than let people know at some point they should probably consider upgrading their packages to use PSR-4 instead.</p>
+
+<p>They can also just ignore the deprecation message forever.</p>
+
+<p>The FIG wont be sending out heavies to break kneecaps if people are still on PSR-0 in a year.</p>
+
+<p>I think some people have a slight misunderstanding of the word “deprecation.” Maybe I do, but it seems like <a href="https://en.wikipedia.org/wiki/Deprecation">Wikipedia agrees</a> with my understanding. The first bit:</p>
+
+<blockquote>
+  <p>Deprecation is an attribute applied to a computer software feature, characteristic, or practice to indicate that it should be avoided (often because it is being superseded). Beyond describing software, the term is also used for a feature, design, or practice that is permitted but no longer recommended in other areas, such as hardware design or compliance to building codes.</p>
+</blockquote>
+
+<p>Yep, that is about right. We have effectively superseded it with PSR-4. The next bit says:</p>
+
+<blockquote>
+  <p>While a deprecated software feature remains in the software, it is use may raise warning messages recommending alternative practices; deprecated status may also indicate that feature will be removed in the future.</p>
+</blockquote>
+
+<p>Notice that it says “may also indicate that feature will be removed.” The “removal” bit is optional, and that optional step is something that the <a href="https://github.com/php-fig/fig-standards/blob/master/bylaws/006-psr-amendments.md">Amendment Bylaw</a> does not allow at all. The FIG does not remove, delete, invalidate or expire in any way a standard once it is accepted.</p>
+
+<p>So again, put simply, PSR-0 is not going anywhere. It <strong>can’t</strong> go anywhere, and auto-loaders like Composer will still support it.</p>
+
+<p>Deprecation in this instance is just the FIG saying “Hey buddy, there is a new thing over there you should probably use instead.”</p>
+
+<h2 id="what-about-phpunit-and-twig">“What about PHPUnit and Twig?!”</h2>
+
+<p>In previous conversations about PSR-4 or potential PSR-0 deprecation, Twig and PHPUnit have been used as examples of large projects that could not easily switch to PSR-4 because they use “poor-mans namespaces” (underscores with special meaning instead of actual namespaces). Somehow, people have the idea that deprecating PSR-0 would somehow either a) shame these projects and make them feel bad, or b) force them to bump their PHP version requirement to PHP 5.3 to use namespaces.</p>
+
+<p>Well, since those conversations, PHPUnit has bumped the <a href="https://github.com/sebastianbergmann/phpunit/blob/a29e4505867735f4f4457cfc6a6386f96dda6eef/composer.json#L25">minimum dependencies</a> to PHP &gt;=5.3.3. Comically PHPUnit does not even use PSR-0, so the deprecation of PSR-0 does not effect them either.</p>
+
+<p>I asked Fabien Potencier if he would consider switching Twig to PSR-4, and he is now asking <a href="https://twitter.com/fabpot/status/490475547412406273">if Twig v2.0 should drop 5.2 support</a>. Many people are saying yes.</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/fabpot">@fabpot</a> Do it. Kill 5.2 with fire.</p>&mdash; David McKay (@rawkode) <a href="https://twitter.com/rawkode/statuses/490481522433331200">July 19, 2014</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="what-about-us-poor-php-52-users">“What about us poor PHP 5.2 users?”</h2>
+
+<p>There are plenty of people stuck on PHP 5.2, and judging by recent tweets I’ve seen that number is as high as about 5, maybe even 6.</p>
+
+<p>Old legacy systems have old legacy code, and they have Composered in some PHP 5.2-only PSR-0 code. They don’t want their dependencies to suddenly switch to PHP 5.3 and force them to upgrade their systems, leading them down a path of pain and suffering. I understand everyone, really, but this is what <a href="http://semver.org/">SemVer</a> is for.</p>
+
+<blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/fabpot">@fabpot</a> there&#39;ll still be 1.x branch, which is great software for 5.2. Up req for V2 and see if PHP&#39;s newer features allow for new ideas.</p>&mdash; Jelmer Schreuder (@jelmer_php) <a href="https://twitter.com/jelmer_php/statuses/490496818879660032">July 19, 2014</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>If you are releasing packages, a framework, a CMS, etc then tag a new major version which drops support for PHP 5.2 and switch to some namespaces. PyroCMS did this for the last version, and our community seems happy.</p>
+
+<p>Keep a branch around for 5.2 and do some patches now and then, but use this 5.3 jump as a chance to go and clean up your package. Maybe see if you can use closures to make some of your API a little nicer, and take advantage of all the other PHP 5.3 packages out there to offload some of your code onto hard-baked dependencies.</p>
+
+<p>Have fun with it. Major versions are a time for change and prosperity, but you can’t just support PHP 5.2 forever because “legacy systems require it.”</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/philsturgeon">@philsturgeon</a> The only reason Major versions exist, is to allow for BC.</p>&mdash; Zack Kitzmiller (@zackkitzmiller) <a href="https://twitter.com/zackkitzmiller/statuses/490185999226765312">July 18, 2014</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>In my experience, most of these old legacy systems are barely worked on, and when they are it is only minor updates. Minor updates do not require using the very latest major version of a package, so they can stick to the PHP 5.2 version until that legacy app gets ditched, at which point they can use PHP 5.3, 5.4, 5.5 or 5.6, but PHP 5.2 can piss right off.</p>
+
+<h2 id="but-upgrading-is-haaaaaard">“But upgrading is haaaaaard!”</h2>
+
+<p>If you have code that you are trying to upgrade from PSR-0 to PSR-4 and you already use namespaces (the vast majority of you) then upgrading your code could take you as little as 10 seconds.</p>
+
+<p>I explained this with more detail in <a href="/blog/2014/02/phpfig-autoloaders-amendments-and-the-15th-standard">PHP-FIG: Autoloaders, Amendments and The “15th Standard”</a>, but basically you have two options:</p>
+
+<ol>
+  <li>Keep the folder structure identical as it was in PSR-0.</li>
+  <li>Simplify the folder structure by removing the namespace prefix.</li>
+</ol>
+
+<p>Some people don’t like that second option, so… don’t use it. If you want to keep the PSR-0 style folder structure but use PSR-4 then you can keep doing that, again: <strong>Forever</strong>.</p>
+
+<p>Upgrading is either:</p>
+
+<ul>
+  <li>Insanely easy</li>
+  <li>Relatively easy</li>
+  <li>Fairly easy</li>
+</ul>
+
+<p>You can pick your own path, but none of them are hard, even if you have to switch <code>_</code> to <code>\</code> and add some <code>use</code> statements to your code. If you are trying to upgrade an entire application and that seems hard then yeah, it might be, so don’t do it. Make your next application PSR-4 because why the shit aren’t you using namespaces already.</p>
+
+<p><em>Somebody could also almost certainly produce a “poor-man namespace” to “actual namespace” converter, much along the lines of Nikita Popov’s <a href="https://gist.github.com/nikic/ffd019ef78b72934c7cc">varVar script</a>, used to detect variable variable usages of stuff that might break in his <a href="https://wiki.php.net/rfc/uniform_variable_syntax">Uniform Variable Syntax RFC</a>. That would be awesome. If you do this, please get in touch.</em></p>
+
+<h2 id="ok-i-get-it-we-should-deprecate-but-why-the-rush">“Ok I get it, we should deprecate, but why the rush?”</h2>
+
+<p>I would like to have PSR-0 deprecated at some point. It does not <em>have to be</em> right now, but I don’t understand any benefit of waiting. There will always be poor souls stuck using 5.2, there will always be people using PSR-0 who don’t want to change, but we need to clean up any confusion for new users coming into the world of PHP and wondering why the hell we have two autoloaders.</p>
+
+<p>If deprecation simply directs users from one PSR to the other and has zero effect on anyone actually using it, then the negatives are literally nothing and the benefits are a slight shunt in the right direction for getting a version of packages onto PHP 5.3 and improved clarity for beginners.</p>
+
+<p><strong>There is no perfect time to deprecate PSR-0, so let’s just do it now.</strong></p>
+
+<h2 id="next-step">Next Step</h2>
+
+<p>If you want to upgrade your own code, take a look at the <a href="https://getcomposer.org/doc/04-schema.md#autoload">Composer autoloading documentation</a>.</p>
+
+<p>I wanted to get this discussion started in public before voting on the FIG mailing list to see how people feel about the situation. If the vast majority of people are freaking out then I can wait a while to deprecate, but I really cannot see the point of doing that.</p>
+
+<p>The tl;dr here is that I am going to make a PR shortly with this being added to the top of the PSR-0 standard, and when I do that it would be great to have some support.</p>
+
+<blockquote>
+  <p>Deprecated - As of 2014-12-30 PSR-0 has been marked as deprecated. <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md">PSR-4</a> is now recommended as an alternative.</p>
+</blockquote>
+
+<p>Answer in the comments with a +1, or tell me why my arguments have not swayed you.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Send PSR-0 to the Standards Farm in the Sky&amp;url=https://philsturgeon.uk/php/2014/07/19/send-psr0-to-the-standards-farm-in-the-sky/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Send PSR-0 to the Standards Farm in the Sky&amp;u=https://philsturgeon.uk/php/2014/07/19/send-psr0-to-the-standards-farm-in-the-sky/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2014/05/31/the-pocket-guide-to-sexism-in-tech/">The Pocket Guide to Sexism in Tech</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2014/07/23/neverending-muppet-debate-of-php-6-v-php-7/">The Neverending Muppet Debate of PHP 6 v PHP 7</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2014-07-19 16:21:00 UTC">2014-07-19 16:21:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Distributed Architecture Faking with Vagrant | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Working at Kapture I’ve been charged with something I’ve never really had to do before: Managing a big-ass architecture of different servers that all handle different tasks. Theoretically I’ve always known how it works, and I’ve worked in projects that have had these systems, but I’ve never been put in charge of how that whole situation works out.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Distributed Architecture Faking with Vagrant | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Working at Kapture I’ve been charged with something I’ve never really had to do before: Managing a big-ass architecture of different servers that all handle different tasks. Theoretically I’ve always known how it works, and I’ve worked in projects that have had these systems, but I’ve never been put in charge of how that whole situation works out.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Distributed Architecture Faking with Vagrant</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2012-12-02 02:29:00 UTC">
+                Dec  2 2012
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Working at <a href="http://kaptu.re/">Kapture</a> I’ve been charged with something I’ve never really had to do before: Managing a big-ass architecture of different servers that all handle different tasks. Theoretically I’ve always known how it works, and I’ve worked in projects that have had these systems, but I’ve never been put in charge of how that whole situation works out.</p>
+
+<p>So this little web developer had to do a lot of learning.</p>
+
+<p>I played with <a href="/blog/2012/10/puppet-or-chef">Puppet and Chef</a> to help me with provisioning the servers themselves, but then I had to work out how I was going to run the servers locally and online. This for me was a massive block.</p>
+
+<p>For years until a few months ago I used MAMP Pro for pretty much everything. People always said “Duh, why don’t you use OSX’s built in ‘AMP stack, but I said I liked a little more control over versions. Sure I can arse around with homebrew to swap stuff out, but even then it gets complicated. MAMP at least gave me a little control and avoided screwing around with a stack that my OS relied upon for certain features. Still I had the issue of how to handle virtual hosts.</p>
+
+<p>Screwing around with Apache config just to get a single domain running seemed trivial enough, but when you have about 20 domains to manage it just seems like effort, so you end up getting something like VirtualHostX which isn’t free, or MAMP Pro which is even more expensive.</p>
+
+<p>Then you realise that you need some extra extensions for a certain project, so you install them.</p>
+
+<p>Then you realise that a different project requires a different versions of that same extension, or needs PostgreSQL instead of MySQL. Now you have both installed on your workstation.</p>
+
+<p>I could go on, but this is all AAAGGGHHHHH WRONG. So stop that.</p>
+
+<p>The solution for any project more complicated than some FooCMS install is to use Vagrant, which I have been <a href="http://net.tutsplus.com/tutorials/php/vagrant-what-why-and-how/">blogging about</a> quite a lot recently. Vagrant wraps up each project in its own server so you can run NodeJS, Ruby, PHP, PostgreSQL, Mongo, whatever each of your projects need without them getting in each others way.</p>
+
+<h2 id="why-u-uze-nodejs-and-php1">Why u uze NodEJS and PHP?!!?1</h2>
+
+<p>People know me as a PHP developer, but I would prefer to think of myself as a web developer. Kapture currently uses Ruby, PHP, Python, Erlang and even some Java here and there.</p>
+
+<p>Why? Because we have a bunch of different servers that do different things.</p>
+
+<ul>
+  <li>API (PHP)</li>
+  <li>MySQL</li>
+  <li>Redis</li>
+  <li>Admin Panel</li>
+  <li>Queue (RabbitMQ)</li>
+  <li>Workers (Some PHP and some Python: PIL)</li>
+  <li>Graylog2</li>
+</ul>
+
+<p>That’s a whole bunch of stuff, and they are all welcome to require whatever the hell programming language they need to get the job done - I am not only going to pick PHP based products for the sake of it.</p>
+
+<h2 id="local-environment">Local Environment</h2>
+
+<p>This is where it gets interesting. Each of these different servers all run on the same vagrant installation.</p>
+
+<p>Each of the servers listed above is considered by Chef to be its own “role”. Roles can be applied to one node each, or they can be lumped together so the same “node” has multiple “roles”.</p>
+
+<p>We have a “queue” role, an “admin” role, an “api” role, etc. In production and staging each “role” is applied to its own EC2 box (considered by Chef to be a “node”), but locally all roles are applied to the same vagrant box.</p>
+
+<p>Some vagrant pro’s at this point will say: “Woah, hang on a minute, why?”. Sure, vagrant can handle multiple “hosts” per vagrant file, but this starts to get silly when you have multiple nodes for a few reasons.</p>
+
+<h3 id="six-virtualised-servers-aint-quick">Six Virtualised Servers aint quick</h3>
+
+<p>If you only have two “nodes” then you’re probably going to be ok. But if you have 6 or 7 like we do you’re really going to have a bad time. 512MB assigned to each one, each web-facing server running Nginx, PHP-FPM and APC or whateverthecrap else, is all a massive waste of memory. The valuable thing about using Vagrant is that they are all running the same VERSIONS of the software you need, but who cares if they have 3 or 4 virtual host entries instead of 1?</p>
+
+<p>Sharing the same resources makes a whole lot more sense than trying to actually replicate the full architecture on your local machine. After all, you have staging to test this stuff, so why worry about the network architecture locally?</p>
+
+<h3 id="chef--">Chef = $</h3>
+
+<p>If you’re using Chef then they’re counting your nodes and charging accordingly. We have “vagrant-phil”, “vagrant-dan” and “vagrant-john”, instead of having 7 nodes EACH.</p>
+
+<p>Yes we could install our own Chef server, but we could manage our own Git repos instead of using GitHub and we could write our own OS instead of using an existing distribution. Whatever, we have things to do.</p>
+
+<h2 id="vagrantfile">Vagrantfile</h2>
+
+<p>So to set all this up is actually pretty simple. One thing I love to do is have the main codebase(s) installed locally as submodules, then share them via NFS so they can be permissioned, chmoded, etc to run properly. Then I use 198.* as an IP address because it allows NFS to function properly while not actually hitting the outside network. If you go with 10.* as a lot of people do then some commercial networks are going to fight back, and if you pick some random IP which is shared with your dev team then as soon as a colleague fires up the vagrant box you’re going to fight each other for the IP address. 198 keeps it safe.</p>
+
+<script src="https://gist.github.com/4186666.js?file=Vagrantfile"></script>
+
+<h2 id="environmental-differences">Environmental Differences</h2>
+
+<p>So the main difference between local and staging/production is going to be that your code is installed in different locations. Locally it’s going to be /vagrant/www/whatever and in production it’s going to be /var/www/. If like me you use Chef to actually deploy your code then it’s actually going to be /var/www/current/ too, as they use a Capistrano-like folder system to symlink to the “latest” revision in your Git repo as the current version.</p>
+
+<p>This can be handled with Chef “environments”:</p>
+
+<script src="https://gist.github.com/4186666.js?file=dev"></script>
+
+<p>So the default “attributes” for the “role” are set to whatever staging/production expect (/var/www/current) and develop overrides that logic in the environment to be /vagrant/www/api.</p>
+
+<h2 id="moar-code">MOAR CODE</h2>
+
+<p>Sorry guys but this has been mostly theory. If you want to crack on and try this stuff our for yourself then I strongly recommend reading the <a href="http://www.jasongrimes.org/2012/06/managing-lamp-environments-with-chef-vagrant-and-ec2-1-of-3/">three part series by Jason Grimes</a>. This has been my bible for the last month or two, and I cannot recommend it enough. Read it 65 times and keep it bookmarked. Then, you will know kung fu.</p>
+
+<h3 id="further-reading">Further Reading</h3>
+
+<ul>
+  <li><a href="http://net.tutsplus.com/tutorials/php/vagrant-what-why-and-how/">Vagrant: What, Why, and How</a></li>
+  <li>
+    <p><a href="http://www.jasongrimes.org/2012/06/managing-lamp-environments-with-chef-vagrant-and-ec2-1-of-3/">Managing LAMP environments with Chef, Vagrant, and EC2</a></p>
+
+  </li>
+</ul>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Distributed Architecture Faking with Vagrant&amp;url=https://philsturgeon.uk/devops/2012/12/02/distributed-architecture-faking-with-vagrant/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Distributed Architecture Faking with Vagrant&amp;u=https://philsturgeon.uk/devops/2012/12/02/distributed-architecture-faking-with-vagrant/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/devops/2012/10/28/puppet-or-chef/">Puppet or Chef?</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2012/12/02/why-some-people-hate-php/">Why some people hate PHP</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2012-12-02 02:29:00 UTC">2012-12-02 02:29:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

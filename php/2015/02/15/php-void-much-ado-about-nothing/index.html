@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>PHP Void: Much Ado About Nothing | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+
+  <meta property="og:name" content="Phil Sturgeon">
+  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:description" content="Recently Return Types were accepted for PHP 7, which makes me very happy. This RFC was a real work of art. Levi Morrison sidestepped various political land-mines, which had stopped previous attempts at this feature being approved since it was agreed return types should be added in 2005.">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="PHP Void: Much Ado About Nothing | Phil Sturgeon">
+  <meta name="twitter:creator" content="@philsturgeon">
+  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:description" content="Recently Return Types were accepted for PHP 7, which makes me very happy. This RFC was a real work of art. Levi Morrison sidestepped various political land-mines, which had stopped previous attempts at this feature being approved since it was agreed return types should be added in 2005.">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+<div class='teaserimage'>
+  <div class='teaserimage-image' style='background-image: url(/images/ciderphpants.jpg)'>
+    Sunny and Umoja got on the cider
+  </div>
+</div>
+<header class='blog-header'>
+  <a class='blog-logo' href='/' style='background-image: url(/images/logo.jpg)'>
+    Phil Sturgeon
+  </a>
+  <h1 class='blog-title'>Phil Sturgeon</h1>
+  <h2 class='blog-description'>I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+  <div class='custom-links'>
+    <a class='icon-social[:icon]' href='https://twitter.com/philsturgeon'>
+      <i class='fa fa-twitter'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a class='icon-social[:icon]' href='https://github.com/philsturgeon'>
+      <i class='fa fa-github'></i>
+    </a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/about/'>About</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href='/books/'>Books</a>
+  </div>
+</header>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">PHP Void: Much Ado About Nothing</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-02-15 13:10:00 UTC">
+                Feb 15 2015
+              </time>
+              <a href="/tags/php/">#php</a>
+              <a href="/tags/return-types/">#return-types</a>
+              <a href="/tags/rfc/">#rfc</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Recently <a href="https://wiki.php.net/rfc/return_types">Return Types</a> were accepted for PHP 7, which makes me very happy. This RFC was a real work of art. <a href="https://twitter.com/morrisonlevi">Levi Morrison</a> sidestepped various political land-mines, which had stopped previous attempts at this feature being approved since it was agreed return types should be added in 2005.</p>
+
+<blockquote>
+  <ul>
+    <li><strong>We keep the current type options.</strong> Past proposals have suggested new types such as void, int, string or scalar; this RFC does not include any new types. Note that it does allow self and parent to be used as return types.</li>
+    <li><strong>We keep the current search patterns.</strong> You can still search for function foo to find foo’s definition; all previous RFCs broke this common workflow.</li>
+    <li><strong>We allow return type declarations on all function types.</strong> Will Fitch’s proposal suggested that we allow it for methods only.</li>
+    <li><strong>We do not modify or add keywords.</strong> Past RFCs have proposed new keywords such as nullable and more. We still require the function keyword.</li>
+  </ul>
+</blockquote>
+
+<p>Each of these made it clear that other features or items would not be coming in this RFC, but could well be coming later. This kept return types clear of scalar type hints which are obviously an insanely hot-button issue.</p>
+
+<p>One mention was about <code>void</code> as a return type, which seems to have been met with a huge sea of text of people hating it from it being “a waste of time” to “a feature for the sake of a feature” and “meaningless.”</p>
+
+<h2 id="tell-me-about-return-void">Tell me about return void</h2>
+
+<p>In C where you need to define the return type for your function, if something is going to have no return value you do this:</p>
+
+<div class="highlight c"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td class="code"><pre><span class="kt">void</span> <span class="nf">nothin</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// blah some code
+</span>  <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">life</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// blah some other code
+</span>  <span class="k">return</span> <span class="mi">42</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>PHP has just added a very similar feature, which is of course optional for the sake of backwards compatibility at this point.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>function someClass(): SomeClass {
+  return new SomeClass;
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>If the Scalar Type Hints RFC passes (it’s an insanely tight race on Sunday, 15th of February 2015) then of course we’d get proper scalar return type hints for PHP 7 too, so it would look like this:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3</pre></td><td class="code"><pre>function life(): int {
+  return 42;
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>But the PHP version of our <code>nothin()</code> class is still not possible. <a href="https://twitter.com/AndreaFaulds">Andrea Faulds</a> - author of the <a href="https://wiki.php.net/rfc/scalar_type_hints">Scalar Type Hint RFC</a> - is offering an addition to the return type feature called the <a href="https://wiki.php.net/rfc/void_return_type">Void Return Type RFC</a>.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>function nothin(): void {
+  // Do something exciting
+  return;
+}
+
+function nothinElse(): void {
+  // Do something else exciting
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Ok, so this is just a consistency thing, that means we can now say “I will return nothing” as well as saying “I will return a value of type X.” Seems reasonable, right?</p>
+
+<h2 id="problems">Problems</h2>
+
+<p>People are not as content as I would hope. Reddit had <a href="http://www.reddit.com/r/PHP/comments/2vu7n7/rfc_void_return_type/">more comments on this topic</a> than any other recent RFC, and a bunch of the core contributors seem unimpressed.</p>
+
+<h3 id="adding-a-reserved-word">Adding a reserved word</h3>
+
+<p>This is always a concern whenever a new reserved word is proposed because of the number of places it cannot be used in. Well, the RFC clearly states that void does not make this a reserved word:</p>
+
+<blockquote>
+  <p>Like the scalar types proposed by the Scalar Type Hints RFC, the void return type does not become a reserved word, but is instead restricted from use in class and interface names. This avoids confusion while minimising backwards-compatibility breakage.</p>
+</blockquote>
+
+<p>I’ve not so far come across a class or interface named <code>void</code> in the wild, so this is probably not a huge deal-breaker.</p>
+
+<h3 id="but-functions-return-null-by-default">But functions return null by default</h3>
+
+<p>Yes, yes they do.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre>// PHP 5.x
+function nothin() {}
+
+$foo = nothin();
+
+var_dump($foo); // null
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Adding a <code>void</code> return type is not going to make me expect so see <code>void</code> output, nor would I expect an error. The RFC says specifically that it will not error, which is lovely.</p>
+
+<p>A variable named <code>$foo</code> has been declared, and by default PHP shoved a <code>null</code> value in there. That’s fine.</p>
+
+<h3 id="making-a-distinction-between-null-and-void">Making a distinction between null and void</h3>
+
+<p>Nobody is actually proposing <code>void</code> become a new type. This is not like in JavaScript where you have <code>undefined</code> as well as <code>null</code>, this has specific semantic meaning.</p>
+
+<p>Void is a declaration being made by the developer writing the function signature, that this function will not return anything.</p>
+
+<p>How do we currently do that in PHP? With fucking comments.</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre>/** 
+ * I promise this returns nothing
+ * 
+ * @return void
+ */
+function scoutsHonor() {
+  // Do something
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>Well, that method might do a <em>lot</em> of somethings. It might end up being a few hundred lines long - which is wrong we know, but lets not pretend every PHP developer is writing perfectly concise readable code.</p>
+
+<p>Now at some point, somebody jumps in there and adds a return value and forgets to change the docblock. Again, not perfect I know, but this happens <em>all the damn time</em> and you know it.</p>
+
+<p>Well, now our API documentation says that this method doesn’t return anything, but really it is the only way to get at the data you want. That’s pretty damn annoying.</p>
+
+<p><em>Yeah but your tests will catch that!</em></p>
+
+<p>Only if that same shit developer who forgot to change the docblock also forgot to update the tests.</p>
+
+<p><em>Well the peer review team will catch that!</em></p>
+
+<p>Only if… oh you get the point. Not every team is as wonderful as you, trust me.</p>
+
+<p>The differentiation between <code>void</code> and <code>null</code> is an internal reminder to the function definer that they cannot start shoving values out without updating their signature, which will update API documentation generators.</p>
+
+<p>Somebody pointed out that somebody could still change the return type and not update <code>@returns</code>, but that is a non-issue as people start to move from <code>@returns</code> annotations to return types, in just the same way we moved from <code>@access</code> to using <code>public</code>, <code>private</code>, <code>protected</code> in the PHP 4 -&gt; PHP 5 days.</p>
+
+<p>So, over time, PHP will kick you in the face if you try to make a change to your method which will not automatically be reflected in the API generator.</p>
+
+<h3 id="why-not-return-null-instead-of-void">Why not return null instead of void</h3>
+
+<p>Some folks seem to want to introduce the null return type instead:</p>
+
+<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td><td class="code"><pre>function nothin(): null {
+
+}
+
+function nothinElse(): null {
+  return;
+}
+
+function stillNothin(): null {
+  return null;
+}
+</pre></td></tr></tbody></table>
+</div>
+
+<p>This would be very consistent with how PHP is, because lets be honest, PHP does return null even if this proposed <code>void</code> return type is accepted.</p>
+
+<p>Great, but if you allow <code>return null;</code> you have to allow <code>return somethingWhichMightBeNull();</code>. What happens if you build with the expectation of that being null, then it returns a value other than null? Do you only allow <code>return somethingWhichMightBeNull();</code> if <code>somethingWhichMightBeNull(): null</code> is set? It’s a rabbit hole of bullshit which doesn’t need to happen.</p>
+
+<p>A method that may return <code>null</code> is useless. Specifically declaring <code>void</code> is incredibly useful at ensuring you do not get a value, instead of just saying “you probably wont.”</p>
+
+<h2 id="strong-interface-compliance">Strong Interface Compliance</h2>
+
+<p>The above two reasons might be considered hand-holding for the person writing the function, and how useful that is depends on what you are doing. But if you’re implementing interfaces, those signatures were not written by you, and are in a different file. In that case, having a swift smack around the head if you start to violate what the interface wants - without having to rely on your IDE catching it - is a strong benefit.</p>
+
+<p>A lot of folks might not care about this, but as somebody who has seen this come up at the PHP-FIG, and who could take advantage of it for interface-heavy projects like Omnipay and Flysystem with their package-based functionality, any part of the method that can be enforced at a language level instead of relying on fucking docblocks is wildly beneficial.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>The entire conversation seems fairly moot at this point as Andrea quit half way through me writing this blog. I was going to put it in the bin, but Andrea asked me to post anyway.</p>
+
+<p>Regardless, this is a solid feature that makes a lot of sense for many. Again, it’s not going to be for everyone and if Scalar Type Hints fails then it’ll not make <em>quite</em> as much sense, but it is certainly not a waste of time, a feature for the sake of being a feature, it is not meaningless and it is not semantic wankery.</p>
+
+<p>Besides, I can always fall back to <em>“BUT C HAS IT!!”</em></p>
+
+<p>Keep it classy PHP.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=PHP Void: Much Ado About Nothing&amp;url=https://philsturgeon.uk/php/2015/02/15/php-void-much-ado-about-nothing/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=PHP Void: Much Ado About Nothing&amp;u=https://philsturgeon.uk/php/2015/02/15/php-void-much-ado-about-nothing/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/api/2015/02/11/meet-the-league/">Meet the League</a>
+                </p>
+                <p style="float:right">
+                    Next: 
+                    <a class="button" href="/php/2015/03/15/php-7-feature-freeze/">PHP 7 Feature Freeze</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">Phil has contributed to CodeIgniter, FuelPHP, Laravel and handfuls of other projects, to try and make the PHP community a better place.</p>
+              <hr>
+              <p class="published">Published <time datetime="2015-02-15 13:10:00 UTC">2015-02-15 13:10:00 UTC</time></p>
+            </section>
+          </div>
+          <div class="isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <footer class="site-footer">
+              <h4>Build APIs You Won't Hate</h4>
+              <p>Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a></p>
+              <hr>
+              <p class="published">Published 01 Feb 2014</p>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/20/no-booze/">No Booze for a Month</a></li>
+          <li><a href="/feminism/2015/08/17/women-speaker-ratio-conversation-loop/">The Ratio of Women Speakers in Tech</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

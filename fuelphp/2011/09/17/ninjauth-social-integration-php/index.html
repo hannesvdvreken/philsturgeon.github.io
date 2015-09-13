@@ -16,22 +16,23 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <link rel="shortcut icon" href="/assets/images/favicon.ico">
   <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
   <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
   <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+  <link href="/images/favicon.png" rel="icon" type="image/png" />
 
   <meta property="og:name" content="Phil Sturgeon">
-  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:image" content="https://philsturgeon.uk/images/author.jpg">
   <meta property="og:description" content="In the past I have never needed to implement oAuth into a PHP project. I have done it in Rails and boy it was easy thanks to OmniAuth. OmniAuth abstracts away so much of the grunt work that it takes about 5 minutes to add a new social network to your site, and 4 of those minutes are spent signing up for the API keys. What options do we have in the world of PHP? A bunch of screwy hacks or provider specific classes like TwitterOAuth. I don’t want to hunt down 20 libraries with different methods, I want to get a key, bang it in and go to the pub. Well, now I can!">
   
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@philsturgeon">
   <meta name="twitter:title" content="NinjAuth: The Social Integration Package PHP has been dying for | Phil Sturgeon">
   <meta name="twitter:creator" content="@philsturgeon">
-  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:image:src" content="https://philsturgeon.uk/images/author.jpg">
+  <meta name="twitter:url" content="https://philsturgeon.uk/fuelphp/2011/09/17/ninjauth-social-integration-php/">
   <meta name="twitter:description" content="In the past I have never needed to implement oAuth into a PHP project. I have done it in Rails and boy it was easy thanks to OmniAuth. OmniAuth abstracts away so much of the grunt work that it takes about 5 minutes to add a new social network to your site, and 4 of those minutes are spent signing up for the API keys. What options do we have in the world of PHP? A bunch of screwy hacks or provider specific classes like TwitterOAuth. I don’t want to hunt down 20 libraries with different methods, I want to get a key, bang it in and go to the pub. Well, now I can!">
   
   <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
@@ -189,6 +190,21 @@
         </div>
       </article>
 
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'philsturgeon';
+
+          var disqus_identifier = 'ninjauth-social-integration-php';
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
     </main>
     <div class="bottom-closer">

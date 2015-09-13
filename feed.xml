@@ -502,7 +502,7 @@ echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
     <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/11/geeks-giving-for-aids-again/"/>
     <id>https://philsturgeon.uk/charity/2015/08/11/geeks-giving-for-aids-again/</id>
     <published>2015-08-11T14:30:00-07:00</published>
-    <updated>2015-09-12T14:00:50-07:00</updated>
+    <updated>2015-09-12T18:22:11-07:00</updated>
     <summary type="html">Back in 2013 I did a three-day ride from Boston to New York, along with hundreds of amazing people. Everyone was in various levels of fitness and with various levels of interest in cycling, all who had come together with the aim of helping raise a shitload of money to help those living with HIV/Aids.</summary>
     <content type="html">&lt;p&gt;Back in 2013 I did a three-day ride from Boston to New York, along with hundreds of amazing people. Everyone was in various levels of fitness and with various levels of interest in cycling, all who had come together with the aim of helping raise a shitload of money to help those living with HIV/Aids.&lt;/p&gt;
 
@@ -531,7 +531,7 @@ echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
   &lt;li&gt;A free copy of the &lt;a href="https://leanpub.com/b/vagrantapis"&gt;&lt;em&gt;Vagrant CookBook and Build APIs You Won’t Hate&lt;/em&gt;&lt;/a&gt; eBook bundle&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img alt="StackOverflow t-shirts" src="/assets/article_images/2015-08-11-geeks-giving-for-aids-again/stackoverflow-tshirts.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="StackOverflow t-shirts" width="360" height="211" src="/images/article_images/2015-08-11-geeks-giving-for-aids-again/stackoverflow-tshirts.png" /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;$60&lt;/strong&gt; - Any &lt;em&gt;one&lt;/em&gt; of the following:&lt;/p&gt;
 
@@ -567,7 +567,7 @@ echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
     <link rel="alternate" href="https://philsturgeon.uk/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/"/>
     <id>https://philsturgeon.uk/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/</id>
     <published>2015-07-04T11:04:00-07:00</published>
-    <updated>2015-09-12T14:00:50-07:00</updated>
+    <updated>2015-09-12T18:22:11-07:00</updated>
     <summary type="html">Usually this blog is about programming. I try to stick to what I know, but one thing I have a lot of experience with is pointing out shit arguments used to defend nonsense. Whether it is excuses to keep a single PHP error message in Hebrew, or rebuking wildly inaccurate claims that NodeJS is magically faster than PHP, I find myself doing the same thing: calling bullshit on nonsense arguments.</summary>
     <content type="html">&lt;p&gt;Usually this blog is about programming. I try to stick to what I know, but one thing I have a lot of experience with is pointing out shit arguments used to defend nonsense. Whether it is excuses to &lt;a href="/blog/2013/09/t-paamayim-nekudotayim-v-sanity/"&gt;keep a single PHP error message in Hebrew&lt;/a&gt;, or &lt;a href="/blog/2013/11/benchmarking-codswallop-nodejs-v-php/"&gt;rebuking wildly inaccurate claims that NodeJS is magically faster than PHP&lt;/a&gt;, I find myself doing the same thing: calling bullshit on nonsense arguments.&lt;/p&gt;
 
@@ -672,7 +672,7 @@ the use of violence and intimidation in the pursuit of political aims.&lt;/p&gt;
 
 &lt;p&gt;There is not much room for argument about the Confederate Flag being racist. The guy who designed it was &lt;a href="http://mic.com/articles/121082/here-s-the-racist-meaning-of-the-confederate-flag-in-the-words-of-the-man-who-designed-it"&gt;racist as fuck&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img alt="Designer of the Confederate Flag quoted in an excerpt from the book Our Flag by George Preble" src="/assets/article_images/2015-07-04-twatty-fallacies-fox-charleston-shooting/william-t-thompson-racist-fuck.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Designer of the Confederate Flag quoted in an excerpt from the book Our Flag by George Preble" width="497" height="301" src="/images/article_images/2015-07-04-twatty-fallacies-fox-charleston-shooting/william-t-thompson-racist-fuck.jpg" /&gt;&lt;/p&gt;
 
 &lt;p&gt;For the sake of argument, let us pretend that the flag never had a strong connection to racism, and was created with the best intent. Well, if it &lt;em&gt;was&lt;/em&gt; perfectly, innocent, it no longer is. In countries where the &lt;a href="https://en.wikipedia.org/wiki/Post%E2%80%93World_War_II_legality_of_Nazi_flags"&gt;flying of Nazi flags is illegal or restricted&lt;/a&gt;, many white supremacists fly the Confederate Flag instead.&lt;/p&gt;
 

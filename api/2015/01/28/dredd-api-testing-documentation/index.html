@@ -16,22 +16,23 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <link rel="shortcut icon" href="/assets/images/favicon.ico">
   <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
   <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
   <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+  <link href="/images/favicon.png" rel="icon" type="image/png" />
 
   <meta property="og:name" content="Phil Sturgeon">
-  <meta property="og:image" content="/images/author.jpg">
+  <meta property="og:image" content="https://philsturgeon.uk/images/article_images/2015-01-28-dredd-api-testing-documentation/dredd.jpg">
   <meta property="og:description" content="If you have documentation for any sort of HTTP-based API, from a micro-service to a non-trivial RESTful API, if it has existed for more than a week it has got some mistakes in it. Documentation degrades over time. This article aims to help you ensure that your API documentation keeps entirely in line with the implementation, utilizing two tools: API Blueprint and Dredd.">
   
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@philsturgeon">
   <meta name="twitter:title" content="Dredd: Do Your HTTP API Justice | Phil Sturgeon">
   <meta name="twitter:creator" content="@philsturgeon">
-  <meta name="twitter:image:src" content="/images/author.jpg">
+  <meta name="twitter:image:src" content="https://philsturgeon.uk/images/article_images/2015-01-28-dredd-api-testing-documentation/dredd.jpg">
+  <meta name="twitter:url" content="https://philsturgeon.uk/api/2015/01/28/dredd-api-testing-documentation/">
   <meta name="twitter:description" content="If you have documentation for any sort of HTTP-based API, from a micro-service to a non-trivial RESTful API, if it has existed for more than a week it has got some mistakes in it. Documentation degrades over time. This article aims to help you ensure that your API documentation keeps entirely in line with the implementation, utilizing two tools: API Blueprint and Dredd.">
   
   <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
@@ -47,7 +48,10 @@
 
     <main class="content" role="main">
       <article class="post">
-        <div class="noarticleimage">
+        <div class="article-image">
+          <div class="post-image-image" style="background-image: url(/images/article_images/2015-01-28-dredd-api-testing-documentation/dredd.jpg)">
+            Article Image
+          </div>
           <div class="post-meta">
             <h1 class="post-title">Dredd: Do Your HTTP API Justice</h1>
             <div class="cf post-meta-text">
@@ -55,18 +59,18 @@
               <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
               on
               <time datetime="2015-01-28 07:14:00 UTC">
-                Jan 28 2015
+                Jan 28  2015
               </time>
               <a href="/tags/http/">#http</a>
               <a href="/tags/api/">#api</a>
               <a href="/tags/dredd/">#dredd</a>
               <a href="/tags/apiblueprint/">#apiblueprint</a>
             </div>
+            <div style="text-align:center">
+              <a href="#topofpage" class="topofpage"><i class="fa fa-angle-down"></i></a>
+            </div>
           </div>
         </div>
-        <br>
-        <br>
-        <br>
         <section class="post-content">
           <div class="post-reading">
             <span class="post-reading-time"></span> read
@@ -90,7 +94,7 @@
 
 <p>Setting this up took me about three weeks, but we have an incredibly non-trivial API at Ride. There are complex user roles, we are pre-1.0 meaning there were a lot of bugs to fix and are in a rapid development phase meaning I was coding against moving goal posts.</p>
 
-<p><img alt="Commits showing slow progress on the Dredd integration. These are the ones before I started using multiple swearwords per commit." src="/assets/article_images/2015-01-28-dredd-api-testing-documentation/dredd-commits.jpg" /></p>
+<p><img alt="Commits showing slow progress on the Dredd integration. These are the ones before I started using multiple swearwords per commit." width="594" height="641" src="/images/article_images/2015-01-28-dredd-api-testing-documentation/dredd-commits.jpg" /></p>
 
 <p>You can do this much quicker.</p>
 
@@ -285,6 +289,20 @@ $ snowcrash apiary.apib
         </div>
       </article>
 
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'philsturgeon';
+
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
     </main>
     <div class="bottom-closer">

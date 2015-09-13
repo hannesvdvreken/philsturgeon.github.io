@@ -563,183 +563,167 @@ echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
 </content>
   </entry>
   <entry>
-    <title>Laughs with the Google Maps API</title>
-    <link rel="alternate" href="https://philsturgeon.uk/geo/2015/07/26/autocomplete-google-maps-api/"/>
-    <id>https://philsturgeon.uk/geo/2015/07/26/autocomplete-google-maps-api/</id>
-    <published>2015-07-26T11:53:00-07:00</published>
+    <title>Twatty Fallacies when Fox and Friends talk Flags</title>
+    <link rel="alternate" href="https://philsturgeon.uk/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/"/>
+    <id>https://philsturgeon.uk/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/</id>
+    <published>2015-07-04T11:04:00-07:00</published>
     <updated>2015-09-12T14:00:50-07:00</updated>
-    <summary type="html">I’ve been working at Ride.com since October 2014, and I’ve got to do some awesome stuff with them. As far as my job has been concerned, the first 4-5 months were entirely green field development. As a team we built multiple services to compliment a central API, and with the help of some other gophers at the company I built most of a little Go service to handle various autocomplete requirements.</summary>
-    <content type="html">&lt;p&gt;I’ve been working at &lt;a href="https://ride.com/"&gt;Ride.com&lt;/a&gt; since October 2014, and I’ve got to do some awesome stuff with them. As far as my job has been concerned, the first 4-5 months were entirely green field development. As a team we built multiple services to compliment a central API, and with the help of some other gophers at the company I built most of a little Go service to handle various autocomplete requirements.&lt;/p&gt;
+    <summary type="html">Usually this blog is about programming. I try to stick to what I know, but one thing I have a lot of experience with is pointing out shit arguments used to defend nonsense. Whether it is excuses to keep a single PHP error message in Hebrew, or rebuking wildly inaccurate claims that NodeJS is magically faster than PHP, I find myself doing the same thing: calling bullshit on nonsense arguments.</summary>
+    <content type="html">&lt;p&gt;Usually this blog is about programming. I try to stick to what I know, but one thing I have a lot of experience with is pointing out shit arguments used to defend nonsense. Whether it is excuses to &lt;a href="/blog/2013/09/t-paamayim-nekudotayim-v-sanity/"&gt;keep a single PHP error message in Hebrew&lt;/a&gt;, or &lt;a href="/blog/2013/11/benchmarking-codswallop-nodejs-v-php/"&gt;rebuking wildly inaccurate claims that NodeJS is magically faster than PHP&lt;/a&gt;, I find myself doing the same thing: calling bullshit on nonsense arguments.&lt;/p&gt;
 
-&lt;p&gt;One of the autocomplete endpoints was for addresses, allowing us to switch map API providers without totally breaking our iOS and web apps.&lt;/p&gt;
+&lt;p&gt;Mainstream media in the States is usually quite awful, but I’ve never seen more ignorance on a single topic than in the aftermath of the Charleston shooting.&lt;/p&gt;
 
-&lt;p&gt;I had a few clashes with the Google Maps API along the way. Some were my fault, some were their fault, and some I just blame on imperfections in U.S. address system. To be fair, the U.K. is not much better, but the U.S had a more recent opportunity to get things a bit better and they still fucked it.&lt;/p&gt;
+&lt;p&gt;The Charleston shooting is an utter tragedy. It’s terrible. The only thing worse than 9 innocent civilians losing their life is the fact that this will absolutely happen again, and again, and again, because people hide this under the carpet instead of dealing with the problems.&lt;/p&gt;
 
-&lt;h2 id="address-autocomplete-requirements"&gt;Address Autocomplete Requirements&lt;/h2&gt;
+&lt;p&gt;This was a clear cut case of a racist asshole being a racist asshole; shooting up a “black church” which had been &lt;a href="http://billmoyers.com/2015/06/19/charlestons-mother-emanuel-church-has-stared-down-racist-violence-for-200-years/"&gt;burned to the ground&lt;/a&gt; by racists in the past, because the members of the church &lt;a href="http://www.npr.org/2015/06/18/415537133/charleston-s-c-church-formed-around-anti-slavery-movement"&gt;took a stand against slavery&lt;/a&gt;.&lt;/p&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;Users sign up via web/iOS clients, enter their home address and enter their work address.&lt;/li&gt;
-  &lt;li&gt;These clients call the autocomplete service with the user input.&lt;/li&gt;
-  &lt;li&gt;See what Google Maps thinks of the input.&lt;/li&gt;
-  &lt;li&gt;Spit out some formatted JSON for the clients to display for the user to pick.&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;Let’s wade through this horseshit one step at a time. This is a lot of examples from Fox, but I’ve also seen and heard people echoing this out and about, and online. It’s horrifying.&lt;/p&gt;
 
-&lt;p&gt;I pretty much want to get this for homes and places of work:&lt;/p&gt;
+&lt;h2 id="pretending-this-was-not-racism"&gt;1. Pretending this “was not racism”&lt;/h2&gt;
 
-&lt;div class="highlight javascript"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;
-  &lt;span class="s2"&gt;"addresses"&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;
-    &lt;span class="s2"&gt;"formatted_address"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"568 Broadway, New York, NY 10012, USA"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"street_address_1"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"Broadway"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"street_address_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"street_number"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"568"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"neighborhood"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"Lower Manhattan"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"locality"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"New York"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"sublocality_level_1"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"Manhattan"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"sublocality_level_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"sublocality_level_3"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"administrative_area_level_1"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"New York"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"administrative_area_level_1_short"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"NY"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"administrative_area_level_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"New York County"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"administrative_area_level_3"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"country"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"United States"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"postal_code"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"10012"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"lat"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;40.7242802&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"lng"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;73.9973541&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;"google_places_id"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;
-  &lt;span class="p"&gt;}]&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;/div&gt;
+&lt;p&gt;Fox News managed to &lt;a href="http://boingboing.net/2015/06/19/fox-news-and-neo-nazi-site-cal.html"&gt;spin this to their own political narrative&lt;/a&gt;. They’re always chuffing on about the &lt;a href="http://www.huffingtonpost.com/news/fox-news-war-on-christmas/"&gt;War Against Christmas&lt;/a&gt;, and now they’re moving their narrative onto a full on “War Against Christians” situation.&lt;/p&gt;
 
-&lt;p&gt;Simple enough right?&lt;/p&gt;
+&lt;p&gt;Let’s be clear about one thing: the goals here were race related. That is absolutely an indisputable fact. Read the manifesto, which was up on a racist website until it got taken down, but it is also &lt;a href="http://www.huffingtonpost.com/2015/06/20/dylann-roof-manifesto-charleston-shooting_n_7627788.html"&gt;up on HuffPo in full&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Heh.&lt;/p&gt;
+&lt;p&gt;There literally is no possible wiggle room at all on the fact this was race related. Yet still, Fox “News” are giving it this:&lt;/p&gt;
 
-&lt;h2 id="location-biasing"&gt;Location Biasing&lt;/h2&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;“They haven’t explained it to us”&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;A feature the web/iOS clients and business all requested rather early on was location-based biasing. This is the art of assuming that things near you are more relevant than things far away, which is pretty fair. Somebody in Florida probably doesn’t drive to work in Texas, and definitely doesn’t need to see shit in Alaska.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;“We don’t know why he did this”&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;If we were using the Google Places API then we’d be golden because you can just give them a &lt;code&gt;?near=lat,lng&lt;/code&gt; and they’ll work it out for you. Sadly, the Google Places API is not useful for us. Many work places outside of major companies are not on the places API, and obviously not many people have their homes in that API either.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;“A lot of people jump to conclusions about race”&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;We had to stick with the Google Maps API and that does not have the same functionality. Balls. Time for a dumb hack:&lt;/p&gt;
+&lt;p&gt;Maybe that can sail by, but this quote:&lt;/p&gt;
 
-&lt;div class="highlight go"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;func&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;vertexToBoundingBox&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;Vertex&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="x"&gt;
-  &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Vertex&lt;/span&gt;&lt;span class="p"&gt;{})&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="x"&gt;
-    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="x"&gt;
-  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="x"&gt;
-  &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;&lt;span class="n"&gt;fmt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="x"&gt;
-    &lt;/span&gt;&lt;span class="s"&gt;"%f,%f|%f,%f"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
-    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lat&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="m"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
-    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lng&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
-    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lat&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="m"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
-    &lt;/span&gt;&lt;span class="n"&gt;vertex&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Lng&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="x"&gt;
-  &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="x"&gt;
-&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="x"&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;“Extraordinarily they called it a hate crime. And some look at it as, well, it’s because it was a white guy, apparently, and a black church. But you made a great point just a moment ago about the hostility toward Christians, and it was in a church, so maybe that’s what it was about.”&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;This has worked well enough that most people seem happy with it. It makes a rather wide box which is big enough to contain a large US city and some surrounding suburbs.&lt;/p&gt;
+&lt;p&gt;He wasn’t “apparently” a white guy, that is definitive so. There were eye witnesses. We knew he was a white guy as soon as responders got on the scene.&lt;/p&gt;
 
-&lt;p&gt;If the coordinates Google has for the address are considered to be a hair over the line of that bounding box then the address might as well be a on the other side of the country for all it cares.&lt;/p&gt;
+&lt;p&gt;It wasn’t hostility towards Christians, he is a Christian. The witnesses explained Roof said “I’m here to kill black people.” What is there to confuse there?&lt;/p&gt;
 
-&lt;p&gt;Not ideal.&lt;/p&gt;
+&lt;p&gt;Why are they on a news show saying “maybe this” and “maybe that” when they have facts available that &lt;em&gt;directly&lt;/em&gt; disprove the nonsense falling out of their faces? Why would anyone else listen to this and believe it enough to repeat it? Spreading ignorance is a huge problem.&lt;/p&gt;
 
-&lt;h2 id="one-bowerman-drive"&gt;1 One Bowerman Drive&lt;/h2&gt;
+&lt;h2 id="was-it-terrorism"&gt;2. Was it Terrorism?&lt;/h2&gt;
 
-&lt;p&gt;When doing research on some big corporate buildings we’d likely have people wanting to drive to, some folks at Ride spotted a problem.&lt;/p&gt;
+&lt;p&gt;This has been another sticking point in the USA, to call it terrorism or not.&lt;/p&gt;
 
-&lt;p&gt;&lt;img alt="Nike HQ and their vanity road &amp;quot;One Bowerman Drive&amp;quot;" src="/assets/article_images/2015-07-26-autocomplete-google-maps-api/1-one-bowerman-drive.png" /&gt;&lt;/p&gt;
+&lt;p&gt;There is a truly bizarre theme in the USA, where in many peoples eyes it seems only Muslims are allowed to be called terrorists. Islamophobia is rife, so this supports the narrative of many media channels.&lt;/p&gt;
 
-&lt;p&gt;Nike HQ have a vanity road called &lt;code&gt;One Bowerman Drive&lt;/code&gt;, which in and of itself would not be a problem other than one thing: they advertise &lt;code&gt;One Bowerman Drive&lt;/code&gt; as their address on all their media, not their real address of &lt;code&gt;1 One Bowerman Drive&lt;/code&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;ter·ror·ism&lt;br /&gt;
+noun&lt;br /&gt;
+the use of violence and intimidation in the pursuit of political aims.&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;The autocomplete was taking their search results, Google was returning a road, the autocomplete was throwing it away. That’s how I programmed it, to throw away anything Google offers me which is not a &lt;code&gt;street_address&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;That definition lines up with what happened. Roof said specifically that he wanted to start another Civil War, and he even left one woman alive and told her to tell others what had happened. That sounds like using violence and intimidation in the pursuit of political aims to me.&lt;/p&gt;
 
-&lt;p&gt;Think about it, having a road instead of an actual address could be madness for calculating how far people need to drive, and would throw off our pricing calculations.&lt;/p&gt;
+&lt;p&gt;Fairly clear cut, right?&lt;/p&gt;
 
-&lt;p&gt;To offer an extreme example, if you as a driver enter “Route 66” as a destination, if you stop short of wherever Google places the pin then you are going to be drastically overcharging any passengers, and the opposite problem occurs if you drive past the pin: you’ll be losing money. Our petrol costs based on milage would be screwed, even if only by a fraction in real-world usage.&lt;/p&gt;
+&lt;p&gt;Well, ass-hat Rick Perry would rather &lt;a href="http://www.rawstory.com/2015/06/rick-perry-charleston-massacre-was-an-accident-caused-by-drugs-not-guns/"&gt;pretend that this was an accident caused by drugs&lt;/a&gt;, even though literally nothing in the manifesto or any reported information around it said there was anything to do with drugs.&lt;/p&gt;
 
-&lt;p&gt;As with many things in programming, we are faced with various shit options. I presenting the shit options to business:&lt;/p&gt;
+&lt;p&gt;He was caught with some drugs a while ago, but doctors report they are not the type of drugs to induce psychosis. I smoked weed a bit in college, so if I go and do something terrible are they going blame that all on drugs? Why divert? The NRA has always tried to divert, blaming anything from Hollywood to &lt;a href="http://www.motherjones.com/politics/2015/06/most-awful-reaction-charleston-mass-shooting-nra"&gt;the victims for not carrying guns&lt;/a&gt;. This is wildly disrespectful, and a distraction from the problem.&lt;/p&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;Allow roads to be used as a destination address and let people potentially be miles off of their actual destination.&lt;/li&gt;
-  &lt;li&gt;Do not support Nike HQ and any similar building which advertises their vanity road as an address.&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;Many Americans forget that terrorism has been around forever, long before 9/11, at which point Americans got super stuck on the concept that terrorists were from the Middle East. The &lt;a href="https://en.wikipedia.org/?title=Resistance_movement"&gt;French Resistance&lt;/a&gt; used terrorist tactics to push back against the Nazi occupation, without which Europe would be a very different place.&lt;/p&gt;
 
-&lt;p&gt;Yaaaaaay.&lt;/p&gt;
+&lt;p&gt;It blows my mind that I have to link to these articles, but on the off-chance you weren’t sure, here are are some stats to back it up:&lt;/p&gt;
 
-&lt;h2 id="bank-of-america-plaza"&gt;Bank of America Plaza&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href="http://www.globalresearch.ca/non-muslims-carried-out-more-than-90-of-all-terrorist-attacks-in-america/5333619"&gt;Non-Muslims Carried Out More than 90% of All Terrorist Attacks in America&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://www.thedailybeast.com/articles/2015/01/14/are-all-terrorists-muslims-it-s-not-even-close.html"&gt;Are All Terrorists Muslims? It’s Not Even Close&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;Google returns components with a &lt;code&gt;types&lt;/code&gt; array, which can have a plethora of values.&lt;/p&gt;
+&lt;p&gt;Yeah you read that right, Jewish terrorists and Christian terrorists killed more people in the USA than Muslim terrorists did, but you don’t see movies joking about people freaking the fuck out on a plane after spotting a crucifix necklace.&lt;/p&gt;
 
-&lt;p&gt;For a while I didn’t actually know about this type array, and was foolishly throwing away results that did not have a street_address or a route. This kicked me in the face when we realised that the Bank of America Plaza in Atlanta does not actually have a street address or route &lt;em&gt;at all&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In 2014 there were &lt;strong&gt;37&lt;/strong&gt; Muslim-related terrorist killings in the USA, during which time there were 190,000 murders.&lt;/p&gt;
 
-&lt;p&gt;&lt;img alt="Bank of America Plaza Atlanta, one a nameless vanity road" src="/assets/article_images/2015-07-26-autocomplete-google-maps-api/no-road.png" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;“In cases where the religious affiliation of terrorism casualties could be determined, Muslims suffered between 82 and 97 percent of terrorism-related fatalities over the past five years.” – &lt;a href="http://www.theatlantic.com/international/archive/2012/06/americans-are-as-likely-to-be-killed-by-their-own-furniture-as-by-terrorism/258156/"&gt;The Atlantic&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;Looking at the building on the map you can see it has a road, but that little road has no name. It is not considered to be on Peachtree St NE, nor is it on U.S. Highway 78, it is just on bloody nothing.&lt;/p&gt;
+&lt;p&gt;Why cling onto the idea that only killings by a militant Muslim can be labeled as terrorism?&lt;/p&gt;
 
-&lt;p&gt;If I were to remove the check that said “no street address or route = invalid address”, the code would not only allow Bank of America Plaza Atlanta, but it would also let any town or city into the results, meaning you could easily say your pickup or destination address was &lt;code&gt;West Chester, NY&lt;/code&gt;, leaving the driver to do laps around a town of a few thousand trying to find you…&lt;/p&gt;
+&lt;p&gt;Islamophobia is ignorance. The &lt;a href="https://www.youtube.com/watch?v=PzusSqcotDw"&gt;ignorant crap people say about “Muslim countries”&lt;/a&gt; would be laughable if not echoed by real people who are respected in their various communities.&lt;/p&gt;
 
-&lt;p&gt;Google has us covered here. Allow any of the following component types:&lt;/p&gt;
+&lt;p&gt;I’ve seen it happen a few times in the programming community, with prominent, otherwise intelligent figures “coming out against Islam”. On a much bigger scale, scumbag &lt;a href="http://money.cnn.com/2015/01/12/media/rupert-murdoch-aziz-ansari-fox-news-facts/"&gt;Rupert Murdoch says that Muslims must be held responsible for jihadist activity&lt;/a&gt;. &lt;em&gt;What?&lt;/em&gt;&lt;/p&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;route&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;street_address&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;premise&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;By keeping the word terrorism as only a label for Muslim attacks, not only do we expose the use of the word as pure propaganda, but we also sideline this attack as the actions of a solo “crazy” person. Doing that is not only offensive to those living with mental illnesses who do not go on race-based rampages, but it lessens the entire problem and lets people slap a &lt;code&gt;wontfix&lt;/code&gt; label on the situation.&lt;/p&gt;
 
-&lt;p&gt;If you can think of any more then please send answers on the back of a postcard.&lt;/p&gt;
+&lt;p&gt;The Charleston shooting was a terrorist attack. A white guy committed a terrorist attack, on U.S. soil, against U.S. citizens. There is no wiggle room on that. Dylan Roof is a terrorist.&lt;/p&gt;
 
-&lt;h2 id="one-bowerman-drive-again"&gt;1 One Bowerman Drive Again&lt;/h2&gt;
+&lt;h2 id="take-it-down"&gt;3. Take it Down&lt;/h2&gt;
 
-&lt;p&gt;This bloody road.&lt;/p&gt;
+&lt;p&gt;In the USA people are so used to mass shootings in recent years that there is very little shock when it happens. It’s always “too soon” to talk about it, meaning no progress can ever be made. Understandably that people instead focused on a much smaller problem which could be solved, and called for the &lt;a href="http://www.msnbc.com/msnbc/takeitdown-south-carolina-must-disown-confederate-flag"&gt;Confederate Flag to be taken down&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;At Ride we not only allow people to carpool to the same building, but we have a bit of wiggle room in there. Theoretically, if you work right next to somebody, in the same building, the next building, or the same business park, then carpooling should be an option for you.&lt;/p&gt;
+&lt;p&gt;Instantly the flag defenders turn up with this status quo defense:&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Some companies are against that for security reasons, but we have a switch to turn it on or off for various companies.&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;The flag is a symbol of Southern heritage, and it is not about racism.&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;Anyway, we allow a radius of 50 meters for now, and yes, looking at the image below that is a “square radius”. Shut up, I didn’t want to get PostGIS involved and slow down this query for a temporary feature as the geo search is being moved out of the API anyway.&lt;/p&gt;
+&lt;p&gt;The causes of the American Civil War are - like anything in history - diverse and widely debated, but I think we can safely agree that the Union being anti-slavery and the Confederacy really enjoying the benefits of their “free labour” was fundamental to the dispute.&lt;/p&gt;
 
-&lt;p&gt;See if you can spot what is happening in this image.&lt;/p&gt;
+&lt;p&gt;There is not much room for argument about the Confederate Flag being racist. The guy who designed it was &lt;a href="http://mic.com/articles/121082/here-s-the-racist-meaning-of-the-confederate-flag-in-the-words-of-the-man-who-designed-it"&gt;racist as fuck&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img alt="Nike HQs actual address vrs. their advertised address" src="/assets/article_images/2015-07-26-autocomplete-google-maps-api/51-meter-difference.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Designer of the Confederate Flag quoted in an excerpt from the book Our Flag by George Preble" src="/assets/article_images/2015-07-04-twatty-fallacies-fox-charleston-shooting/william-t-thompson-racist-fuck.jpg" /&gt;&lt;/p&gt;
 
-&lt;p&gt;Yup, you guessed it. 1 One Bowerman Drive is 50.5 meters away from the seemingly arbitrary point on the map that Google decides to put the pin for the road One Bowerman Drive.&lt;/p&gt;
+&lt;p&gt;For the sake of argument, let us pretend that the flag never had a strong connection to racism, and was created with the best intent. Well, if it &lt;em&gt;was&lt;/em&gt; perfectly, innocent, it no longer is. In countries where the &lt;a href="https://en.wikipedia.org/wiki/Post%E2%80%93World_War_II_legality_of_Nazi_flags"&gt;flying of Nazi flags is illegal or restricted&lt;/a&gt;, many white supremacists fly the Confederate Flag instead.&lt;/p&gt;
 
-&lt;p&gt;I can’t remember exactly what happened, but I have a sneaking suspicion we bumped our “square-radius” to 52 meters and called it a day.&lt;/p&gt;
+&lt;p&gt;In the photos of &lt;a href="http://www.huffingtonpost.com/2015/06/18/dylann-roof-facebook-photo_n_7612708.html"&gt;Dylan Roof wearing Pro-Apartheid South American and Rhodesian patches&lt;/a&gt;, do you think he was wearing those flags to recognize love and respect for South African and Rhodesian heratage? No, he was wearing them because they are a symbol created by those who share his views, that white people are somehow better than people of color.&lt;/p&gt;
 
-&lt;p&gt;You couldn’t write this stuff.&lt;/p&gt;
+&lt;p&gt;Sure the Nazis made some huge breakthroughs in science, had a great welfare system, paved the way for space travel, and made some great cars, when people fly a swastika that’s not what they’re talking about, and at this point the Confederate Flag is on the same level.&lt;/p&gt;
+
+&lt;p&gt;Further to that, &lt;a href="http://msnbcmedia.msn.com/i/MSNBC/Sections/NEWS/confederateflag.pdf"&gt;SurveyMonkey did a survey&lt;/a&gt; asking folks if they thought the Confederate Flag was a A) a symbol of Southern Pride or B) a symbol of racism. 81% of black people thought it was racist. Can’t you take it down simply out of respect for them?&lt;/p&gt;
+
+&lt;p&gt;I spotted this on my Facebook news feed:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Taking down the flag is not going to magically end all racism, so why bother?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ok, I don’t think any reasonable human being would suggest that taking down a flag would end racism. This continuum fallacy ignores the idea that removing symbols that strengthen negative belief systems would result in fewer people feeling justified and vindicated in their actions.&lt;/p&gt;
+
+&lt;p&gt;If your world view is that white people are the “master race”, and you see the media demonizing black people (as Dylan Roof explained in his manifesto), you drive along roads that are named after Confederate generals and even see the flag on a regular basis, your world view is being strengthened, and the likelihood of you acting out your life in accordance to that view is increased.&lt;/p&gt;
+
+&lt;p&gt;The more you can do to chip away at that world view, the less often this will happen.&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet" lang="en"&gt;&lt;p lang="en" dir="ltr"&gt;My thoughts are with the victim&amp;#39;s families in SC.Let us honor their lives by eradicating racism &amp;amp; removing the symbols &amp;amp; words that feed it.&lt;/p&gt;&amp;mdash; Tim Cook (@tim_cook) &lt;a href="https://twitter.com/tim_cook/status/612703567082688513"&gt;June 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+
+&lt;p&gt;I don’t think Dylan Roof was just a poor unfortunate victim of upbringing and circumstance, but I don’t believe anyone just jumps to being racist without help, and a lot of folks in the USA are incredibly effective at perpetrating sometimes subtle - and sometimes not-so-subtle - racism.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;What about free speech?!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is important here to make a distinction between the concept of free speech (the government not being able to arrest you for what you say) and the concept of not flying racist flags on government buildings.&lt;/p&gt;
+
+&lt;p&gt;Calling for the flag to be removed from government buildings (and therefore ending its public legitimisation) is not the same as telling people they can’t fly racist flags on their own property. You go ahead and do that if you want, you asshole, but your free speech is not being impacted here at all.&lt;/p&gt;
+
+&lt;p&gt;Some excuses were made about not being able to get the flag down for weeks due to requiring contractors to come and do it, so &lt;a href="http://abcnews.go.com/GMA/video/woman-climbs-flagpole-takes-confederate-flag-32081683"&gt;One brave lady got up the flag pole&lt;/a&gt; and did it for them. They managed to put it back up rather quickly while she was on her way to jail.&lt;/p&gt;
+
+&lt;p&gt;Luckily &lt;a href="http://www.usatoday.com/story/news/nation/2015/06/29/confederate-flag-taken-down-at-fort-sumter/29490845/"&gt;it is down now&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;People need to reevaluate the battles they are willing to fight, and the reasons they are willing to fight them. I couldn’t have cared less about the flag until people started using nonsense to defend it. Fuck anyone who wants to disrespect the thousands of African American citizens who have voiced their concerns over and over again about the flag and been told “Nah, it’s fine”.&lt;/p&gt;
+
+&lt;p&gt;Many people fought and died in that war on both sides, and I know that descendants of those lost on the Confederate side want to remember their families brave sacrifices, but they can do that without the flag. The grandchildren of Nazi soldiers are not flying the swastika either, even though I doubt many would want to.&lt;/p&gt;
+
+&lt;p&gt;The war is over, the Confederacy lost. It’s time to retire the flag and put it in museums, not continue to rub it in the faces of those who would have been enslaved if the South had won.&lt;/p&gt;
+
+&lt;p&gt;Just because you do not see a problem, does not mean the problem is not there. There are racist, domestic terrorists in the U.S. and they’re running wild, causing far more problems than the current distraction boogeyman: Muslims!&lt;/p&gt;
+
+&lt;p&gt;No, in the U.S. there are racist, often Christian terrorists, and right now they are &lt;a href="http://www.theroot.com/articles/culture/2015/07/who_is_burning_black_churches_here_s_what_we_know.html"&gt;actively burning down churches&lt;/a&gt; which have predominantly black congregations.&lt;/p&gt;
+
+&lt;p&gt;Pretending these assholes aren’t racist, refusing to call them terrorists, letting other people be lied to by ignorant racist media like Fox News instead of just banning them for regularly and knowingly broadcasting outright lies, and leaving symbols on public buildings that reaffirm those racist beliefs sounds like an utterly broken status quo that needs to be fixed.&lt;/p&gt;
+
+&lt;p&gt;If nothing changes, we can expect to see a lot more African Americans suffer in the near future.&lt;/p&gt;
 </content>
   </entry>
 </feed>

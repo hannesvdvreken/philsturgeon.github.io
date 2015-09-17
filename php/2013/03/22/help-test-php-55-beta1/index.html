@@ -78,37 +78,27 @@
 
 <p>If you’re on Ubuntu you can run these commands:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ sudo apt-get install re2c  
+<pre class="highlight plaintext"><code>$ sudo apt-get install re2c  
 $ sudo apt-get install bison
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If you’re on OSX then you can install using Homebrew:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ sudo brew install re2c  
+<pre class="highlight plaintext"><code>$ sudo brew install re2c  
 $ sudo brew install bison
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Thinking about running any of this on Windows makes my brain itch, so you’ll have to work that out for yourself.</p>
 
 <p>With those tools installed simply clone the repo, build and run tests:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>$ cd /tmp  
+<pre class="highlight plaintext"><code>$ cd /tmp  
 $ git clone http://git.php.net/repository/php-src.git -b PHP-5.5  
 $ cd php-src  
 $ ./buildconf  
 $ ./configure --disable-all --enable-debug --enable-maintainer-zts  
 $ make test
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>60% of the time, this works every time. If it fails you’ll see a summary of the failed test(s)</p>
 

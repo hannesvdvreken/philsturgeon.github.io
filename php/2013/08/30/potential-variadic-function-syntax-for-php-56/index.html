@@ -78,43 +78,29 @@
 
 <p>Variadic functions are already possible in PHP and have been throughout 4.x and 5.x in the form of <a href="http://us2.php.net/func_get_args">func_get_args()</a>, which is pretty gross. It’s used for functions where you want to have an unlimited number of functions like:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>max(11, 2, 4, 6, 1);
+<pre class="highlight php"><code>max(11, 2, 4, 6, 1);
 sum(1, 5, 6);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Currently to implement a function like this you’d do:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>function sum()
+<pre class="highlight php"><code>function sum()
 {
     return array_sum(func_get_args());
 }
 
 echo sum(1, 4, 12, 20);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>The proposed RFC lets you write this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>function sum(...$nums)
+<pre class="highlight php"><code>function sum(...$nums)
 {
     return array_sum($nums);
 }
 
 echo sum(1, 4, 12, 20);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This super-trivial example shows off the difference between the two approaches, but some folks are hesitant about how useful this is. Let’s consider a few things here.</p>
 
@@ -124,29 +110,21 @@ echo sum(1, 4, 12, 20);
 
 <p>I ran a find in folder on Pyro to see what came up first, and the answer is:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>public function orX($x = null)
+<pre class="highlight php"><code>public function orX($x = null)
 {
     return new CompositeExpression(CompositeExpression::TYPE_OR, func_get_args());
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Doctrine looks drunk here. It accepts one param called <code>$x</code>, which is optional, then uses <code>func_get_args()</code> anyway meaning fuck <code>$x</code>.</p>
 
 <p>Or:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>  public function orX(...$x)
+<pre class="highlight php"><code>  public function orX(...$x)
   {
       return new CompositeExpression(CompositeExpression::TYPE_OR, $x);
   }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>I’ll take that please. Clear, self documenting code.</p>
 
@@ -156,15 +134,7 @@ echo sum(1, 4, 12, 20);
 
 <p>Sure we could add a <code>@param *variadic</code> doc syntax or something, but it would be odd and not mix in with other syntax very well. The new syntax would make it super easy:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>/**
+<pre class="highlight php"><code>/**
  * @param mixed ...$x
  *
  * @return CompositeExpression
@@ -173,8 +143,7 @@ public function orX(...$x)
 {
     return new CompositeExpression(CompositeExpression::TYPE\_OR, $x);
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Thanks!</p>
 
@@ -182,16 +151,7 @@ public function orX(...$x)
 
 <p>Type Hinting right now is like a semi-done hair-cut. Some squabbling in the core team about how to handle strong/weak typing hinting for  <code>int</code>, <code>float</code>, <code>string</code>, etc lead to confusion and means the feature is restricted to type hinting for an <code>array</code>, <code>callable</code> or a class/interface name. Sure we can’t type hint every type of value [yet] but the fact that type hinting exists means we should be able to use it.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10</pre></td><td class="code"><pre>/**
+<pre class="highlight php"><code>/**
  * Favorite one or more statuses.
  *
  * @param string $screenName
@@ -201,27 +161,14 @@ public function orX(...$x)
  */
 public function favoriteStatus($screenName, Twitter\Status ...$statuses)
 {
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 <p>That is awesome, I can specify the type exactly, instead of having to allow an array then check instances in a loop or some shit. Quicker, more obvious, better for everyone.</p>
 
 <h3 id="pro-less-faff">Pro: Less Faff</h3>
 
 <p>While not the most important aspect, even if you don’t think defining this in the function signature is important, you can avoid this sort of horrendous faffing around:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13</pre></td><td class="code"><pre>public function tryMethod()
+<pre class="highlight php"><code>public function tryMethod()
 {
     $args = func_get_args();
     $method = $args[0];
@@ -234,19 +181,11 @@ public function favoriteStatus($screenName, Twitter\Status ...$statuses)
         return false;
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This becomes:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>public function tryMethod($method, ...$args)
+<pre class="highlight php"><code>public function tryMethod($method, ...$args)
 {
     try {
         return call_user_func_array([$this, $method], $args);
@@ -254,8 +193,7 @@ public function favoriteStatus($screenName, Twitter\Status ...$statuses)
         return false;
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Why screw around when you don’t have to?</p>
 
@@ -277,14 +215,7 @@ public function favoriteStatus($screenName, Twitter\Status ...$statuses)
 
 <p>Well, you can’t right now either. To reuse the same example, you have to do shit like this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>public function tryMethod($method, ...$args)
+<pre class="highlight php"><code>public function tryMethod($method, ...$args)
 {
     try {
         return call_user_func_array([$this, $method], $args);
@@ -292,8 +223,7 @@ public function favoriteStatus($screenName, Twitter\Status ...$statuses)
         return false;
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>For this Nikita has another RFC for <a href="https://wiki.php.net/rfc/argument_unpacking">argument unpacking</a> using what is sometimes known as a splat operator.</p>
 
@@ -301,14 +231,7 @@ public function favoriteStatus($screenName, Twitter\Status ...$statuses)
 
 <p>Taking this same example and applying the new splat operator makes it much nicer:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>public function tryMethod($method, ...$args)
+<pre class="highlight php"><code>public function tryMethod($method, ...$args)
 {
     try {
         return $this-&gt;$method(...$args);
@@ -316,24 +239,18 @@ public function favoriteStatus($screenName, Twitter\Status ...$statuses)
         return false;
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>It’s just taking the arguments, and shoving them into the method in the same way they came in.</p>
 
 <p>The examples on the RFC are also very handy:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5</pre></td><td class="code"><pre>call_user_func_array([$db, 'query'], array_merge(array($query), $params));
+<pre class="highlight php"><code>call_user_func_array([$db, 'query'], array_merge(array($query), $params));
 
 // or
 
 $db-&gt;query($query, ...$params);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Which would you prefer to type?</p>
 

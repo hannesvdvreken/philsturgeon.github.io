@@ -90,11 +90,9 @@
 
 <p>Go has these built right into their main <code>net/http</code> library:</p>
 
-<div class="highlight go"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre><span class="n">http</span><span class="o">.</span><span class="n">StatusBadRequest</span><span class="x">
+<pre class="highlight go"><code><span class="n">http</span><span class="o">.</span><span class="n">StatusBadRequest</span><span class="x">
 </span><span class="n">http</span><span class="o">.</span><span class="n">StatusOK</span><span class="x">
-</span></pre></td></tr></tbody></table>
-</div>
+</span></code></pre>
 
 <p>Ruby on Rails utilizes Rack to help solve this problem. The <a href="http://guides.rubyonrails.org/layouts_and_rendering.html#the-status-option">render option of Rails</a> offers a <code>:status</code> attribute, which defaults to <code>:ok</code> and can be set to any of the following options:</p>
 
@@ -149,15 +147,11 @@
 
 <p>Rack (and Rails) are not the only frameworks in the world to provide these options, <a href="https://github.com/symfony/HttpFoundation/blob/master/Response.php">Symfony has a go too</a> in <code>HttpFoundation</code>:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>public function someAction(Request $request)
+<pre class="highlight php"><code>public function someAction(Request $request)
 {
   return new Response('', Response::HTTP_NO_CONTENT);
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>I’d say that seeing <code>HTTP_NO_CONTENT</code> is quite a lot more useful than seeing <code>204</code> right? And any half decent IDE will let you know that <code>HTTP_NO_CONTENT</code> has the value of <code>204</code> anyway.</p>
 
@@ -167,15 +161,11 @@
 
 <p>Guzzle, and all PSR-7 stuff, provides the status code and the reason phrase (which can theoretically change if your API developer is a smart-ass), so again you’re working with magic numbers.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$response = $client-&gt;get('http://www.amazon.com')-&gt;send();
+<pre class="highlight php"><code>$response = $client-&gt;get('http://www.amazon.com')-&gt;send();
 
 echo $response-&gt;getStatusCode();      // &gt;&gt;&gt; 200
 echo $response-&gt;getReasonPhrase();    // &gt;&gt;&gt; OK
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Most folks who become fed up with hardcoding status codes end up implementing their own solution, but this is just more code that needs to be tested and I’ve seen a few people actually get some of the codes wrong…</p>
 
@@ -183,21 +173,14 @@ echo $response-&gt;getReasonPhrase();    // &gt;&gt;&gt; OK
 
 <p>Recently one turned up on <a href="https://groups.google.com/forum/#!topic/thephpleague/iBfghcg3TJc">The League mailing list</a> which ended up being built as <a href="https://github.com/lukasoppermann/http-status">lukasoppermann/http-status</a>. Since then I noticed another one, called <a href="https://github.com/shrikeh/teapot">Teapot</a>.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7</pre></td><td class="code"><pre><span class="cp">&lt;?php</span>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
 <span class="k">use</span> <span class="nx">\Teapot\StatusCode</span><span class="p">;</span>
 <span class="nv">$code</span> <span class="o">=</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">();</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEquals</span><span class="p">(</span><span class="nx">StatusCode</span><span class="o">::</span><span class="na">NOT_FOUND</span><span class="p">,</span> <span class="nv">$code</span><span class="p">);</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEquals</span><span class="p">(</span><span class="nx">StatusCode</span><span class="o">::</span><span class="na">FORBIDDEN</span><span class="p">,</span> <span class="nv">$code</span><span class="p">);</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEquals</span><span class="p">(</span><span class="nx">StatusCode</span><span class="o">::</span><span class="na">MOVED_PERMANENTLY</span><span class="p">,</span> <span class="nv">$code</span><span class="p">);</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="nx">StatusCode</span><span class="o">::</span><span class="na">CREATED</span><span class="p">,</span> <span class="nv">$code</span><span class="p">);</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Nice and simple.</p>
 

@@ -82,17 +82,7 @@
 
 <p><strong>Step 1:</strong> Edit <code>application/config/config.php</code> and set the following config setting:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11</pre></td><td class="code"><pre>/*
+<pre class="highlight php"><code>/*
  |--------------------------------------------------------------------------
  | URL suffix
  |--------------------------------------------------------------------------
@@ -103,24 +93,11 @@
  | http://codeigniter.com/user_guide/general/urls.html
  */
  $config['url_suffix'] = ".html";
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p><strong>Step 2:</strong> Add/edit your .htaccess file and add the highlighted rule:</p>
 
-<div class="highlight apache"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13</pre></td><td class="code"><pre><span class="nl">Options</span> +FollowSymLinks
+<pre class="highlight apache"><code><span class="nl">Options</span> +FollowSymLinks
 <span class="nl">RewriteEngine</span> on
 <span class="nl">RewriteBase</span> /
 
@@ -133,8 +110,7 @@
 </span><span class="nl">RewriteCond</span> %{REQUEST_FILENAME} !-f
 <span class="nl">RewriteCond</span> %{REQUEST_FILENAME} !-d
 <span class="nl">RewriteRule</span> ^(.*)$ index.php/$1 [L]
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That is basically a standard CI .htaccess with an extra rule in it. Any URI segment 1 with <code>a-z</code>, <code>0-9</code>, <code>-</code> or <code>_</code> in it which does <em>not</em> have a URL suffix will go to a controller which will take the username and show the correct profile.</p>
 

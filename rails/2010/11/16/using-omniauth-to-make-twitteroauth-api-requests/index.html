@@ -88,72 +88,30 @@
 
 <p>To get the token and secret you need to add some fields to your authentications table:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>rails g migration AddTokenToAuthentications token:string secret:string
+<pre class="highlight plaintext"><code>rails g migration AddTokenToAuthentications token:string secret:string
 rake db:migrate
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now the database is ready to save the credentials we can change the authentication code to populate the fields. Assuming you placed the method in user.rb like <a href="http://railscasts.com/episodes/236-omniauth-part-2">RailsCast #236: OmniAuth Part 2</a> suggested then open user.rb and modify the following line:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>authentications.build(:provider =&gt; omniauth['provider'], :uid =&gt; omniauth['uid'])
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>authentications.build(:provider =&gt; omniauth['provider'], :uid =&gt; omniauth['uid'])
+</code></pre>
 
 <p>and replace it with:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>authentications.build(
+<pre class="highlight plaintext"><code>authentications.build(
     :provider =&gt; omniauth['provider'],
     :uid =&gt; omniauth['uid'],
     :token =&gt; omniauth['credentials']['token'],
     :secret =&gt; omniauth['credentials']['secret']
 )
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now whenever anybody authenticates their account we can save their credentials which are passed back from the internal hidden magic that is OmniAuth.</p>
 
 <p>The next step is to actually make some requests using these saved credentials, which is described almost perfectly in the <a href="http://dev.twitter.com/pages/oauth_single_token#ruby">Twitter Developer Documentation</a>. You’ll want to install the oauth gem (put it in your Gemfile and run bundle install) then you can use the following code to test-dump a list of tweets from the user:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34</pre></td><td class="code"><pre>class TwitterController &lt; ApplicationController
+<pre class="highlight plaintext"><code>class TwitterController &lt; ApplicationController
 
 
     def recent_tweets
@@ -187,8 +145,7 @@ rake db:migrate
         render :json =&gt; response.body
     end
 end
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>By pulling the content from current_user.authentications (im finding the first as in my application they should only have one) I can grab the credentials and have full permissions to get their recent tweets, post new ones, see friends tweets, etc.</p>
 

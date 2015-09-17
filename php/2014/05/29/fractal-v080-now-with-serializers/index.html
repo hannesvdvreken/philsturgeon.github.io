@@ -91,32 +91,7 @@ serializers are how data is namespaced.</p>
 
 <p>A very basic usage of Fractal will look like this, as has been seen in other sections:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26</pre></td><td class="code"><pre>use Acme\Model\Book;
+<pre class="highlight php"><code>use Acme\Model\Book;
 use Acme\Transformer\BookTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
@@ -142,8 +117,7 @@ $manager-&gt;createData($resource)-&gt;toArray();
 //         'year' =&gt; 1991,
 //     ],
 // ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>What is new here is the <code>$manager-&gt;setSerializer(new DataArraySerializer());</code> part. 
 <code>DataArraySerializer</code> is the name of the default serializer in Fractal, but there are more.</p>
@@ -152,21 +126,7 @@ $manager-&gt;createData($resource)-&gt;toArray();
 
 <p>This serializer is not to everyones tastes, because it adds a <code>'data'</code> namespace to the output:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15</pre></td><td class="code"><pre>// Item
+<pre class="highlight php"><code>// Item
 [
     'data' =&gt; [
         'foo' =&gt; 'bar'
@@ -181,32 +141,11 @@ $manager-&gt;createData($resource)-&gt;toArray();
         ]
     ],
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This is handy because it allows space for meta data (like pagination, or totals) in both Items and Collections.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></td><td class="code"><pre>// Item with Meta
+<pre class="highlight php"><code>// Item with Meta
 [
     'data' =&gt; [
         'foo' =&gt; 'bar'
@@ -227,25 +166,11 @@ $manager-&gt;createData($resource)-&gt;toArray();
         ...
     ]
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This fits in nicely for meta and included resources, using the <code>'data'</code> namespace. This means meta data can be added for those included resources too.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14</pre></td><td class="code"><pre>// Item with included resource using meta
+<pre class="highlight php"><code>// Item with included resource using meta
 [
     'data' =&gt; [
         'foo' =&gt; 'bar'
@@ -259,31 +184,18 @@ $manager-&gt;createData($resource)-&gt;toArray();
         ]
     ],
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <h2 id="arrayserializer">ArraySerializer</h2>
 
 <p>Sometimes people want to remove that <code>'data'</code> namespace, and that can be done using the <code>ArraySerializer</code>,
 which is mostly the same other than that namespace.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>use League\Fractal\Serializer\ArraySerializer;
+<pre class="highlight php"><code>use League\Fractal\Serializer\ArraySerializer;
 $manager-&gt;setSerializer(new ArraySerializer());
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11</pre></td><td class="code"><pre>// Item
+<pre class="highlight php"><code>// Item
 [
     'foo' =&gt; 'bar'
 ];
@@ -294,28 +206,11 @@ $manager-&gt;setSerializer(new ArraySerializer());
         'foo' =&gt; 'bar'
     ]
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Meta data is is fine for items, but gets a little confusing for collections:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17</pre></td><td class="code"><pre>// Item with Meta
+<pre class="highlight php"><code>// Item with Meta
 [
     'foo' =&gt; 'bar'
     'meta' =&gt; [
@@ -332,8 +227,7 @@ $manager-&gt;setSerializer(new ArraySerializer());
         ...
     ]
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Adding a named key to what is otherwise just a list confuses JSON:</p>
 
@@ -356,37 +250,17 @@ by the other two serializers.</p>
 
 <p>The second is that it requires a <em>Resource Key</em>, which the other two do not.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>use League\Fractal\Serializer\JsonApiSerializer;
+<pre class="highlight php"><code>use League\Fractal\Serializer\JsonApiSerializer;
 $manager-&gt;setSerializer(new JsonApiSerializer());
 
 // Important, notice the Resource Key in the third parameter:
 $resource = new Item($book, new GenericBookTransformer(), 'book');
 $resource = new Collection($books, new GenericBookTransformer(), 'books');
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That resource key is used to give it a named namespace:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15</pre></td><td class="code"><pre>// Item
+<pre class="highlight php"><code>// Item
 [
     'book' =&gt; [
         'foo' =&gt; 'bar'
@@ -401,32 +275,11 @@ $resource = new Collection($books, new GenericBookTransformer(), 'books');
         ]
     ],
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Just like <code>DataArraySerializer</code>, this works nicely for meta data:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></td><td class="code"><pre>// Item with Meta
+<pre class="highlight php"><code>// Item with Meta
 [
     'book' =&gt; [
         'foo' =&gt; 'bar'
@@ -447,24 +300,11 @@ $resource = new Collection($books, new GenericBookTransformer(), 'books');
         ...
     ]
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Adding a resource to a item response would look like this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13</pre></td><td class="code"><pre>// Item with Meta
+<pre class="highlight php"><code>// Item with Meta
 [
     'book' =&gt; [
         'foo' =&gt; 'bar'
@@ -477,18 +317,15 @@ $resource = new Collection($books, new GenericBookTransformer(), 'books');
         ]
     ]
 ];
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <h2 id="custom-serializers">Custom Serializers</h2>
 
 <p>You can make your own Serializers by implementing <a href="https://github.com/thephpleague/fractal/blob/master/src/Serializer/SerializerAbstract.php">SerializerAbstract</a>.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>use Acme\Serializer\CustomSerializer;
+<pre class="highlight php"><code>use Acme\Serializer\CustomSerializer;
 $manager-&gt;setSerializer(new CustomSerializer());
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>The structure of serializers will change at some point, to allow items and collections to be handled differently
 and to improve side-loading logic. Keep an eye on the change log, but do not be afraid to make one.</p>

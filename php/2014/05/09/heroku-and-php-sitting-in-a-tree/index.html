@@ -138,27 +138,7 @@
 
 <p>Updated my system/cms/database.php to use the ENV variable they set pointing to the database. Make your own system/cms/development/database.php to override this with your local MySQL config.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></td><td class="code"><pre><span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">defined</span><span class="p">(</span><span class="s1">'BASEPATH'</span><span class="p">))</span> <span class="k">exit</span><span class="p">(</span><span class="s1">'No direct script access allowed'</span><span class="p">);</span>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">defined</span><span class="p">(</span><span class="s1">'BASEPATH'</span><span class="p">))</span> <span class="k">exit</span><span class="p">(</span><span class="s1">'No direct script access allowed'</span><span class="p">);</span>
 
 <span class="nv">$url</span> <span class="o">=</span> <span class="nb">parse_url</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s2">"CLEARDB\_DATABASE\_URL"</span><span class="p">));</span>
 
@@ -179,8 +159,7 @@
 
 <span class="c1">// Assign the group to be used
 </span><span class="nv">$active_group</span> <span class="o">=</span> <span class="s1">'default'</span><span class="p">;</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>They need a composer.json in there and PyroCMS 2.2 doesn’t have one. (<a href="https://github.com/pyrocms/pyrocms/blob/2.3/develop/composer.json">PyroCMS 2.3 does</a>.)</p>
 

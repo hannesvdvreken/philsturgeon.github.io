@@ -102,13 +102,10 @@
 
 <p>The Kohana developers were the first to get serious hard-ons for statics, and thought they had fixed this by making changes like the following:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$this-&gt;input-&gt;get('foo');
+<pre class="highlight plaintext"><code>$this-&gt;input-&gt;get('foo');
 // becomes
 Input::get('foo');
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This was like candy for many CI developers, who outright shunned CodeIgniter for it’s PHP 4 global code and moved to Kohana to use its PHP 5 style global code. That’s not much of an improvement overall, but at least it did not require multiple secret background hacks to make the logic work. Besides, less characters is always better, “right”?</p>
 
@@ -120,35 +117,20 @@ Input::get('foo');
 
 <p><em>This is all pseudo-code as I haven’t used FuelPHP since about 1.1 and things have probably changed, but I know these general issues still exist.</em></p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7</pre></td><td class="code"><pre>class ControllerA extends Controller
+<pre class="highlight plaintext"><code>class ControllerA extends Controller
 {	
 	public function action_foo()
 	{
 		echo Input::get('param');
 	}
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Fairly standard stuff. This method will output the value of <code>?bar=</code> in the method.</p>
 
 <p>What happens when we make a HMVC request to this method?</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>class ControllerB extends Controller
+<pre class="highlight plaintext"><code>class ControllerB extends Controller
 {	
 	public function action_baz()
 	{
@@ -157,8 +139,7 @@ Input::get('foo');
 		echo Request::forge('controllera/foo?param=val1')-&gt;execute();
 	}
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If you call <code>controllerb/baz</code> in your browser then you’ll see “val1” output, but if you call <code>controllerb/baz?param=override</code> then you’re going to get both calls to the get method return the same value.</p>
 
@@ -166,9 +147,8 @@ Input::get('foo');
 
 <p>Global code gives you no relevance, or scope might be a better word. In this example we would actually want to reference:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$this-&gt;request-&gt;input-&gt;get('param');
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$this-&gt;request-&gt;input-&gt;get('param');
+</code></pre>
 
 <p>The Request object would contain a brand-new instance for each request, then input would again be another object instantiated for each request that contained only input data for that specific request. This is exactly how <a href="http://fuelphp.com/blogs/2012/03/why-the-20-changes">FuelPHP 2.0 plans to work</a>, and solves the DI problem as well as the issues for HMVC.</p>
 

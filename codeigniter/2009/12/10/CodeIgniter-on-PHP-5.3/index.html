@@ -80,20 +80,7 @@
 
 <p>To fix this, you only need to edit the main index.php for your CodeIgniter application:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14</pre></td><td class="code"><pre>/*
+<pre class="highlight php"><code>/*
  |---------------------------------------------------------------
  | DEFAULT TIMEZONE
  |---------------------------------------------------------------
@@ -107,25 +94,13 @@ if( ! ini_get('date.timezone') )
 {
    date_default_timezone_set('GMT');
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This modification is something you will probably need to make for any CodeIgniter application running on PHP 5.3 and can easily be modified to your local timezone. There is a full list of supported timezones in the PHP manual <a title="Full list of supported timezones in PHP" href="http://uk2.php.net/manual/en/timezones.php">here</a>.</p>
 
 <p>Another tweak that might be worth trying (although not something I had an issue with on my apps) will be removing error messages for deprecated functions. I personally would prefer to see these so I know what to fix, but if you are trying to fix an app running on PHP 5.3 quickly, change your error reporting level in index.php like so:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12</pre></td><td class="code"><pre>/*
+<pre class="highlight php"><code>/*
  |---------------------------------------------------------------
  | PHP ERROR REPORTING LEVEL
  |---------------------------------------------------------------
@@ -137,8 +112,7 @@ if( ! ini_get('date.timezone') )
  */
 
 error_reporting(E_ALL <span class="err">&amp;</span> ~E_DEPRECATED);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Have you noticed any other problems when upgrading your CodeIgniter applications to PHP 5.3? If so (and the damn captchas are actually working…) please let me know in the comments.</p>
 

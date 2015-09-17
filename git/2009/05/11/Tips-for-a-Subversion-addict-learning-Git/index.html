@@ -80,9 +80,8 @@
 
 <p>In Subversion you have one repository which all of your code is submitted to directly when a commit is made. This is very different for Git and is what makes it a “distributed” version control system. A repository can be on a SSH server, GitHub, a local folder or network drive. Each repository is given a nickname, which is called a “remote”.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git remote add origin git@github.com:philsturgeon/pyrocms.gitgit pull origin master
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>git remote add origin git@github.com:philsturgeon/pyrocms.gitgit pull origin master
+</code></pre>
 
 <p>The name of this new remote repository is “origin”, but it can be anything you like.</p>
 
@@ -90,9 +89,8 @@
 
 <p>As I mentioned earlier, when you make a commit it doesn’t actually send the changes anywhere. To do that you need to use git push.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git push origin master
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>git push origin master
+</code></pre>
 
 <p>This just sends any commits on your local repo to the remote repo.</p>
 
@@ -104,15 +102,13 @@
 
 <p>Git allows you to create a local branch, check it out, work on it and commit to it all offline without contacting the remote repo. Eg:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git branch ticket5git checkout ticket5git commit -a -m "Committing changes"
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>git branch ticket5git checkout ticket5git commit -a -m "Committing changes"
+</code></pre>
 
 <p>Then when you are done, you may send all of your commits to the remote branch in ‘origin’ using push again.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git push origin ticket5
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>git push origin ticket5
+</code></pre>
 
 <p>This is what the guide meant when it said “You will never directly modify a remote branch.” because you don’t, you work on a copy of that branch then send that copy to the repo when you are done.</p>
 

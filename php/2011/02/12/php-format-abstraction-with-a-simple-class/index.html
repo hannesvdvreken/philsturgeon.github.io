@@ -78,15 +78,7 @@
 
 <p>Convert between Array, Object, JSON, XML, CSV and Serialized data and back again easily. I’ll add a few more types like YAML when I can be arsed to work out PECL for MAMP.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>$original_array = array('foo' =&gt; 'bar', 'baz' =&gt; 'stuff');
+<pre class="highlight plaintext"><code>$original_array = array('foo' =&gt; 'bar', 'baz' =&gt; 'stuff');
 
 
     $json = Format::factory($original_array)-&gt;to_json();
@@ -95,8 +87,7 @@
 
 
     var_dump($original_array === $end_array); // true
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Get it on <a href="http://github.com/philsturgeon/php-format">GitHub</a>.</p>
 

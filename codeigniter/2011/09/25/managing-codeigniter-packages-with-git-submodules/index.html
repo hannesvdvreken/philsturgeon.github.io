@@ -100,28 +100,18 @@ clone none, some or all of the submodules.</p>
 
 <p>Instead I created a new repo on GitHub for the oauth2 package, pushed my files in and set it up as a submodule in my clients application:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ cd Sites/example.com/
+<pre class="highlight plaintext"><code>$ cd Sites/example.com/
 $ git submodule add git://github.com/philsturgeon/codeigniter-oauth2.git application/third_party/oauth2
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>So we’ve put this into our application/third_party folder, but this could just as easily have been in application/packages if you prefer the name. Whatever - the autoload.php config file can be changed to have whatever directory you want:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$autoload['packages'] = array(APPPATH.'third_party');
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$autoload['packages'] = array(APPPATH.'third_party');
+</code></pre>
 
 <p>Now we need to commit this so other developers have access to the code:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>$ git status
+<pre class="highlight plaintext"><code>$ git status
 
 
 # On branch oauth2
@@ -129,8 +119,7 @@ $ git submodule add git://github.com/philsturgeon/codeigniter-oauth2.git applica
 #
 #    new file:   .gitmodules
 #    new file:   application/third_party/oauth2
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>The .gitmodules file has been added and keeps a reference of all submodules in your application.</p>
 
@@ -138,11 +127,9 @@ $ git submodule add git://github.com/philsturgeon/codeigniter-oauth2.git applica
 
 <p>Me too! So submodules can be a little funny when people pull for the first time. The .gitmodule file will know there is a new submodule but Git won’t actually bother to do anything about it. This may seem odd but is easy to get around:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ git submodule init
+<pre class="highlight plaintext"><code>$ git submodule init
 $ git submodule update
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>The first command will initialize any submodules listed in the .gitmodule file that is not already set up, and update will grab the latest commit for it.</p>
 
@@ -152,32 +139,18 @@ $ git submodule update
 
 <p>If you have made some changes in your submodule you will notice that git status shows you this:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7</pre></td><td class="code"><pre>$ git status
+<pre class="highlight plaintext"><code>$ git status
 
 
 # On branch master
 # Changes not staged for commit:
 #
 #    modified:   application/third_party/oauth2 (modified content)
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>We changed stuff! So let’s go and commit it to our submodule.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>$ cd application/third_party/oauth2
+<pre class="highlight plaintext"><code>$ cd application/third_party/oauth2
 $ git status
 
 
@@ -185,46 +158,35 @@ $ git status
 # Changes not staged for commit:
 #
 #    modified:   libraries/OAuth2.php
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Woah there, not currently on any branch? What the dickens?</p>
 
 <p>Each submodule has a specific commit used to reference which is the “current” commit that other applications should be on when they run git submodule update. Think of this much like a tag, but not actually a “tag”. We want to move out of this “no branch” and use master (or develop if you wan’t to get all crazy with Git-Flow).</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ git checkout master
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ git checkout master
+</code></pre>
 
 <p>Awesome, now commit as usual and push back to the repo. If you cloned using a read-only remote (suggested if you want to deploy to PHPFog, etc) then you will need to do something like:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ git remote add upstream git@github.com:philsturgeon/codeigniter-oauth2.git
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ git remote add upstream git@github.com:philsturgeon/codeigniter-oauth2.git
+</code></pre>
 
 <p>This will add the read/write remote to your system, but mean that deployment systems can still read the public remote when they look at origin. After that you push with:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ git push upstream master
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ git push upstream master
+</code></pre>
 
 <p>Finally, if we hop back up to the root level of our application we’ll see:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7</pre></td><td class="code"><pre>$ git status
+<pre class="highlight plaintext"><code>$ git status
 
 
 # On branch master
 # Changes not staged for commit:
 #
 #    modified:   application/third_party/oauth2
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Commit that and you’re done. Yay!</p>
 

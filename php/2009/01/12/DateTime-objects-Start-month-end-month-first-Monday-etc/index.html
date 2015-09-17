@@ -76,19 +76,7 @@
           <a name="topofpage"></a>
           <p>I recently came across PHP’s <a href="http://uk3.php.net/manual/en/class.datetime.php">DateTime</a> object and I’m loving it.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13</pre></td><td class="code"><pre>// Calculate month and year to look for
+<pre class="highlight php"><code>// Calculate month and year to look for
 $month = !empty($_GET['month']) ? $_GET['month'] : date('m');
 $year = !empty($_GET['year']) ? $_GET['year'] : date('Y');
 
@@ -101,16 +89,13 @@ $end_date-&gt;modify('+1 month -1 day');
 
 echo ' Start: '. $start_date-&gt;format('d m Y');
 echo ' End: '. $end_date-&gt;format('d m Y');
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Working out the first Monday of the month is also quite easy, but has one slight complication. If Monday is on the 1st, the modifier “first monday” will look for the next Monday AFTER that, meaning the 8th.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$first_monday = new DateTime($start_date-&gt;format('Y-m-d'));
+<pre class="highlight php"><code>$first_monday = new DateTime($start_date-&gt;format('Y-m-d'));
 if($first_monday-&gt;format('l') != 'Monday') $first_monday-&gt;modify('first monday');
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>DateTime may have been around for a while now, but it’s still not fully documented or even entirely complete on any of the PHP set-ups I have tried it on. Still waiting on <code>DateTime::diff()</code>.</p>
 

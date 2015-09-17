@@ -114,25 +114,7 @@
 
 <p>Chef offers “environments”, which are a little ruby file where you give each environment a name and maybe a description. I have dev.rb, stag.rb and prod.rb. Prod and staging don’t really do anything, but my develop has a few overridden attributes:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19</pre></td><td class="code"><pre>name "dev"
+<pre class="highlight plaintext"><code>name "dev"
 description "The development environment"
 
 override_attributes ({
@@ -151,8 +133,7 @@ override_attributes ({
 })
 
 ENV['FUEL_ENV'] = 'development'
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Awesome sauce.</p>
 
@@ -178,15 +159,7 @@ ENV['FUEL_ENV'] = 'development'
 
 <p>Knife is amazing. I don’t mean that in the over-used “everything good is amazing” sort I way, I mean I was genuinely amazed by this too. Knife works with Chef Server to manage your servers. Here are some cool commands:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>$ knife ec2 server create \
+<pre class="highlight plaintext"><code>$ knife ec2 server create \
     -S projectname -i ~/.ssh/projectname.pem \
     -G www,default \
     -x ubuntu \
@@ -195,20 +168,17 @@ ENV['FUEL_ENV'] = 'development'
     -I ami-82fa58eb \
     -f m1.small \
     -r "role[base],role[frontend]" 
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That makes me a frontend production server with the exact specs that I need. I walk off and get a coffee, come back and that server is sat there ready to go.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ knife ssh -E stag "roles:base" "sudo chef-client"
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ knife ssh -E stag "roles:base" "sudo chef-client"
+</code></pre>
 
 <p>Update my entire staging environment, with the latest code pulled from GitHub and whatever software I need to run.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ knife ec2 server list
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ knife ec2 server list
+</code></pre>
 
 <p>Gets a list of all servers on the account. This is amazeballs when you have a whole bunch of servers hiding behind load balancers and you want to know whats what.</p>
 

@@ -82,21 +82,18 @@
 
 <p>1.) <a href="http://intranet.cs.man.ac.uk/software/cs-ssh/cs-ssh-ref.php">Log in via Putty or Terminal</a>:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ ssh user@yoursite.com
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ ssh user@yoursite.com
+</code></pre>
 
 <p>2.) Get to your <code>public_web</code> root. This will probably be something like <code>/home/user/public_html/</code> but could vary.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ cd /home/user/public\_html
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ cd /home/user/public\_html
+</code></pre>
 
 <p>3.) Then simply check the repo out.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ svn co http://svn.whatever.com/repo/trunk .
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ svn co http://svn.whatever.com/repo/trunk .
+</code></pre>
 
 <p>DONT forget the full stop as that says to use the current directory and not create a new sub-directory.</p>
 
@@ -104,9 +101,8 @@
 
 <p>5.) Update your site:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ svn update
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ svn update
+</code></pre>
 
 <p>And there you have it. Each update you make will be deployed to your site when you run the svn update, minimum fuss.</p>
 

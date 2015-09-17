@@ -88,17 +88,7 @@
 
 <p>MY_Controller is a basic core library extension. Whenever you create a class with the MY_ prefix the CodeIgniter Loader class will load this after loading the core library, allowing your code to <a href="http://codeigniter.com/user_guide/general/creating_libraries.html">replace/extend the core library</a>. We won’t be replacing anything, but we will be adding to it.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11</pre></td><td class="code"><pre>class MY_Controller extends CI_Controller
+<pre class="highlight plaintext"><code>class MY_Controller extends CI_Controller
 {
  function __construct()
  {
@@ -109,37 +99,13 @@
          $this-&gt;data['user'] = $this-&gt;user_lib-&gt;get($user_id);
         }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>All we have done here is create a base class that all of our Controllers and “controller types” will inherit. Anything we put in here and assign to $this will be available to anything that extends this class.</p>
 
 <h5 id="applicationcorepubliccontrollerphp">application/core/Public_Controller.php</h5>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24</pre></td><td class="code"><pre>class Public_Controller extends MY_Controller
+<pre class="highlight plaintext"><code>class Public_Controller extends MY_Controller
 {
     function __construct()
     {
@@ -163,25 +129,13 @@
         }
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Public_Controller is pretty much the same, but you can see we have some frontend-only related code here. The first statement will check to see if the site is currently open using a theoretical settings library that your application might habe and shows an error if the site is closed. The next statement uses the user agent library to offer a mobile version of the site to anyone on a mobile device.</p>
 
 <h5 id="applicationcoreadmincontrollerphp">application/core/Admin_Controller.php</h5>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12</pre></td><td class="code"><pre>class Admin_Controller extends MY_Controller
+<pre class="highlight plaintext"><code>class Admin_Controller extends MY_Controller
 {
     function __construct()
     {
@@ -193,8 +147,7 @@
         }
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Admin_Controller is again fairly similar. It uses a generic sort of user level checking to see if the user is an admin and shows an error if not.</p>
 
@@ -202,22 +155,7 @@
 
 <p>While there are a few ways to do this, the easiest is to use PHP 5’s wonderful __autoload() magic function. By placing this at the bottom of your config.php you can make it load early enough to run before the Controller and it will be somewhere that wont get overridden on upgrade.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16</pre></td><td class="code"><pre>/*
+<pre class="highlight plaintext"><code>/*
 | -------------------------------------------------------------------
 | Native Auto-load
 | -------------------------------------------------------------------
@@ -233,20 +171,11 @@ function __autoload($class)
   @include_once( APPPATH . 'core/'. $class . EXT );
  }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now the Base Controllers are being made and loaded, you need to inheriting them in your Controllers. So instead of the usual…</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>class Blog extends CI_Controller
+<pre class="highlight plaintext"><code>class Blog extends CI_Controller
 {
     function __construct()
     {
@@ -255,20 +184,11 @@ function __autoload($class)
         $data['stuff'] = $whatever;
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>use…</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>class Blog extends Public_Controller
+<pre class="highlight plaintext"><code>class Blog extends Public_Controller
 {
     function __construct()
     {
@@ -277,8 +197,7 @@ function __autoload($class)
         $this-&gt;data['stuff'] = $whatever;
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>And there you have it! In your Controller you’ll have all your data set in MY_Controller or other Base Controllers available in $this-&gt;data, so pass that to your views and it will be available. You can also use $this-&gt;load-&gt;vars(‘foo’, $bar) in your Base Controllers to set values that are only available in your views.</p>
 

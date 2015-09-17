@@ -111,14 +111,7 @@
 
 <p>In the Apiary article they have an example <code>scripts/test</code> file:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>#!/bin/sh
+<pre class="highlight plaintext"><code>#!/bin/sh
 ./node_modules/coffee-script/bin/coffee app.coffee &amp;
 sleep 5
 PID=$!
@@ -126,22 +119,11 @@ dredd apiary.apib http://localhost:3000/
 RESULT=$?
 kill -9 $PID
 exit $RESULT
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>I tweaked that and made a <code>bin/run_dredd</code> script to fit in with the other Rails executables:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11</pre></td><td class="code"><pre>#!/bin/sh
+<pre class="highlight plaintext"><code>#!/bin/sh
 RAILS_ENV=test bundle exec rake db:reset
 RAILS_ENV=test bundle exec rake db:fixtures:load
 RAILS_ENV=test bundle exec rake db:seed
@@ -152,8 +134,7 @@ dredd apiary.apib http://localhost:3001/ --sorted
 RESULT=$?
 kill -9 $PID
 exit $RESULT
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This helped make dredd set itself up with a useful database, run a server in the test environment, look at the <code>apiary.apib</code> file then kill its process. A very handy script.</p>
 
@@ -182,9 +163,8 @@ exit $RESULT
       <li>
         <p>Headers</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>  Authorization: Bearer passenger_access_token ~~~
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>  Authorization: Bearer passenger_access_token ~~~
+</code></pre>
       </li>
     </ul>
   </li>

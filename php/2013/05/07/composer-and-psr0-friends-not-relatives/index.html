@@ -139,13 +139,10 @@
 
 <p>Uck. Having a sub-directories such as “src/”, “tests/” etc does not make this code Non-PSR-0. PSR-0 autoloaders are able to register to multiple points. Each location you register is bound to a namespace prefix, then it will load from there. If you are using Composer packages you will point your prefix at your src/ folder:</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre><span class="s2">"autoload"</span><span class="err">:</span> <span class="p">{</span>
+<pre class="highlight javascript"><code><span class="s2">"autoload"</span><span class="err">:</span> <span class="p">{</span>
     <span class="s2">"psr-0"</span><span class="err">:</span> <span class="p">{</span> <span class="s2">"Foo\Upload"</span><span class="err">:</span> <span class="s2">"src"</span> <span class="p">}</span>
 <span class="p">}</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Everything inside there is then considered to be PSR-0, everything outside is irrelevant.</p>
 
@@ -211,13 +208,10 @@
 
 <p>If Composer was all tied up on PSR-0 then this would never work, and all the old stuff would break. As it stands it will be insanely easy for Composer to integrate PSR-X/PSR-4? support into Composer. There will be some logic that goes into the composer.json which will look something like:</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre><span class="s2">"autoload"</span><span class="err">:</span> <span class="p">{</span>
+<pre class="highlight javascript"><code><span class="s2">"autoload"</span><span class="err">:</span> <span class="p">{</span>
     <span class="s2">"psr-4"</span><span class="err">:</span> <span class="p">{</span> <span class="s2">"Foo\Upload"</span><span class="err">:</span> <span class="s2">"src"</span> <span class="p">}</span>
 <span class="p">}</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This would work exactly the same, but you just skip a few folders. Whoopdydoop!</p>
 

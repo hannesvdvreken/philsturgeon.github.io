@@ -92,25 +92,18 @@
 
 <p>For those of you who don’t have time to watch the whole video, or if you can’t stand my accent here are the basic commands:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$ hg clone git+ssh://git@github.com:philsturgeon/codeigniter-prowl.git
+<pre class="highlight plaintext"><code>$ hg clone git+ssh://git@github.com:philsturgeon/codeigniter-prowl.git
 $ mv codeigniter-prowl.git codeigniter-prowl
 $ cd codeigniter-prowl
 $ vim .hg/hgrc
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>When you are in the config edit mode change default = to github = then add a new line with your BitBucket ssh repo address. Then you can change some code and (without having to use a staging area you) you can simply do:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$ hg commit -m "Stuff changed"
+<pre class="highlight plaintext"><code>$ hg commit -m "Stuff changed"
 $ hg push github
 $ hg push bitbucket
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>The one and only niggle I have spotted so far is that you can’t delete your Git tags on a remote repo. I don’t see that to be a major issue as normally you wouldn’t need to delete one, you’d simply re-tag and push over the top. If you do the only option I have found is to quickly git clone your repo and remove it with git push origin :tagname.</p>
 

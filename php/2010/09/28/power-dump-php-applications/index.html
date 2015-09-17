@@ -80,9 +80,8 @@
 
 <p>Using this handy function (which I have set up as a CodeIgniter debug_helper or native PHP debug_functions.php) I can dump any number of variables and always be able to see whats going on.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>/** * Debug Helper * * Outputs the given variable(s) with formatting and location * * @access public * @param mixed variables to be output */function dump(){ list($callee) = debug_backtrace(); $arguments = func_get_args(); $total_arguments = count($arguments); echo '&lt;fieldset style="background: #fefefe !important; border:2px red solid; padding:5px"&gt;'; echo '&lt;legend style="background:lightgrey; padding:5px;"&gt;'.$callee['file'].' @ line: '.$callee['line'].'&lt;/legend&gt;&lt;pre&gt;'; $i = 0; foreach ($arguments as $argument) { echo '&lt;br/&gt;&lt;strong&gt;Debug #'.(++$i).' of '.$total_arguments.'&lt;/strong&gt;: '; var_dump($argument); } echo "&lt;/pre&gt;"; echo "&lt;/fieldset&gt;";}
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>/** * Debug Helper * * Outputs the given variable(s) with formatting and location * * @access public * @param mixed variables to be output */function dump(){ list($callee) = debug_backtrace(); $arguments = func_get_args(); $total_arguments = count($arguments); echo '&lt;fieldset style="background: #fefefe !important; border:2px red solid; padding:5px"&gt;'; echo '&lt;legend style="background:lightgrey; padding:5px;"&gt;'.$callee['file'].' @ line: '.$callee['line'].'&lt;/legend&gt;&lt;pre&gt;'; $i = 0; foreach ($arguments as $argument) { echo '&lt;br/&gt;&lt;strong&gt;Debug #'.(++$i).' of '.$total_arguments.'&lt;/strong&gt;: '; var_dump($argument); } echo "&lt;/pre&gt;"; echo "&lt;/fieldset&gt;";}
+</code></pre>
 
 <p>Thanks to the fact this shows the line number and file it was called from I also manage to avoid those annoying “where the hell did I put that debug?!” situations, which is one of the main causes of swearing in my office.</p>
 

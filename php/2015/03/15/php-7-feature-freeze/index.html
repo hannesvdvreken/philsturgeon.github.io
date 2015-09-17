@@ -219,15 +219,11 @@ use of the ‘in’ keyword”.</p>
 
 <p>PHP is well known for having inconsistencies in its codebase and PHP 7 is trying to fix a huge number of these things. One such inconsistency is how some internal class constructors behave with failures:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$mf = new MessageFormatter('en_US', '{this was made intentionally incorrect}');
+<pre class="highlight php"><code>$mf = new MessageFormatter('en_US', '{this was made intentionally incorrect}');
 if ($mf === null) {
     echo "Surprise!";
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That’s fairly messed up right there, as you’d expect either an object back, or an exception to be thrown.</p>
 
@@ -309,19 +305,13 @@ Since PHP 5 but not included in <code>E_ALL</code> until PHP 5.4.0</p>
 
 <p>These anonymous classes are also pretty damn good at mocking, so PHP will have to do far fewer gross things to get mocked objects.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>// New Hotness
+<pre class="highlight php"><code>// New Hotness
 $pusher-&gt;setLogger(new class {
   public function log($msg) {
     print_r($msg . "\n");
   }
 });
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This RFC is another Joe Watkins and Phil Sturgeon production. Joe likes to write the code, but doesn’t always have the time or energy to get things through the RFC procedure. I help out by writing tests, handling the RFC wiki entry, gathering feedback, discussing changes, etc.</p>
 

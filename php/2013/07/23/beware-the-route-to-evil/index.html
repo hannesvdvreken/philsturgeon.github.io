@@ -112,9 +112,8 @@
 
 <p>Your magical route logic is never going to make this work:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>Route::get('users/{id}/friends', 'UsersController@friends');
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>Route::get('users/{id}/friends', 'UsersController@friends');
+</code></pre>
 
 <p>So you’re going to need to half and half, which is confusing.</p>
 
@@ -126,9 +125,8 @@
 
 <p>As for the cost of developer time all you’re really losing here is the 5 seconds it takes you to write:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>Route::post('me/settings', 'SettingsController@update');
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>Route::post('me/settings', 'SettingsController@update');
+</code></pre>
 
 <p>It’s not hard, and it avoids trying to mess around making subdirectories called “me” and renaming your controllers to try and match the URL.</p>
 

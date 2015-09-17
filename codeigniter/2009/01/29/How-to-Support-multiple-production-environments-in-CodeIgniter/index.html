@@ -78,21 +78,12 @@
 
 <p>For a simple 2 environment switch you can use the following:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>define('ENV', strpos($_SERVER['SERVER_NAME'], 'local') !== FALSE ? 'local' : 'live');
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>define('ENV', strpos($_SERVER['SERVER_NAME'], 'local') !== FALSE ? 'local' : 'live');
+</code></pre>
 
 <p>Or if you have more than the two environments:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre>if(strpos($_SERVER['SERVER_NAME'], 'local') !== FALSE) { 
+<pre class="highlight php"><code>if(strpos($_SERVER['SERVER_NAME'], 'local') !== FALSE) { 
   define('ENV', 'local');
 } elseif(strpos($_SERVER['SERVER_NAME'], 'dev.') === 0) { 
   define('ENV', 'dev');
@@ -101,8 +92,7 @@
 } else { 
   define('ENV', 'live');
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That will match:</p>
 

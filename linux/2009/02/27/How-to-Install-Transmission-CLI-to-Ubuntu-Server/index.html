@@ -82,9 +82,8 @@
 
 <p>Adding the Unofficial Transmission repository</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo vim /etc/apt/sources.list
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ sudo vim /etc/apt/sources.list
+</code></pre>
 
 <p>Enter the two lines below that correspond to your Ubuntu Server version. Press A to start writing using vim.</p>
 
@@ -107,23 +106,19 @@
 
 <p>Now you need to import the GPG signing key for the stable repository. Enter these two lines into the terminal:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ gpg --keyserver keyserver.ubuntu.com --recv 976b5901365c5ca1
+<pre class="highlight plaintext"><code>$ gpg --keyserver keyserver.ubuntu.com --recv 976b5901365c5ca1
 $ gpg --export --armor 976b5901365c5ca1 | sudo apt-key add -
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now that you have added these repositories we must update apt</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo apt-get update
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ sudo apt-get update
+</code></pre>
 
 <p>Run the following code to install the transmission-cli package along with the transmission-common package which provides shared code between the CLI and GUI versions.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo apt-get install transmission-cli transmission-common
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ sudo apt-get install transmission-cli transmission-common
+</code></pre>
 
 <p>After the scrolling madness you should be able to spot the following:</p>
 
@@ -135,17 +130,14 @@ $ gpg --export --armor 976b5901365c5ca1 | sudo apt-key add -
 
 <p>Now, lets start setting it up. The Transmission developers recommend we run transmission with it’s own user for various security reasons, this also means we can put transmission configuration into its own home directory.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ sudo adduser --disabled-password transmission
+<pre class="highlight plaintext"><code>$ sudo adduser --disabled-password transmission
 $ sudo su transmission
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>To create the settings file, we can start the daemon and tell it where to put the files. This command will run forever waiting for incoming connections, so as soon as it sits still press Ctrl + C to cancel out of it.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ transmission-daemon -g /home/transmission/.config/transmission-daemon -f
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ transmission-daemon -g /home/transmission/.config/transmission-daemon -f
+</code></pre>
 
 <p>When you have canceled this process you will see it says - amongst other things - the following text:</p>
 
@@ -155,17 +147,14 @@ $ sudo su transmission
 
 <p>Exit out of being the transmission user and return to your usual login.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ exit
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ exit
+</code></pre>
 
 <p>Now you need to decide where you want to put your download files. Unlike rtorrent which I was previously using, transmission-cli is not able to use different directories for unfinished files and whatnot (without hackery). So instead create a single folder that will contain partial and complete downloads. This happens to be where I put mine:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ sudo mkdir /mediaserver/torrents/Downloads
+<pre class="highlight plaintext"><code>$ sudo mkdir /mediaserver/torrents/Downloads
 $ sudo chmod 777 /mediaserver/torrents/Downloads
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now we can change these settings using vim again. Most of these can be left alone, but if you want the web interface to work you will need to modify a few.</p>
 
@@ -191,23 +180,20 @@ $ sudo chmod 777 /mediaserver/torrents/Downloads
 
 <p>Now that the transmission daemon is all configured it can be started.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ transmission-daemon
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ transmission-daemon
+</code></pre>
 
 <p>Check running by filtering the running process list for any process with the word “transmission” in it.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ ps aux | grep transmission
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ ps aux | grep transmission
+</code></pre>
 
 <h3 id="stoppingrestarting-the-daemon">Stopping/Restarting the daemon</h3>
 
 <p>If you need to stop transmission-daemon for any reason such as to edit the config files, the only method I have found (without adding in a custom start-script) is to kill it which seams a little mean.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ ps aux | grep transmission
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ ps aux | grep transmission
+</code></pre>
 
 <p>This command once again checks for any transmission processes by matching the name. Look for the first number in the line that will look similar to the one below and use that number in the second command to kill it.</p>
 
@@ -215,27 +201,22 @@ $ sudo chmod 777 /mediaserver/torrents/Downloads
   <p>username <strong>8785</strong> 0.1 0.5 15928 3052 ? Ssl 16:43 0:00 transmission-daemon</p>
 </blockquote>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ kill -9 8785
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ kill -9 8785
+</code></pre>
 
 <p>Then you can edit it and start it up again with:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ transmission-daemon
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ transmission-daemon
+</code></pre>
 
 <h3 id="testing">Testing</h3>
 
 <p>To trial run the torrents are working it is a good idea to use a heavily seeded torrent such as an ubuntu release. This is a random one I picked for my testing, use any torrent you like.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$ wget http://releases.ubuntu.com/8.10/ubuntu-8.10-desktop-amd64.iso.torrent
+<pre class="highlight plaintext"><code>$ wget http://releases.ubuntu.com/8.10/ubuntu-8.10-desktop-amd64.iso.torrent
 $ transmission-remote --add ubuntu-8.10-desktop-amd64.iso.torrent
 $ sudo rm ubuntu-8.10-desktop-amd64.iso.torrent
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now finally, if you are using the weub GUI you can access it using the server’s IP address and the URL below:</p>
 

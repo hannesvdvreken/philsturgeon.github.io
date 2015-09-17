@@ -78,15 +78,11 @@
 
 <p>In previous versions (pre-PHP 5.5) the syntax looked like this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$facebook-&gt;api("/me/photos", 'POST', [
+<pre class="highlight php"><code>$facebook-&gt;api("/me/photos", 'POST', [
     'source' =&gt; '@/foo/bar.jpg',
     'message' =&gt; $message,
 ]);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If you’re lucky enough to be working with PHP 5.5 that code will throw a deprecated warning:</p>
 
@@ -96,21 +92,16 @@
 
 <p>I have an error handler which will throw any warnings/notices/etc as ErrorException to help me debug stuff locally and on my testing servers, and this was something that started happening. A little digging around lead me to try this syntax:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$facebook-&gt;api("/me/photos", 'POST', [
+<pre class="highlight php"><code>$facebook-&gt;api("/me/photos", 'POST', [
     'source' =&gt; new CURLFile('/foo/bar.jpg', 'image/jpeg'),
     'message' =&gt; $message,
 ]);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Sadly while Curl was happy with this, the Facebook PHP SDK (v3.2.2) was not. It turns out the SDK will turn ANY value you send it in that params array into a string. Meaning this was being sent up:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>array(4) { 'source' =&gt; string(70) "{"name":"\/foo\/bar.jpg","mime":"image\/jpeg","postname":""}" 'message' =&gt; string(20) "This is another test" 'method' =&gt; string(4) "POST" 'access_token' =&gt; string(214) "sneakysneaky" }
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>array(4) { 'source' =&gt; string(70) "{"name":"\/foo\/bar.jpg","mime":"image\/jpeg","postname":""}" 'message' =&gt; string(20) "This is another test" 'method' =&gt; string(4) "POST" 'access_token' =&gt; string(214) "sneakysneaky" }
+</code></pre>
 
 <p>So, the CurlFile instance was being converted to JSON. Not helpful.</p>
 
@@ -118,27 +109,20 @@
 
 <p>If you’d like to use my fork in the mean-time, just shove this in your <code>composer.json</code> and run a <code>composer update</code>:</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>    <span class="s2">"repositories"</span><span class="err">:</span> <span class="p">[</span>
+<pre class="highlight javascript"><code>    <span class="s2">"repositories"</span><span class="err">:</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"vcs"</span><span class="p">,</span>
             <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"https://github.com/philsturgeon/facebook-php-sdk"</span>
         <span class="p">}</span>
     <span class="p">],</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This is not a fault with the Facebook SDK directly and I’m going to patch any other libraries I come across with this issue. If you’re using PHP 5.5 please do the same with anything you come across and others won’t have to worry about this at all.</p>
 
 <p>P.S If anyone is wondering about the usefulness of CurlFile, have you remembered to protect your user-contributed inputs to make them not start with <code>@</code>? If you don’t, somebody creating a caption with “@Phil Hey Buddy!” will try to upload a file from your server called “Phil Hey Buddy!”. There are more than a few security implications there, so forcing people to wrap their file uploads up is going to save a lot of problems. If you’re still on PHP 5.4 do something like this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>(substr($message, 0, 1) === '@') and $message = '.'.$message;
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>(substr($message, 0, 1) === '@') and $message = '.'.$message;
+</code></pre>
 
         </section>
         <footer class="post-footer">

@@ -78,21 +78,18 @@
 
 <p><strong>Step #1:</strong> Make sure you have error reporting enabled in your <code>application/config/config.php</code> folder. For full error reporting, set the config item to 4 as below.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$config['log_threshold'] = 4;
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>$config['log_threshold'] = 4;
+</code></pre>
 
 <p><strong>Step #2:</strong> Then set your CodeIgniter log to be writeable by the server (you have probably already done this, but let’s just make sure).</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ chmod 777 ./codeigniter/logs
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ chmod 777 ./codeigniter/logs
+</code></pre>
 
 <p><strong>Step #3:</strong> Now for the important one. This will show changes to the log file as they happen. Hit enter to add some clear space, and Ctrl + C to break out of the stream.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ tail -f ./codeigniter/logs/log-YYYY-MM-DD.php
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ tail -f ./codeigniter/logs/log-YYYY-MM-DD.php
+</code></pre>
 
 <p>Now as you run each instance you will see a stream of debug and error messages. Setting to 4 might be a little too high in most cases, try turning it down a little.</p>
 

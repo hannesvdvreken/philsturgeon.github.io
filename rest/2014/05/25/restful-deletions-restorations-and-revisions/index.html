@@ -118,17 +118,12 @@ with a changed status or a deleted_at field like in Laravel (soft-delete) then y
 
 <p>Delete should probably do what it says, actually delete the item. If delete is a destructive and unrecoverable action, then you will need to invent some other status for the article to exist in, which is still hidden from the API but not entirely gone from the database.</p>
 
-<div class="highlight http"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5</pre></td><td class="code"><pre><span class="err">PATCH /articles/foo HTTP/1.1  
+<pre class="highlight http"><code><span class="err">PATCH /articles/foo HTTP/1.1  
 Host: api.example.com  
 Content-Type: application/json  
 
 { "status" : "archived" }  
-</span></pre></td></tr></tbody></table>
-</div>
+</span></code></pre>
 
 <p>This would keep it available everywhere in the API, and you could get it if you wanted, or ignore it with filters. For example, running a <code>GET /articles?status=archived</code> could very easily get you archived items, and running <code>GET /articles?status=published</code> would get you the live ones.</p>
 
@@ -150,17 +145,12 @@ Content-Type: application/json
 
 <p>One you have found the item you could once again <code>PATCH</code> the status to <code>"published"</code> (or whatever):</p>
 
-<div class="highlight http"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5</pre></td><td class="code"><pre><span class="err">PATCH /articles/trashed/foo HTTP/1.1  
+<pre class="highlight http"><code><span class="err">PATCH /articles/trashed/foo HTTP/1.1  
 Host: api.example.com  
 Content-Type: application/json  
 
 { "status" : "published" }  
-</span></pre></td></tr></tbody></table>
-</div>
+</span></code></pre>
 
 <p>Alternatively you could use some sort of <code>is_trash</code> boolean field which always shows when you <code>GET</code> something, trash or not, then use <code>PATCH</code> with a body like <code>"is_trash" : false</code> to restore it. Regardless of choosing a bool field or a status field, patching it seems to work.</p>
 
@@ -198,17 +188,12 @@ add new ones and they might be promoted to the current automatically, or somebod
 
 <p>If article <code>foo</code> has three revisions, this should be possible to make revision 2 the current revision:</p>
 
-<div class="highlight http"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5</pre></td><td class="code"><pre><span class="err">PATCH /articles/foo/revisions/2 HTTP/1.1  
+<pre class="highlight http"><code><span class="err">PATCH /articles/foo/revisions/2 HTTP/1.1  
 Host: api.example.com  
 Content-Type: application/json  
 
 { "is_current" : true }  
-</span></pre></td></tr></tbody></table>
-</div>
+</span></code></pre>
 
 <p>At that point maybe your internal logic updates that revision record with a <code>true</code> and set the other revisions for that article to be <code>false</code>, or maybe you go and update the articles table and set the <code>revision_id</code> to the ID provided. Whatever you do, this will now effect which is the current promoted revision and we’ve not had to make anything gross like <code>/articles/foo/revisions/promote/34</code> which I have seen suggested before.</p>
 

@@ -82,23 +82,20 @@
 
 <p>So, to get going the best thing to do is clone the VeeWee repo, which creates a new RVM gemset for you. This is a whole separate are probably in ~/Development or something:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>git clone git@github.com:jedi4ever/veewee.git
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>git clone git@github.com:jedi4ever/veewee.git
+</code></pre>
 
 <h2 id="step-2-install-dependencies">Step 2: Install Dependencies</h2>
 
 <p>When this is done if you have RVM set up to check for .rvmrc files it will ask you if you wish to trust this new gemset. If you see this, hit “y” to approve. If this message is not displayed (because you are not looking for .rvmrc files) then go and <a href="https://rvm.io/rvm/install/">set that up</a>. It should be something like:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>echo "source $HOME/.rvm/scripts/rvm" &gt;&gt; ~/.bash_profile
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>echo "source $HOME/.rvm/scripts/rvm" &gt;&gt; ~/.bash_profile
+</code></pre>
 
 <p>With your gemset alive, you may well be told you need to install Ruby 1.9.2, which may or may not work:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>rvm install ruby-1.9.2-p320
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>rvm install ruby-1.9.2-p320
+</code></pre>
 
 <p>On my work laptop it failed to find a build for this version of OSX. In this scenario RVM should try to build the correct version of Ruby from source, but it just threw its toys out of the pram and slapped me with a “Tough shit, go home.” error of some description.</p>
 
@@ -108,19 +105,16 @@
 
 <p>Pop back out of the folder and back in:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>cd ..
+<pre class="highlight plaintext"><code>cd ..
 cd veewee
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This is a janky way to get your command line using the gemset, as it will have failed earlier due to lack of Ruby. There’s probably a quicker way, but I don’t care enough to Google it.</p>
 
 <p>Now install the gems VeeWee requires with bundler:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>bundle install
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>bundle install
+</code></pre>
 
 <h2 id="step-3-building-your-box">Step 3: Building your Box</h2>
 
@@ -128,51 +122,42 @@ cd veewee
 
 <p>See what templates are available:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>bundle exec veewee vbox templates | grep -i ubuntu
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>bundle exec veewee vbox templates | grep -i ubuntu
+</code></pre>
 
 <p>Give up and use Ubuntu for everything:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>bundle exec veewee vbox define 'quantal64' 'ubuntu-12.10-server-amd64'
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>bundle exec veewee vbox define 'quantal64' 'ubuntu-12.10-server-amd64'
+</code></pre>
 
 <p>Kick off the build process. Once you’ve confirmed the download you might as well go for a walk, because it will be going for close to an hour:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>bundle exec veewee vbox build 'quantal64' 
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>bundle exec veewee vbox build 'quantal64' 
+</code></pre>
 
 <p>That is the worst of it done. Export just builds up the box and shoves it in the working directory:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>bundle exec veewee vbox export 'quantal64'
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>bundle exec veewee vbox export 'quantal64'
+</code></pre>
 
 <p>Then add it to Vagrant:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>vagrant box add 'quantal64' 'quantal64'
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>vagrant box add 'quantal64' 'quantal64'
+</code></pre>
 
 <p>I already had a box with this name, so I just killed it off then re-ran the box add:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>rm -rf ~/.vagrant.d/boxes/quantal64 
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>rm -rf ~/.vagrant.d/boxes/quantal64 
+</code></pre>
 
 <h2 id="step-4-put-the-box-somewhere-useful">Step 4: Put the .box somewhere useful</h2>
 
 <p>This step depends on how you’re doing things. The VeeWee docs suggest you can just do:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>cd ~/Development/myapp
+<pre class="highlight plaintext"><code>cd ~/Development/myapp
 vagrant init 'quantal64'
 vagrant up	
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If you’re creating a new Vagrant dev environment from scratch then this is no doubt fine, but for me I was replacing an <a href="https://github.com/pyrocms/devops-vagrant">existing setup</a> for PyroCMS. This made it a little more tricky, but not much.</p>
 
@@ -180,17 +165,14 @@ vagrant up
 
 <p>In your <em>Vagrantfile</em> add this:</p>
 
-<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre><span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span> <span class="o">=</span> <span class="s2">"quantal64"</span>
+<pre class="highlight ruby"><code><span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span> <span class="o">=</span> <span class="s2">"quantal64"</span>
 <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box_url</span> <span class="o">=</span> <span class="s2">"/Users/phil/Development/veewee/quantal64.box"</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now boot your box:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>vagrant up
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>vagrant up
+</code></pre>
 
 <p>It will copy from your hard-disk (much quicker than over the network) and hopefully boot just fine.</p>
 

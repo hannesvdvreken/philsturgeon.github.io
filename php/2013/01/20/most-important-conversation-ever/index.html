@@ -84,20 +84,12 @@
 
 <p>Developers have been arguing about this since 1834 (or something) and it’s not showing any signs of stopping. Most developers start off learning at home, and due to there being no consistent standard in PHP most people learned however the hell they wanted to learn. Their style preference often came from whatever framework, CMS, bulletin board, etc they were using, and like me the first system I worked with was Postnuke, which was a fucking mess. Learning following that “style” meant I had no style, and when I eventually discovered CodeIgniter my code was much nicer at the time:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$this-&gt;db-&gt;order_by('foo')-&gt;get_where('bar', ['baz' =&gt; 1])-&gt;result();
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$this-&gt;db-&gt;order_by('foo')-&gt;get_where('bar', ['baz' =&gt; 1])-&gt;result();
+</code></pre>
 
 <p>While it might have looked better than the mess I was writing before, this code is just flagrantly ignoring the style of PHP’s methods in the core, most likely because CodeIgniter was written before PHP had any classes in the core. There are now plenty:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>ArrayAccess::offsetExists();
+<pre class="highlight plaintext"><code>ArrayAccess::offsetExists();
 DateTime::createFromFormat();
 DirectoryIterator::getExtension();
 Exception::getMessage();
@@ -105,24 +97,19 @@ RecursiveDirectoryITerator::getChildren();
 ReflectionClass::getInterfaceNames();
 SimpleXMLElement::addChild();
 XSLTProcessor::importStylesheet();
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Often I’ve heard developers say “PHP doesn’t use camelCase for all its classes, what about MySQLi?”. They sit there with a smug little grin on their face, ignoring the fact that MySQLi is an extension which needs to be enabled, but yeah ok it uses underscores:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>mysqli::get_connection_stats();
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>mysqli::get_connection_stats();
+</code></pre>
 
 <p>But if we’re talking about extensions there are plenty of others that do follow PHP’s consistent naming conventions, three of which come to mind:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>PDO::setAttribute();
+<pre class="highlight plaintext"><code>PDO::setAttribute();
 Imagick::adaptiveBlurImage();
 ZipArchive::getArchiveComment();
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>The learning towards camelCase is obvious to see. This, along with the fact that many large frameworks like Zend and Symfony also use camelCase, meant it should not have come as a surprise to anyone when the PHP-FIG voted and decided that PSR-1 was going to be camelCase.</p>
 

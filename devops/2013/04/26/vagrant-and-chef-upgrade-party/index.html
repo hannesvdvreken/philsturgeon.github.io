@@ -90,13 +90,10 @@
 
 <p>The upgrade was actually simple, I just made a metadata.json file next to Vagrantfile:</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre><span class="p">{</span>
+<pre class="highlight javascript"><code><span class="p">{</span>
     <span class="s2">"provider"</span><span class="err">:</span> <span class="s2">"virtualbox"</span>
 <span class="p">}</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>After that I found myself having to destroy the box, and bring it back up. That’s fine because Chef has it provisioned and everything so, I did that, rebuilt it and carried on working all day.</p>
 
@@ -112,23 +109,17 @@
 
 <p>A little Googling took me to <a href="http://stackoverflow.com/questions/11325479/how-to-control-the-version-of-chef-that-vagrant-uses-to-provision-vms">StackOverflow</a> (funny that) and the solution worked nicely:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$ vagrant up --no-provision 
+<pre class="highlight plaintext"><code>$ vagrant up --no-provision 
 $ vagrant ssh
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>When inside the vagrant box:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$ sudo dpkg --purge chef chef-full
+<pre class="highlight plaintext"><code>$ sudo dpkg --purge chef chef-full
 $ wget -O - https://opscode.com/chef/install.sh | sudo bash
 $ sudo apt-get update &amp;&amp; sudo aptitude safe-upgrade
 $ sudo rm /var/cache/apt/archives/*.deb
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That took care of my Chef complaints perfectly, and I got to update my boxes. Again, I carried on working all day, but then I tried to bring the box back up the day after:</p>
 
@@ -142,9 +133,8 @@ Vagrant assumes that this means the command failed!</p>
 
 <p>It turns out the command I ran to update Chef wiped out the Virtual Box Guest Additions. A quick chat on the IRC pointed me to the <a href="http://docs-v1.vagrantup.com/v1/docs/troubleshooting.html">Troubleshooting section</a> (thanks <a href="https://twitter.com/boden_c">Chris Boden</a>) and the first answer took care of this almost perfectly.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ sudo /etc/init.d/vboxadd setup
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>$ sudo /etc/init.d/vboxadd setup
+</code></pre>
 
 <p>I ran that and got errors, indicating I was missing <code>linux-headers-3.5.0-27-generic</code>. So first I had to install that with apt-get then run the command again.</p>
 

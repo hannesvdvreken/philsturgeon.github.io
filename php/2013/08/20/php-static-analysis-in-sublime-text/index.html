@@ -92,27 +92,19 @@
 
 <s>_Depending on how you have PEAR installed, you might need to prefix these commands with `sudo`._</s>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$ pear channel-discover pear.phpmd.org
+<pre class="highlight plaintext"><code>$ pear channel-discover pear.phpmd.org
 $ pear channel-discover pear.pdepend.org
 $ pear install --alldeps phpmd/PHP\_PMD
 $ pear install PHP\_CodeSniffer
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p><strong>Update 13/12/2013:</strong> The reason I originally suggested PEAR was down to homebrew doing some fairly odd shit when I tried installing these packages. It was trying to install a .phar but PHP was not allowed to create a phar itself, so I had to switch phar.readonly to Off in php.ini. It might be worth doing that - just to avoid PEAR - so once you’ve made the change run this:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$ brew tap josegonzalez/homebrew-php
+<pre class="highlight plaintext"><code>$ brew tap josegonzalez/homebrew-php
 $ brew install phpmd
 $ brew install php-code-sniffer
 $ brew install php-cs-fixer
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <h2 id="step-3-install-the-sublime-php-cs-plugin">Step 3: Install the Sublime PHP CS plugin</h2>
 
@@ -120,67 +112,49 @@ $ brew install php-cs-fixer
 
 <p>You’ll need to go to “Preferences &gt; Package Settings &gt; PHP CodeSniffer &gt; Settings - Default”. Set these values:</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre><span class="c1">// Show the errors in the quick panel so you can then goto line</span>
+<pre class="highlight javascript"><code><span class="c1">// Show the errors in the quick panel so you can then goto line</span>
 <span class="s2">"phpcs\_show\_quick_panel"</span><span class="err">:</span> <span class="kc">false</span><span class="p">,</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Switching that to false will avoid the obnoxious pop-up that lists all errors in your face. Sometimes you want to ignore a few errors, this won’t let you.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre><span class="c1">// It seems python/sublime cannot always find the phpcs application</span>
+<pre class="highlight javascript"><code><span class="c1">// It seems python/sublime cannot always find the phpcs application</span>
 <span class="c1">// If empty, then use PATH version of phpcs, else use the set value</span>
 <span class="s2">"phpcs\_executable\_path"</span><span class="err">:</span> <span class="s2">"/usr/bin/phpcs"</span><span class="p">,</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Set the full path to phpcs. You can use <code>which phpcs</code> for this.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre><span class="s2">"phpcs\_additional\_args"</span><span class="err">:</span> <span class="p">{</span>
+<pre class="highlight javascript"><code><span class="s2">"phpcs\_additional\_args"</span><span class="err">:</span> <span class="p">{</span>
     <span class="s2">"--standard"</span><span class="err">:</span> <span class="s2">"psr2"</span><span class="p">,</span>
     <span class="s2">"-n"</span><span class="err">:</span> <span class="s2">""</span>
 <span class="p">},</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Because you know you love spaces over tabs.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre><span class="c1">// Path to where you have the php-cs-fixer installed</span>
+<pre class="highlight javascript"><code><span class="c1">// Path to where you have the php-cs-fixer installed</span>
 <span class="s2">"php\_cs\_fixer\_executable\_path"</span><span class="err">:</span> <span class="s2">"/usr/local/bin/php-cs-fixer"</span><span class="p">,</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Find the fixer.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre><span class="c1">// Are we going to run php -l over the file?</span>
+<pre class="highlight javascript"><code><span class="c1">// Are we going to run php -l over the file?</span>
 <span class="s2">"phpcs\_linter\_run"</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Here is the linting we were taking about.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre><span class="c1">// Execute phpmd</span>
+<pre class="highlight javascript"><code><span class="c1">// Execute phpmd</span>
 <span class="s2">"phpmd\_run"</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Will shout at you for producing stupidly complex functions and methods. If it says a method is complicated, try splitting it in half.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre><span class="c1">// It seems python/sublime cannot always find the phpmd application</span>
+<pre class="highlight javascript"><code><span class="c1">// It seems python/sublime cannot always find the phpmd application</span>
 <span class="c1">// If empty, then use PATH version of phpmd, else use the set value</span>
 <span class="s2">"phpmd\_executable\_path"</span><span class="err">:</span> <span class="s2">"/usr/bin/phpmd"</span><span class="p">,</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Tell Sublime where phpmd is.</p>
 

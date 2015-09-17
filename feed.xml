@@ -379,11 +379,9 @@
 
 &lt;p&gt;Go has these built right into their main &lt;code&gt;net/http&lt;/code&gt; library:&lt;/p&gt;
 
-&lt;div class="highlight go"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
-2&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusBadRequest&lt;/span&gt;&lt;span class="x"&gt;
+&lt;pre class="highlight go"&gt;&lt;code&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusBadRequest&lt;/span&gt;&lt;span class="x"&gt;
 &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusOK&lt;/span&gt;&lt;span class="x"&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;/div&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Ruby on Rails utilizes Rack to help solve this problem. The &lt;a href="http://guides.rubyonrails.org/layouts_and_rendering.html#the-status-option"&gt;render option of Rails&lt;/a&gt; offers a &lt;code&gt;:status&lt;/code&gt; attribute, which defaults to &lt;code&gt;:ok&lt;/code&gt; and can be set to any of the following options:&lt;/p&gt;
 
@@ -438,15 +436,11 @@
 
 &lt;p&gt;Rack (and Rails) are not the only frameworks in the world to provide these options, &lt;a href="https://github.com/symfony/HttpFoundation/blob/master/Response.php"&gt;Symfony has a go too&lt;/a&gt; in &lt;code&gt;HttpFoundation&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class="highlight php"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
-2
-3
-4&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;public function someAction(Request $request)
+&lt;pre class="highlight php"&gt;&lt;code&gt;public function someAction(Request $request)
 {
   return new Response('', Response::HTTP_NO_CONTENT);
 }
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;I’d say that seeing &lt;code&gt;HTTP_NO_CONTENT&lt;/code&gt; is quite a lot more useful than seeing &lt;code&gt;204&lt;/code&gt; right? And any half decent IDE will let you know that &lt;code&gt;HTTP_NO_CONTENT&lt;/code&gt; has the value of &lt;code&gt;204&lt;/code&gt; anyway.&lt;/p&gt;
 
@@ -456,15 +450,11 @@
 
 &lt;p&gt;Guzzle, and all PSR-7 stuff, provides the status code and the reason phrase (which can theoretically change if your API developer is a smart-ass), so again you’re working with magic numbers.&lt;/p&gt;
 
-&lt;div class="highlight php"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
-2
-3
-4&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;$response = $client-&amp;gt;get('http://www.amazon.com')-&amp;gt;send();
+&lt;pre class="highlight php"&gt;&lt;code&gt;$response = $client-&amp;gt;get('http://www.amazon.com')-&amp;gt;send();
 
 echo $response-&amp;gt;getStatusCode();      // &amp;gt;&amp;gt;&amp;gt; 200
 echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Most folks who become fed up with hardcoding status codes end up implementing their own solution, but this is just more code that needs to be tested and I’ve seen a few people actually get some of the codes wrong…&lt;/p&gt;
 
@@ -472,21 +462,14 @@ echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
 
 &lt;p&gt;Recently one turned up on &lt;a href="https://groups.google.com/forum/#!topic/thephpleague/iBfghcg3TJc"&gt;The League mailing list&lt;/a&gt; which ended up being built as &lt;a href="https://github.com/lukasoppermann/http-status"&gt;lukasoppermann/http-status&lt;/a&gt;. Since then I noticed another one, called &lt;a href="https://github.com/shrikeh/teapot"&gt;Teapot&lt;/a&gt;.&lt;/p&gt;
 
-&lt;div class="highlight php"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
-2
-3
-4
-5
-6
-7&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="cp"&gt;&amp;lt;?php&lt;/span&gt;
+&lt;pre class="highlight php"&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;?php&lt;/span&gt;
 &lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nx"&gt;\Teapot\StatusCode&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="nv"&gt;$code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;$response&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;getStatusCode&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
 &lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;NOT_FOUND&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;FORBIDDEN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;MOVED_PERMANENTLY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;CREATED&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Nice and simple.&lt;/p&gt;
 

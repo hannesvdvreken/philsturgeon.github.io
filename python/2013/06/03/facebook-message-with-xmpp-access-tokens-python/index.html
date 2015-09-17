@@ -82,45 +82,7 @@
 
 <p>Documentation for the various Python XMPP libraries was either lacking detail or just <a href="http://stackoverflow.com/questions/16902171/send-a-facebook-message-with-xmpp-using-access-tokens-in-python">completely missing</a>, so I ended up just bugging <a href="http://twitter.com/lancestout">Lance Stout</a> (developer of SleekXMPP) until he helped me get it all done via a 30 minute session of Pastie-Pong.</p>
 
-<div class="highlight python"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39</pre></td><td class="code"><pre><span class="kn">import</span> <span class="nn">sleekxmpp</span>
+<pre class="highlight python"><code><span class="kn">import</span> <span class="nn">sleekxmpp</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
@@ -159,32 +121,11 @@
         <span class="c"># Using wait=True ensures that the send queue will be</span>
         <span class="c"># emptied before ending the session.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>I shoved that in a file called fbxmpp.py, then in another file (your worker, your command line app, your Flask controller, whatever) you’ll need something like the following:</p>
 
-<div class="highlight python"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></td><td class="code"><pre><span class="kn">from</span> <span class="nn">fbxmpp</span> <span class="kn">import</span> <span class="n">SendMsgBot</span>
+<pre class="highlight python"><code><span class="kn">from</span> <span class="nn">fbxmpp</span> <span class="kn">import</span> <span class="n">SendMsgBot</span>
 
 <span class="c"># The "From" Facebook ID</span>
 <span class="n">jid</span> <span class="o">=</span> <span class="s">'511501255@chat.facebook.com'</span>
@@ -205,8 +146,7 @@
     <span class="k">print</span><span class="p">(</span><span class="s">"Done"</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s">"Unable to connect."</span><span class="p">)</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>You can wrap all of that up much more neatly based on how it is being implemented, but this should help get you going.</p>
 

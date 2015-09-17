@@ -102,73 +102,53 @@ chosen, and it will contain none of these suggestions.</p>
 
 <p>PHP 5.x</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$foo = "string";
+<pre class="highlight php"><code>$foo = "string";
 echo strlen($foo); // Outputs: 6
 echo $foo-&gt;length(); // PHP Fatal error:  Call to a member function length() on a non-object
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>PHP 6.0</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$foo = "string";
+<pre class="highlight php"><code>$foo = "string";
 echo strlen($foo); // Outputs: 6
 echo $foo-&gt;length(); // Outputs: 6
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>PHP 6.1</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$foo = "string";
+<pre class="highlight php"><code>$foo = "string";
 echo strlen($foo); // Outputs: 6 /w a PHP Deprecated: use String-&gt;length()
 echo $foo-&gt;length(); // Outputs: 6
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>PHP 6.2</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$foo = "string";
+<pre class="highlight php"><code>$foo = "string";
 echo strlen($foo); // PHP Fatal error:  Call to undefined function strlen()
 echo $foo-&gt;length(); // Outputs: 6
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <h2 id="unicode-support">Unicode Support</h2>
 
 <p>PHP 5.x</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$foo = u"string"; // AHH WHAT IS THIS?
+<pre class="highlight php"><code>$foo = u"string"; // AHH WHAT IS THIS?
 echo strlen($foo); // PHP Warning:  strlen() expects parameter 1 to be string, MADNESS given
 echo $foo-&gt;length(); // PHP Fatal error:  Call to a member function length() on a non-object
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>PHP 6.0</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>$foo = u"string";
+<pre class="highlight php"><code>$foo = u"string";
 echo strlen($foo); // Warning: strlen() expects parameter 1 to be String, UnicodeString given
 echo $foo-&gt;length(); // Outputs: 6
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If you want to get super detailed, people concerned about UTF-8 or UTF-16 support could even do:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>$foo = u"string";
+<pre class="highlight php"><code>$foo = u"string";
 $foo = u16"string";
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This shows that the language would default to UTF-8, because thats what most people default to when they give a shit about Unicode support, but gives extra super-powers to those who need UTF-16.</p>
 

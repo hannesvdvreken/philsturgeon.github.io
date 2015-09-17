@@ -126,9 +126,8 @@
 
 <p>The whole system has been written to work with HMVC so you can make requests to other controllers and module controllers within your own controllers meaning you can do things like:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>Request::factory('errors/twitter')-&gt;execute()
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>Request::factory('errors/twitter')-&gt;execute()
+</code></pre>
 
 <h4 id="packages">Packages</h4>
 
@@ -150,19 +149,7 @@ Installing package “test-package”
 
 <p>FuelPHP contains a very simple, lightweight and powerful ActiveRecord/ORM implementation based on the old but rather tastey <a href="http://lukebaker.org/projects/activerecord-in-php/">ActiveRecord-in-PHP</a>.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13</pre></td><td class="code"><pre>$slug = Model_Slug::find('first'); # SQL query to grab first slug
+<pre class="highlight php"><code>$slug = Model_Slug::find('first'); # SQL query to grab first slug
 $slug-&gt;post; # an SQL query occurs behind the scenes to find the slug’s post
 
 $p = Model_Post::find('first', array('include' =&gt; 'slug')); # SQL join
@@ -175,8 +162,7 @@ $p-&gt;slug = $s; # assign a slug to this post
 
 $p-&gt;slug-&gt;slug = 'foobar';
 $p-&gt;save(); # cascading save (post and slug are saved)
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Why do you have to add <code>Model_</code> at the start? Because models are in the <code>/classes/model/</code> folder just the same as controllers and any other classes.</p>
 

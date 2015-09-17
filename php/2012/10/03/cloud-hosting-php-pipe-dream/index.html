@@ -80,22 +80,7 @@
 
 <p>I would much rather be doing anything other than sysadmin. Sure it only takes a few minutes to fire up a VPS and run “sudo apt-get install lamp-server”, and you don’t need a neck-beard to configure some PHP extensions to use and enable mod_rewrite, but if you could do it all with one single file… why wouldn’t you? On Pagoda Box you can do this:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16</pre></td><td class="code"><pre>web1:
+<pre class="highlight plaintext"><code>web1:
     shared_writable_dirs: [/system/cms/cache, /system/cms/logs, /uploads, /assets/cache]
     
     php_version: 5.3.10
@@ -111,8 +96,7 @@
     
 db1:
 	name: 'site'
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>That means I know exactly what version of PHP it will use, and I can configure other extensions to be installed. You can do this using tools like Chef or Puppet, but the overhead of setting all of that up is massive. You need to set up Chef Server or set up a Chef Solo on a cron or hook and do all sorts of arsing around - which is absolutely fine if you’re building a big project that needs it, but not for some little blog.</p>
 

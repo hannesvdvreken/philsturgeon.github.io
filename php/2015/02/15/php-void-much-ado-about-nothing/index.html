@@ -96,15 +96,7 @@
 
 <p>In C where you need to define the return type for your function, if something is going to have no return value you do this:</p>
 
-<div class="highlight c"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><pre><span class="kt">void</span> <span class="nf">nothin</span><span class="p">()</span> <span class="p">{</span>
+<pre class="highlight c"><code><span class="kt">void</span> <span class="nf">nothin</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// blah some code
 </span>  <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
@@ -113,39 +105,25 @@
   <span class="c1">// blah some other code
 </span>  <span class="k">return</span> <span class="mi">42</span><span class="p">;</span>
 <span class="p">}</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>PHP has just added a very similar feature, which is of course optional for the sake of backwards compatibility at this point.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>function someClass(): SomeClass {
+<pre class="highlight php"><code>function someClass(): SomeClass {
   return new SomeClass;
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If the Scalar Type Hints RFC passes (it’s an insanely tight race on Sunday, 15th of February 2015) then of course we’d get proper scalar return type hints for PHP 7 too, so it would look like this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>function life(): int {
+<pre class="highlight php"><code>function life(): int {
   return 42;
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>But the PHP version of our <code>nothin()</code> class is still not possible. <a href="https://twitter.com/AndreaFaulds">Andrea Faulds</a> - author of the <a href="https://wiki.php.net/rfc/scalar_type_hints">Scalar Type Hint RFC</a> - is offering an addition to the return type feature called the <a href="https://wiki.php.net/rfc/void_return_type">Void Return Type RFC</a>.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>function nothin(): void {
+<pre class="highlight php"><code>function nothin(): void {
   // Do something exciting
   return;
 }
@@ -153,8 +131,7 @@
 function nothinElse(): void {
   // Do something else exciting
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Ok, so this is just a consistency thing, that means we can now say “I will return nothing” as well as saying “I will return a value of type X.” Seems reasonable, right?</p>
 
@@ -176,19 +153,13 @@ function nothinElse(): void {
 
 <p>Yes, yes they do.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre>// PHP 5.x
+<pre class="highlight php"><code>// PHP 5.x
 function nothin() {}
 
 $foo = nothin();
 
 var_dump($foo); // null
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Adding a <code>void</code> return type is not going to make me expect so see <code>void</code> output, nor would I expect an error. The RFC says specifically that it will not error, which is lovely.</p>
 
@@ -202,14 +173,7 @@ var_dump($foo); // null
 
 <p>How do we currently do that in PHP? With fucking comments.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8</pre></td><td class="code"><pre>/** 
+<pre class="highlight php"><code>/** 
  * I promise this returns nothing
  * 
  * @return void
@@ -217,8 +181,7 @@ var_dump($foo); // null
 function scoutsHonor() {
   // Do something
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Well, that method might do a <em>lot</em> of somethings. It might end up being a few hundred lines long - which is wrong we know, but lets not pretend every PHP developer is writing perfectly concise readable code.</p>
 
@@ -244,17 +207,7 @@ function scoutsHonor() {
 
 <p>Some folks seem to want to introduce the null return type instead:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11</pre></td><td class="code"><pre>function nothin(): null {
+<pre class="highlight php"><code>function nothin(): null {
 
 }
 
@@ -265,8 +218,7 @@ function nothinElse(): null {
 function stillNothin(): null {
   return null;
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This would be very consistent with how PHP is, because lets be honest, PHP does return null even if this proposed <code>void</code> return type is accepted.</p>
 

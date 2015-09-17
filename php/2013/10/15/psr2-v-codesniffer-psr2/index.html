@@ -93,13 +93,10 @@
 
 <p>This was initially based around one issue, which I call “The Multi-line Argument Issue”. In other words, this should be valid:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>somefunction($foo, $bar, [
+<pre class="highlight php"><code>somefunction($foo, $bar, [
   // ...
 ]);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>After talking to Greg Sherwood it was clear that he would not make changes to the PHP CodeSniffer ruleset without PSR-2 itself being changed to clarify the intentions, and the FIG has been pretty clear about the fact nobody wants to change PSRs once they have been approved.</p>
 
@@ -127,23 +124,17 @@
 
 <p>Everyone seemed to believe that this was/should be valid:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>somefunction($foo, $bar, [
+<pre class="highlight php"><code>somefunction($foo, $bar, [
   // ...
 ]);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Some disagreed that the following was valid:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>somefunction($foo, $bar, [
+<pre class="highlight php"><code>somefunction($foo, $bar, [
   // ...
 ], $ban);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>But the majority spoke and I used the poll as a basis for the pull request, which then went to a <a href="https://groups.google.com/d/msg/php-fig/-7iArK7WZA0/6MmXRIWGPIMJ">vote</a>.</p>
 

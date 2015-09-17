@@ -94,9 +94,8 @@
 
 <p>SOME PDF’s (I noticed on the UK TV License receipt) would have the MIME type wrapped with ” marks, which would be escaped. Meaning it was essentially saying:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>if ("application/pdf" == '\\\"application/pdf\\\"')
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>if ("application/pdf" == '\\\"application/pdf\\\"')
+</code></pre>
 
 <p>That fix took me TWO DAYS to resolve, but I’m glad I did as nobody else is going to get stuck with it. That is in Reactor. I met Derek Allard (an ex EllisLab employee) on my travels and it turns out he knew about the fix two years ago, but it got lost in the sea of forum posts and he didn’t remember to look for it or fix the bug. Now we have issues to track these things properly and pull requests where people can send in their own fixes, instead of dumping code into the forums. Brilliant!</p>
 

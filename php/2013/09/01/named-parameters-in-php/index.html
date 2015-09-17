@@ -78,33 +78,24 @@
 
 <p>Converting a Python Twitter API package to PHP turned out to be more trouble than I initially expected due to the usage of Python’s named parameters. Here is the converted function signature:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7</pre></td><td class="code"><pre>public function getFriends(
+<pre class="highlight php"><code>public function getFriends(
     $user_id = null, 
     $screen_name = null, 
     $cursor = -1, 
     $skip_status = false, 
     $include_user_entities = false
 ) {
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>In Python a call to that method could look like this:</p>
 
-<div class="highlight python"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">api</span><span class="o">.</span><span class="n">get_friends</span><span class="p">(</span><span class="n">screen_name</span><span class="o">=</span><span class="s">"phpdrama"</span><span class="p">,</span> <span class="n">include_user_entities</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight python"><code><span class="n">api</span><span class="o">.</span><span class="n">get_friends</span><span class="p">(</span><span class="n">screen_name</span><span class="o">=</span><span class="s">"phpdrama"</span><span class="p">,</span> <span class="n">include_user_entities</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
+</code></pre>
 
 <p>Because PHP has no ability for users to specify parameters and is instead done entirely based on the definition order, it’s going to look like this:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$api-&gt;getFriends(null, 'phpdrama', -1, false, true);
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>$api-&gt;getFriends(null, 'phpdrama', -1, false, true);
+</code></pre>
 
 <p>Everything is wrong with this.</p>
 
@@ -124,18 +115,7 @@
 
 <p>Well, if it’s my only option I guess I will, but how does it look:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12</pre></td><td class="code"><pre>public function getFriends($args)
+<pre class="highlight php"><code>public function getFriends($args)
 {
     $args += [
     	'user_id' =&gt; null,
@@ -147,30 +127,24 @@
     extract($args);
 	// ....
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p><em><strong>Update 01/09/2013:</strong> I had some nasty-ass isset statements in there but a few people pointed out this array situation would be nicer. They’re right of course. I need to stop blogging from the bar.</em></p>
 
 <p>This syntax will make the following syntax available:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$api-&gt;getFriends(['screen_name' =&gt; 'phpdrama', 'include_user_entities' =&gt; true]);
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>$api-&gt;getFriends(['screen_name' =&gt; 'phpdrama', 'include_user_entities' =&gt; true]);
+</code></pre>
 
 <p>Ok so yes, technically this will work, but I lose all ability to docblock anything, type hinting is a chore and I have to do it in EVERY method. There are a lot of methods, which means literally hundreds of lines of boilerplate that could be replaced easily with syntax.</p>
 
 <p>What would it look like in PHP-land? Something like one of these I guess:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>$api-&gt;getFriends(screen_name =&gt; 'phpdrama', include_user_entities =&gt; true);
+<pre class="highlight php"><code>$api-&gt;getFriends(screen_name =&gt; 'phpdrama', include_user_entities =&gt; true);
 $api-&gt;getFriends(screen_name='phpdrama', include_user_entities=true);
 $api-&gt;getFriends(:screen_name =&gt; 'phpdrama', :include_user_entities =&gt; true);
 $api-&gt;getFriends(screen_name: 'phpdrama', include_user_entities: true);
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Comment on which you prefer and why. Also feel free to suggest other syntax.</p>
 

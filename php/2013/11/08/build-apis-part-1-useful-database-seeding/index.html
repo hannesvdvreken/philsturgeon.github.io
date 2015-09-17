@@ -106,24 +106,7 @@
 
 <p>So, this is a drastically simplified version of our user seeder all in one go, ignoring the Laravel specific structure. <em>If you’re using L4, just shove this in your <code>run()</code> method.</em></p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18</pre></td><td class="code"><pre>    $faker = Faker\Factory::create();
+<pre class="highlight php"><code>    $faker = Faker\Factory::create();
 
     for ($i = 0; $i <span class="nt">&lt; Config::get</span><span class="err">('</span><span class="na">seeding</span><span class="err">.</span><span class="na">users</span><span class="err">');</span> <span class="err">$</span><span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
 
@@ -141,74 +124,60 @@
             'picture_url'        =&gt; $this-&gt;picture_url[rand(0, 19)],
         ]);
     }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>So what do we have here? Let’s go through this section at a time:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>    $faker = Faker\Factory::create();
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>    $faker = Faker\Factory::create();
+</code></pre>
 
 <p>An instance of Faker, our bullshit artist for-hire.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>    for ($i = 0; $i <span class="nt">&lt; Config::get</span><span class="err">('</span><span class="na">seeding</span><span class="err">.</span><span class="na">users</span><span class="err">');</span> <span class="err">$</span><span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>    for ($i = 0; $i <span class="nt">&lt; Config::get</span><span class="err">('</span><span class="na">seeding</span><span class="err">.</span><span class="na">users</span><span class="err">');</span> <span class="err">$</span><span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</code></pre>
 
 <p>We’re going to want a certain number of users, but I’d recommend you have a few less on development than you do on testing or staging, because time.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3</pre></td><td class="code"><pre>        $user = User::create([
+<pre class="highlight php"><code>        $user = User::create([
             'name'               =&gt; $faker-&gt;name,
             'email'              =&gt; $faker-&gt;email,
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Make a random name and random email. We don’t have to define the pool of random data it uses, because ITS MAGIC!</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'active'             =&gt; $i === 0 ? true : rand(0, 1),
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>            'active'             =&gt; $i === 0 ? true : rand(0, 1),
+</code></pre>
 
 <p>Ok I lied, our garbage is not 100% random. We want user number 1 to be active for tests later on.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'gender'             =&gt; rand(0, 1) ? 'male' : 'female',
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>            'gender'             =&gt; rand(0, 1) ? 'male' : 'female',
+</code></pre>
 
 <p>Gender equality is important.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'timezone'           =&gt; mt_rand(-10, 10),
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>            'timezone'           =&gt; mt_rand(-10, 10),
+</code></pre>
 
 <p>Our original developer decided that saving timezones as an integer was a clever thing to do. Bellend. How you gonna handle countries with +4.45 timezones bro? I still need to refactor this, but it’s fine for now.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'birthday'           =&gt; rand(0, 1) ? $faker-&gt;dateTimeBetween('-40 years', '-18 years') : null,
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>            'birthday'           =&gt; rand(0, 1) ? $faker-&gt;dateTimeBetween('-40 years', '-18 years') : null,
+</code></pre>
 
 <p>Users of all of our target age demographic.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'location'           =&gt; rand(0, 1) ? "{$faker-&gt;city}, {$faker-&gt;state}" : null,
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>            'location'           =&gt; rand(0, 1) ? "{$faker-&gt;city}, {$faker-&gt;state}" : null,
+</code></pre>
 
 <p>Give us a city name and a state name. This works fine with foreign countries too which is cool.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>            'had_feedback_email' =&gt; (bool) rand(0, 1),
+<pre class="highlight php"><code>            'had_feedback_email' =&gt; (bool) rand(0, 1),
             'sync_name_bio'      =&gt; (bool) rand(0, 1),
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Some user flags we don’t care much about. True or false, whatever.</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>            'bio'                =&gt; $faker-&gt;sentence(100),
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight php"><code>            'bio'                =&gt; $faker-&gt;sentence(100),
+</code></pre>
 
 <p>Make a sentence with 100 characters in it.</p>
 
@@ -218,43 +187,7 @@
 
 <p>Example of a overall system in Laravel 4:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37</pre></td><td class="code"><pre>class DatabaseSeeder extends Seeder
+<pre class="highlight php"><code>class DatabaseSeeder extends Seeder
 {
     public function run()
     {
@@ -291,8 +224,7 @@
         $this-&gt;call('MomentTableSeeder');
     }
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This wipes everything, then runs other seeder classes to do their thing.</p>
 

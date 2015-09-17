@@ -84,33 +84,28 @@
 
 <p>You want to go two levels deep for this one and install composer inside the package itself:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2</pre></td><td class="code"><pre>cd myapp/vendor/laravel/framework
+<pre class="highlight plaintext"><code>cd myapp/vendor/laravel/framework
 curl -sS https://getcomposer.org/installer | php
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>If you’ve installed Composer globally by renaming it to /usr/bin/composer then you can skip that of course.</p>
 
 <p>Then you want to run Composer and have it install all of the packages dependencies. Normally these will be lumped into your main <code>myapp/vendor/</code> folder when you run the main composer install, but this will just install all the packages and any dev stuff it needs to complete its unit tests in the current directory:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>./composer.phar install --dev
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>./composer.phar install --dev
+</code></pre>
 
 <h2 id="testing-the-package">Testing the Package</h2>
 
 <p>With the –dev dependencies installed you can easily run whatever test suite the package developer has set up - which is most likely (at the very least) going to be PHPUnit.</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>./vendor/bin/phpunit
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>./vendor/bin/phpunit
+</code></pre>
 
 <p>This should run their tests, as long as the core of the package has a phpunit.xml file. If the phpunit.xml is elsewhere (maybe in a build/ folder for Jenkins or whatever) then simply reference the location with the -c option:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>./vendor/bin/phpunit -c build/phpunit.xml
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>./vendor/bin/phpunit -c build/phpunit.xml
+</code></pre>
 
 <p>It’s important to run this before you start faffing around with their code, because writing your own code gets much more difficult if theirs is not even working.</p>
 
@@ -122,20 +117,7 @@ curl -sS https://getcomposer.org/installer | php
 
 <p>In which order you do the next bit is pretty unimportant, but I like to write the test first, then write the code:</p>
 
-<div class="highlight php"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14</pre></td><td class="code"><pre>public function testSort()
+<pre class="highlight php"><code>public function testSort()
 {
     $data = new Collection(array(5, 3, 1, 2, 4));
     $data-&gt;sort(function($a, $b)
@@ -149,8 +131,7 @@ curl -sS https://getcomposer.org/installer | php
 
     $this-&gt;assertEquals(range(1, 5), array_values($data-&gt;all()));
 }
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>This was just some new method for Laravel 4’s Support\Collection class which lets you uasort() on a Collection. Not rocket science, but Taylor isn’t going to merge this without tests, mostly because he knows what I’m like.</p>
 
@@ -162,15 +143,11 @@ curl -sS https://getcomposer.org/installer | php
 
 <p>Go to the main repo (in this case github.com/laravel/framework) and click Fork. Copy the Git+SSH URL then hop into the terminal and do this:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4</pre></td><td class="code"><pre>git checkout -b feature/kittens
+<pre class="highlight plaintext"><code>git checkout -b feature/kittens
 git add src/Fluffy.php src/Snuggles.php
 git commit -m "More kittens."
 git push git@github.com:philsturgeon/framework.git feature/kittens
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Refresh your repo page and you’ll see a Pull Request button next to the branch you just pushed. Click that, write a message, done.</p>
 
@@ -180,19 +157,7 @@ git push git@github.com:philsturgeon/framework.git feature/kittens
 
 <p>Composer is completely ready to help you out here either way.</p>
 
-<div class="highlight javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13</pre></td><td class="code"><pre><span class="p">{</span>
+<pre class="highlight javascript"><code><span class="p">{</span>
     <span class="s2">"repositories"</span><span class="err">:</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"vcs"</span><span class="p">,</span>
@@ -205,8 +170,7 @@ git push git@github.com:philsturgeon/framework.git feature/kittens
     <span class="p">},</span>
     <span class="s2">"minimum-stability"</span><span class="err">:</span> <span class="s2">"dev"</span>
 <span class="p">}</span>
-</pre></td></tr></tbody></table>
-</div>
+</code></pre>
 
 <p>Now when you composer update you’re going to find yourself using your version of the code, not theirs. This means you can wait as long as it takes to do it.</p>
 

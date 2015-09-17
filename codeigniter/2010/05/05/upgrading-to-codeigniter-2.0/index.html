@@ -102,15 +102,13 @@
 
 <p>CodeIgniter Controllers and Models used to be defined extend like this:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>class Blog_model extends Model
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>class Blog_model extends Model
+</code></pre>
 
 <p>Now in CodeIgniter 2.0 you write:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>class Blog_model extends CI_Model
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>class Blog_model extends CI_Model
+</code></pre>
 
 <p>_ <strong>Update 10/11/2010:</strong> Remember to do this for Controllers too. Instead of Foo extends Controller, you must now write Foo extends CI_Controller and all parent::Controller() calls must be changed to parent::__construct()!_</p>
 
@@ -159,9 +157,8 @@
 
 <p>This didn’t happen in previous CodeIgniter versions but in 2.0 if you enable $config[‘enable_query_strings’] it will now generate links like http://example.php/index.php?/controller, or http://example.php/?/controller. You need to set enable_query_strings to false which will disable GET support. You can re-enable that with a MY_Controller or hook that runs:</p>
 
-<div class="highlight plaintext"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>parse_str($_SERVER['QUERY_STRING'], $_GET);
-</pre></td></tr></tbody></table>
-</div>
+<pre class="highlight plaintext"><code>parse_str($_SERVER['QUERY_STRING'], $_GET);
+</code></pre>
 
 <h3 id="summary">Summary</h3>
 

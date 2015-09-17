@@ -26,7 +26,7 @@
   <meta property="og:title" content="Twiny-Framework: the framework small enough to tweet" />
   <meta property="og:type" content="article" />
   <meta property="article:author" content="Phil Sturgeon" />
-  <meta property="og:description" content="Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new &quot;framework&quot; which is so lightweight it can fit in a Tweet." />
+  <meta property="og:description" content="Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new “framework” which is so lightweight it can fit in a Tweet." />
   <meta property="og:site_name" content="Phil Sturgeon" />
   <meta property="og:image" content="https://philsturgeon.uk/images/author.jpg" />
   <meta property="og:url" content="https://philsturgeon.uk/php/2009/12/15/Twiny-Framework-the-framework-small-enough-to-tweet/" />
@@ -37,7 +37,7 @@
   <meta name="twitter:title" content="Twiny-Framework: the framework small enough to tweet | Phil Sturgeon">
   <meta name="twitter:image:src" content="https://philsturgeon.uk/images/author.jpg">
   <meta name="twitter:url" content="https://philsturgeon.uk/php/2009/12/15/Twiny-Framework-the-framework-small-enough-to-tweet/">
-  <meta name="twitter:description" content="Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new &quot;framework&quot; which is so lightweight it can fit in a Tweet.">
+  <meta name="twitter:description" content="Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new “framework” which is so lightweight it can fit in a Tweet.">
   <meta name="twitter:creator" content="@philsturgeon">
   
   <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
@@ -74,7 +74,7 @@
             <span class="post-reading-time"></span> read
           </div>
           <a name="topofpage"></a>
-          <p>Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new &quot;framework&quot; which is so lightweight it can fit in a Tweet.</p>
+          <p>Many frameworks say they are lightweight, quick and easy on your server, but none are as lightweight as my new “framework” which is so lightweight it can fit in a Tweet.</p>
 
 <pre class="highlight php"><code><span class="cp">&lt;?</span> <span class="nv">$g</span><span class="o">=</span><span class="nv">$_GET</span><span class="p">;</span><span class="nv">$c</span><span class="o">=@</span><span class="nv">$g</span><span class="p">[</span><span class="s1">'c'</span><span class="p">]</span><span class="o">?:</span><span class="s1">'Home'</span><span class="p">;</span>
 <span class="k">if</span><span class="p">(</span><span class="o">!@</span><span class="k">include</span><span class="s2">"c/</span><span class="nv">$c</span><span class="s2">.php"</span><span class="p">)</span><span class="k">die</span><span class="p">(</span><span class="s1">'fail'</span><span class="p">);</span>
@@ -82,9 +82,9 @@
 <span class="nv">$o</span><span class="o">=</span><span class="k">new</span><span class="nv">$c</span><span class="p">;</span><span class="nv">$o</span><span class="o">-&gt;</span><span class="nv">$m</span><span class="p">(</span><span class="nv">$g</span><span class="p">);</span>
 </code></pre>
 
-<p>This idea was not my own, but was inspired by <a href="http://twitto.org/" target="_blank">Twitto</a>. During some extreme boredom at work I decided to &quot;one-up&quot; this teeny-tiny framework and improve on it. My framework does this by allowing you to run Controller files and methods in a similar way to CodeIgniter, while Twitto only has the ability to run functions from a single file.</p>
+<p>This idea was not my own, but was inspired by <a href="http://twitto.org/">Twitto</a>. During some extreme boredom at work I decided to “one-up” this teeny-tiny framework and improve on it. My framework does this by allowing you to run Controller files and methods in a similar way to CodeIgniter, while Twitto only has the ability to run functions from a single file.</p>
 
-<h3>Usage</h3>
+<h3 id="usage">Usage</h3>
 
 <pre class="highlight php"><code>class Blog
 {
@@ -99,19 +99,19 @@
 }
 </code></pre>
 
-<p>This simple class structure contains a method for each page, defaulting to index. If no controller is set, then it goes to Home.php.</p>
+<p>This simple class structure contains a method for each page, defaulting to index. If no controller is set, then it goes to <code>Home.php</code>.</p>
 
 <ul>
-	<li>index.php - Runs Home-&gt;index() in ./c/Home.php</li>
-	<li>index.php?c=Blog - Runs Blog-&gt;index() in ./Blog.php</li>
-	<li>index.php?c=Blog&amp;m=view&amp;id=1 - Runs Blog-&gt;view($params) and id can be accessed via $params[&#39;id&#39;]</li>
+  <li><code>index.php</code> - Runs <code>Home::index()</code> in <code>./c/Home.php</code></li>
+  <li><code>index.php?c=Blog</code> - Runs <code>Blog::index()</code> in <code>./c/Blog.php</code>&lt;/li&gt;</li>
+  <li><code>index.php?c=Blog&amp;m=view&amp;id=1</code> - Runs <code>Blog::view($params)</code> and <code>id</code> can be accessed via <code>$params['id']</code></li>
 </ul>
 
-<p>You can get to that with URL&#39;s like index.php?c=Blog&amp;m=view&amp;id=1, but with some mod_rewrite that could be reduced to /Blog/view/id/1 easily enough.</p>
+<p>You can get to that with URL’s like <code>index.php?c=Blog&amp;m=view&amp;id=1</code>, but with some mod_rewrite that could be reduced to <code>/Blog/view/id/1</code> easily enough.&lt;/p&gt;</p>
 
 <h3 id="mvc">MVC?</h3>
 
-<p>Want full MVC? Set an autoload function to check ./m/ and use:</p>
+<p>Want full MVC? Set an autoload function to check <code>./m/</code> and use:</p>
 
 <pre class="highlight php"><code>    function view($params)
     {

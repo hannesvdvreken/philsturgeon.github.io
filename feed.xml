@@ -5,10 +5,176 @@
   <id>https://philsturgeon.uk/</id>
   <link href="https://philsturgeon.uk/"/>
   <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
-  <updated>2015-09-03T09:47:00-04:00</updated>
+  <updated>2015-09-23T17:00:00-04:00</updated>
   <author>
     <name>Phil Sturgeon</name>
   </author>
+  <entry>
+    <title>HTTP Status Codes Are Not Enough</title>
+    <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/"/>
+    <id>https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/</id>
+    <published>2015-09-23T17:00:00-04:00</published>
+    <updated>2015-09-23T17:00:04-04:00</updated>
+    <summary type="html">Don't be fooled into thinking you can use HTTP status codes on their own. You need to supplement them using error messages, with maybe some specific error codes of your own and links to documentation explaining what the problem is.</summary>
+    <content type="html">&lt;p&gt;I spotted an article called &lt;a href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"&gt;Just learn Rails (Part 3) HTTP status codes&lt;/a&gt;. It started off good, and I liked that it was teaching people to avoid hardcoding their HTTP status codes in code, using &lt;code&gt;:conflict&lt;/code&gt; instead of &lt;code&gt;409&lt;/code&gt; and the like.&lt;/p&gt;
+
+&lt;p&gt;That is a good message to send, which I why I wrote an article on &lt;a href="https://philsturgeon.uk/http/2015/08/16/avoid-hardcoding-http-status-codes/"&gt;exactly that&lt;/a&gt; last month.&lt;/p&gt;
+
+&lt;p&gt;The article also stresses that you must not return errors on &lt;code&gt;200&lt;/code&gt;, which even the insanity wolf will tell you.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://speakerdeck.com/philsturgeon/api-pain-points-confoo-2015?slide=29"&gt;&lt;img alt="Insanity wolf hates errors on a 200" width="729" height="729" src="/images/article_images/2015-09-23-http-status-codes-are-not-enough/insanity-wolf-errors.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The problem with the article is when it gets to sarcastically pointing out error messages are an overly verbose waste of time, or needless novella. I pointed out the flaw in this logic using some jovially hyperbolic wording as I’m known to do, and in the end the chap suggested I didn’t understand the article.&lt;/p&gt;
+
+&lt;p&gt;I understand the article perfectly, and it’s a damaging message to send.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Instead, Ruby on Rails gives us very helpful symbols that can be used to accurately convey the appropriate response to end users.&lt;/p&gt;
+
+  &lt;p&gt;To only return the correct HTTP status code, the books controller can be rewritten to:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BooksController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+  &lt;span class="n"&gt;before_filter&lt;/span&gt; &lt;span class="ss"&gt;:authenticate_user&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;show&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vi"&gt;@user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;nil?&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="ss"&gt;:unauthorized&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="n"&gt;render&lt;/span&gt; &lt;span class="ss"&gt;json: &lt;/span&gt;&lt;span class="no"&gt;Book&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Fuck that! Am I unauthorized because I didn’t provide a key or because the key was invalid? A developer can spend forever debugging 
+that alone.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Alternatively, if extremely verbose and tedious error messages are the cat’s pajamas to you, it is possible to use these symbols in conjunction with response bodies:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BooksController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+  &lt;span class="n"&gt;before_filter&lt;/span&gt; &lt;span class="ss"&gt;:authenticate_user&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;show&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vi"&gt;@user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;nil?&lt;/span&gt;
+      &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;error: &lt;/span&gt;&lt;span class="s1"&gt;'User is not logged in'&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="ss"&gt;:unauthorized&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Book&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+      &lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="ss"&gt;:ok&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="n"&gt;render&lt;/span&gt; &lt;span class="ss"&gt;json: &lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;status: &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Error messages are not some over-the-top exercise, creating tedious reading and understanding for everyone involved. They are fundafuckingmental to having any sort of half useful API.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id="brevity-is-underrated"&gt;Brevity is underrated&lt;/h3&gt;
+  &lt;p&gt;This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem could be solved with CanCanCan, it is important to understand how and why those libraries work the way that they do.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Absolutely, a good API should definitely use status codes appropriately, but the suggestion throughout this article is that suplimenting that HTTP status messages are a pain, or uneccessary.&lt;/p&gt;
+
+&lt;p&gt;Bunk. Bunk I say!&lt;/p&gt;
+
+&lt;p&gt;Take a look at this:&lt;/p&gt;
+
+&lt;pre class="highlight json"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="nt"&gt;"errors"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"code"&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;20002&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"title"&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"There are no savings for this user."&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"status"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;How the flying shit would I know from just a 400 that that user doesn’t have any savings? Especially when that same endpoint could also return:&lt;/p&gt;
+
+&lt;pre class="highlight json"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="nt"&gt;"errors"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"code"&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;20010&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"title"&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"Invalid geopoints for simulated savings."&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"status"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The whole API does not rely on 400 errors over here, no, but even if you did find a more suitable status code I still would not know &lt;em&gt;exactly&lt;/em&gt; what was happening.&lt;/p&gt;
+
+&lt;p&gt;If you make me work with an API that does not have errors, I’m not going coming to your birthday party.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the error key to Error and ruin everyone’s day.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Returning error messages is not in the HTTP specification, so best not to do it ever?&lt;/p&gt;
+
+&lt;p&gt;I’ll concede that my jimmies do get a little rustled when I see people making their own random ad-hoc error formats, especially when error messages for APIs are a solved problem with some great solutions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="http://jsonapi.org/format/#errors"&gt;JSON-API: Errors&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.mnot.net/blog/2013/05/15/http_problem"&gt;HTTP Problems&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Hilariously that last one &lt;a href="https://tools.ietf.org/html/draft-nottingham-http-problem-03"&gt;is an RFC&lt;/a&gt;, written largely the same chap responsible for most of the modern day HTTP specification, so, if we’re into following specs with our APIs then we should probably be doing that.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes and save the novella for another time.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I’ll take vague hints, a brief description and a link to some docs, or any one of those at a pinch. None of that is novella. If you give me none of that, then you’ve released a useless pile of shit, and most developers will just use a different API by somebody else instead of integrating with your business.&lt;/p&gt;
+
+&lt;h2 id="nice-errors"&gt;Nice Errors&lt;/h2&gt;
+
+&lt;p&gt;The specifics of how you throw these vary by language, framework, and personal preference. Here is an approach we use in Rails:&lt;/p&gt;
+
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ApplicationController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActionController&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;  
+  &lt;span class="n"&gt;rescue_from&lt;/span&gt; &lt;span class="s1"&gt;'User::MissingPaymentDetails'&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+    &lt;span class="n"&gt;render_json_error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="ss"&gt;:match_accepted_by_non_paying_passenger&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="ss"&gt;:precondition_failed&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="ss"&gt;details: &lt;/span&gt;&lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;message&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;render_json_error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{})&lt;/span&gt;
+		&lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Rack&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Utils&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;SYMBOL_TO_STATUS_CODE&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;is_a?&lt;/span&gt; &lt;span class="no"&gt;Symbol&lt;/span&gt;
+
+    &lt;span class="n"&gt;error&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="ss"&gt;code: &lt;/span&gt;&lt;span class="no"&gt;I18n&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;t&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"error_codes.&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.code"&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+      &lt;span class="ss"&gt;title: &lt;/span&gt;&lt;span class="no"&gt;I18n&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;t&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"error_codes.&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.message"&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+      &lt;span class="ss"&gt;status: &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;
+    &lt;span class="p"&gt;}.&lt;/span&gt;&lt;span class="nf"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;render&lt;/span&gt; &lt;span class="ss"&gt;json: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;errors: &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="ss"&gt;status: &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then in &lt;code&gt;config/locales/errors.en.yaml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="s"&gt;en&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="s"&gt;error_codes&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+    &lt;span class="s"&gt;match_accepted_by_non_paying_passenger&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="s"&gt;code&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;19005&lt;/span&gt;
+      &lt;span class="s"&gt;message&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;It appears we're missing your payment details.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using this approach, you can catch global exceptions at a very high level for really generic things like this, and handle very specific exceptions in controllers. Hitting the method yourself works too of course. We even have some logic that turns validation errors into standard errors in this way.&lt;/p&gt;
+
+&lt;p&gt;All of this allows for business logic to be translated into meaningful errors, all with useful computer &lt;em&gt;and&lt;/em&gt; human readable error codes, with a convenient &lt;code&gt;:match_accepted_by_non_paying_passenger&lt;/code&gt; that corresponds to the full title and the error code. Then you’re also providing the HTTP status via a symbol using &lt;code&gt;:precondition_failed&lt;/code&gt; instead of just shoving a &lt;code&gt;412&lt;/code&gt; in the controller.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;If you want more advice on HTTP/API stuff, grab a copy of my book &lt;a href="http://apisyouwonthate.com/"&gt;Build APIs You Won’t Hate&lt;/a&gt;. You can get that eBook for free if you donate $10 to my next &lt;a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;amp;participantID=2035"&gt;charity bike ride&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Auto-Incrementing IDs: Giving your Data Away</title>
     <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/"/>
@@ -551,170 +717,6 @@ echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;P.S:&lt;/strong&gt; If you would like to offer some rewards for these donations to help the charity get even more money, and get yourself a bit of marketing and increased sales as an extra reward, please &lt;a href="&amp;#109;&amp;#097;&amp;#105;&amp;#108;&amp;#116;&amp;#111;:&amp;#109;&amp;#101;&amp;#064;&amp;#112;&amp;#104;&amp;#105;&amp;#108;&amp;#115;&amp;#116;&amp;#117;&amp;#114;&amp;#103;&amp;#101;&amp;#111;&amp;#110;&amp;#046;&amp;#117;&amp;#107;"&gt;get in touch&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Twatty Fallacies when Fox and Friends talk Flags</title>
-    <link rel="alternate" href="https://philsturgeon.uk/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/"/>
-    <id>https://philsturgeon.uk/politics/2015/07/04/twatty-fallacies-fox-charleston-shooting/</id>
-    <published>2015-07-04T14:04:00-04:00</published>
-    <updated>2015-09-23T16:24:47-04:00</updated>
-    <summary type="html">Usually this blog is about programming. I try to stick to what I know, but one thing I have a lot of experience with is pointing out shit arguments used to defend nonsense. The USA has been suffering from a bout of nonsense after the awful Charleston shooting, and here are my thoughts on that.</summary>
-    <content type="html">&lt;p&gt;Usually this blog is about programming. I try to stick to what I know, but one thing I have a lot of experience with is pointing out shit arguments used to defend nonsense. Whether it is excuses to &lt;a href="/blog/2013/09/t-paamayim-nekudotayim-v-sanity/"&gt;keep a single PHP error message in Hebrew&lt;/a&gt;, or &lt;a href="/blog/2013/11/benchmarking-codswallop-nodejs-v-php/"&gt;rebuking wildly inaccurate claims that NodeJS is magically faster than PHP&lt;/a&gt;, I find myself doing the same thing: calling bullshit on nonsense arguments.&lt;/p&gt;
-
-&lt;p&gt;Mainstream media in the States is usually quite awful, but I’ve never seen more ignorance on a single topic than in the aftermath of the Charleston shooting.&lt;/p&gt;
-
-&lt;p&gt;The Charleston shooting is an utter tragedy. It’s terrible. The only thing worse than 9 innocent civilians losing their life is the fact that this will absolutely happen again, and again, and again, because people hide this under the carpet instead of dealing with the problems.&lt;/p&gt;
-
-&lt;p&gt;This was a clear cut case of a racist asshole being a racist asshole; shooting up a “black church” which had been &lt;a href="http://billmoyers.com/2015/06/19/charlestons-mother-emanuel-church-has-stared-down-racist-violence-for-200-years/"&gt;burned to the ground&lt;/a&gt; by racists in the past, because the members of the church &lt;a href="http://www.npr.org/2015/06/18/415537133/charleston-s-c-church-formed-around-anti-slavery-movement"&gt;took a stand against slavery&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Let’s wade through this horseshit one step at a time. This is a lot of examples from Fox, but I’ve also seen and heard people echoing this out and about, and online. It’s horrifying.&lt;/p&gt;
-
-&lt;h2 id="pretending-this-was-not-racism"&gt;1. Pretending this “was not racism”&lt;/h2&gt;
-
-&lt;p&gt;Fox News managed to &lt;a href="http://boingboing.net/2015/06/19/fox-news-and-neo-nazi-site-cal.html"&gt;spin this to their own political narrative&lt;/a&gt;. They’re always chuffing on about the &lt;a href="http://www.huffingtonpost.com/news/fox-news-war-on-christmas/"&gt;War Against Christmas&lt;/a&gt;, and now they’re moving their narrative onto a full on “War Against Christians” situation.&lt;/p&gt;
-
-&lt;p&gt;Let’s be clear about one thing: the goals here were race related. That is absolutely an indisputable fact. Read the manifesto, which was up on a racist website until it got taken down, but it is also &lt;a href="http://www.huffingtonpost.com/2015/06/20/dylann-roof-manifesto-charleston-shooting_n_7627788.html"&gt;up on HuffPo in full&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;There literally is no possible wiggle room at all on the fact this was race related. Yet still, Fox “News” are giving it this:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“They haven’t explained it to us”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“We don’t know why he did this”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“A lot of people jump to conclusions about race”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Maybe that can sail by, but this quote:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“Extraordinarily they called it a hate crime. And some look at it as, well, it’s because it was a white guy, apparently, and a black church. But you made a great point just a moment ago about the hostility toward Christians, and it was in a church, so maybe that’s what it was about.”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;He wasn’t “apparently” a white guy, that is definitive so. There were eye witnesses. We knew he was a white guy as soon as responders got on the scene.&lt;/p&gt;
-
-&lt;p&gt;It wasn’t hostility towards Christians, he is a Christian. The witnesses explained Roof said “I’m here to kill black people.” What is there to confuse there?&lt;/p&gt;
-
-&lt;p&gt;Why are they on a news show saying “maybe this” and “maybe that” when they have facts available that &lt;em&gt;directly&lt;/em&gt; disprove the nonsense falling out of their faces? Why would anyone else listen to this and believe it enough to repeat it? Spreading ignorance is a huge problem.&lt;/p&gt;
-
-&lt;h2 id="was-it-terrorism"&gt;2. Was it Terrorism?&lt;/h2&gt;
-
-&lt;p&gt;This has been another sticking point in the USA, to call it terrorism or not.&lt;/p&gt;
-
-&lt;p&gt;There is a truly bizarre theme in the USA, where in many peoples eyes it seems only Muslims are allowed to be called terrorists. Islamophobia is rife, so this supports the narrative of many media channels.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;ter·ror·ism&lt;br /&gt;
-noun&lt;br /&gt;
-the use of violence and intimidation in the pursuit of political aims.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;That definition lines up with what happened. Roof said specifically that he wanted to start another Civil War, and he even left one woman alive and told her to tell others what had happened. That sounds like using violence and intimidation in the pursuit of political aims to me.&lt;/p&gt;
-
-&lt;p&gt;Fairly clear cut, right?&lt;/p&gt;
-
-&lt;p&gt;Well, ass-hat Rick Perry would rather &lt;a href="http://www.rawstory.com/2015/06/rick-perry-charleston-massacre-was-an-accident-caused-by-drugs-not-guns/"&gt;pretend that this was an accident caused by drugs&lt;/a&gt;, even though literally nothing in the manifesto or any reported information around it said there was anything to do with drugs.&lt;/p&gt;
-
-&lt;p&gt;He was caught with some drugs a while ago, but doctors report they are not the type of drugs to induce psychosis. I smoked weed a bit in college, so if I go and do something terrible are they going blame that all on drugs? Why divert? The NRA has always tried to divert, blaming anything from Hollywood to &lt;a href="http://www.motherjones.com/politics/2015/06/most-awful-reaction-charleston-mass-shooting-nra"&gt;the victims for not carrying guns&lt;/a&gt;. This is wildly disrespectful, and a distraction from the problem.&lt;/p&gt;
-
-&lt;p&gt;Many Americans forget that terrorism has been around forever, long before 9/11, at which point Americans got super stuck on the concept that terrorists were from the Middle East. The &lt;a href="https://en.wikipedia.org/?title=Resistance_movement"&gt;French Resistance&lt;/a&gt; used terrorist tactics to push back against the Nazi occupation, without which Europe would be a very different place.&lt;/p&gt;
-
-&lt;p&gt;It blows my mind that I have to link to these articles, but on the off-chance you weren’t sure, here are are some stats to back it up:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href="http://www.globalresearch.ca/non-muslims-carried-out-more-than-90-of-all-terrorist-attacks-in-america/5333619"&gt;Non-Muslims Carried Out More than 90% of All Terrorist Attacks in America&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="http://www.thedailybeast.com/articles/2015/01/14/are-all-terrorists-muslims-it-s-not-even-close.html"&gt;Are All Terrorists Muslims? It’s Not Even Close&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Yeah you read that right, Jewish terrorists and Christian terrorists killed more people in the USA than Muslim terrorists did, but you don’t see movies joking about people freaking the fuck out on a plane after spotting a crucifix necklace.&lt;/p&gt;
-
-&lt;p&gt;In 2014 there were &lt;strong&gt;37&lt;/strong&gt; Muslim-related terrorist killings in the USA, during which time there were 190,000 murders.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“In cases where the religious affiliation of terrorism casualties could be determined, Muslims suffered between 82 and 97 percent of terrorism-related fatalities over the past five years.” – &lt;a href="http://www.theatlantic.com/international/archive/2012/06/americans-are-as-likely-to-be-killed-by-their-own-furniture-as-by-terrorism/258156/"&gt;The Atlantic&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Why cling onto the idea that only killings by a militant Muslim can be labeled as terrorism?&lt;/p&gt;
-
-&lt;p&gt;Islamophobia is ignorance. The &lt;a href="https://www.youtube.com/watch?v=PzusSqcotDw"&gt;ignorant crap people say about “Muslim countries”&lt;/a&gt; would be laughable if not echoed by real people who are respected in their various communities.&lt;/p&gt;
-
-&lt;p&gt;I’ve seen it happen a few times in the programming community, with prominent, otherwise intelligent figures “coming out against Islam”. On a much bigger scale, scumbag &lt;a href="http://money.cnn.com/2015/01/12/media/rupert-murdoch-aziz-ansari-fox-news-facts/"&gt;Rupert Murdoch says that Muslims must be held responsible for jihadist activity&lt;/a&gt;. &lt;em&gt;What?&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;By keeping the word terrorism as only a label for Muslim attacks, not only do we expose the use of the word as pure propaganda, but we also sideline this attack as the actions of a solo “crazy” person. Doing that is not only offensive to those living with mental illnesses who do not go on race-based rampages, but it lessens the entire problem and lets people slap a &lt;code&gt;wontfix&lt;/code&gt; label on the situation.&lt;/p&gt;
-
-&lt;p&gt;The Charleston shooting was a terrorist attack. A white guy committed a terrorist attack, on U.S. soil, against U.S. citizens. There is no wiggle room on that. Dylan Roof is a terrorist.&lt;/p&gt;
-
-&lt;h2 id="take-it-down"&gt;3. Take it Down&lt;/h2&gt;
-
-&lt;p&gt;In the USA people are so used to mass shootings in recent years that there is very little shock when it happens. It’s always “too soon” to talk about it, meaning no progress can ever be made. Understandably that people instead focused on a much smaller problem which could be solved, and called for the &lt;a href="http://www.msnbc.com/msnbc/takeitdown-south-carolina-must-disown-confederate-flag"&gt;Confederate Flag to be taken down&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Instantly the flag defenders turn up with this status quo defense:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The flag is a symbol of Southern heritage, and it is not about racism.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The causes of the American Civil War are - like anything in history - diverse and widely debated, but I think we can safely agree that the Union being anti-slavery and the Confederacy really enjoying the benefits of their “free labour” was fundamental to the dispute.&lt;/p&gt;
-
-&lt;p&gt;There is not much room for argument about the Confederate Flag being racist. The guy who designed it was &lt;a href="http://mic.com/articles/121082/here-s-the-racist-meaning-of-the-confederate-flag-in-the-words-of-the-man-who-designed-it"&gt;racist as fuck&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img alt="Designer of the Confederate Flag quoted in an excerpt from the book Our Flag by George Preble" width="497" height="301" src="/images/article_images/2015-07-04-twatty-fallacies-fox-charleston-shooting/william-t-thompson-racist-fuck.jpg" /&gt;&lt;/p&gt;
-
-&lt;p&gt;For the sake of argument, let us pretend that the flag never had a strong connection to racism, and was created with the best intent. Well, if it &lt;em&gt;was&lt;/em&gt; perfectly, innocent, it no longer is. In countries where the &lt;a href="https://en.wikipedia.org/wiki/Post%E2%80%93World_War_II_legality_of_Nazi_flags"&gt;flying of Nazi flags is illegal or restricted&lt;/a&gt;, many white supremacists fly the Confederate Flag instead.&lt;/p&gt;
-
-&lt;p&gt;In the photos of &lt;a href="http://www.huffingtonpost.com/2015/06/18/dylann-roof-facebook-photo_n_7612708.html"&gt;Dylan Roof wearing Pro-Apartheid South American and Rhodesian patches&lt;/a&gt;, do you think he was wearing those flags to recognize love and respect for South African and Rhodesian heratage? No, he was wearing them because they are a symbol created by those who share his views, that white people are somehow better than people of color.&lt;/p&gt;
-
-&lt;p&gt;Sure the Nazis made some huge breakthroughs in science, had a great welfare system, paved the way for space travel, and made some great cars, when people fly a swastika that’s not what they’re talking about, and at this point the Confederate Flag is on the same level.&lt;/p&gt;
-
-&lt;p&gt;Further to that, &lt;a href="http://msnbcmedia.msn.com/i/MSNBC/Sections/NEWS/confederateflag.pdf"&gt;SurveyMonkey did a survey&lt;/a&gt; asking folks if they thought the Confederate Flag was a A) a symbol of Southern Pride or B) a symbol of racism. 81% of black people thought it was racist. Can’t you take it down simply out of respect for them?&lt;/p&gt;
-
-&lt;p&gt;I spotted this on my Facebook news feed:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Taking down the flag is not going to magically end all racism, so why bother?&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Ok, I don’t think any reasonable human being would suggest that taking down a flag would end racism. This continuum fallacy ignores the idea that removing symbols that strengthen negative belief systems would result in fewer people feeling justified and vindicated in their actions.&lt;/p&gt;
-
-&lt;p&gt;If your world view is that white people are the “master race”, and you see the media demonizing black people (as Dylan Roof explained in his manifesto), you drive along roads that are named after Confederate generals and even see the flag on a regular basis, your world view is being strengthened, and the likelihood of you acting out your life in accordance to that view is increased.&lt;/p&gt;
-
-&lt;p&gt;The more you can do to chip away at that world view, the less often this will happen.&lt;/p&gt;
-
-&lt;blockquote class="twitter-tweet" lang="en"&gt;&lt;p lang="en" dir="ltr"&gt;My thoughts are with the victim&amp;#39;s families in SC.Let us honor their lives by eradicating racism &amp;amp; removing the symbols &amp;amp; words that feed it.&lt;/p&gt;&amp;mdash; Tim Cook (@tim_cook) &lt;a href="https://twitter.com/tim_cook/status/612703567082688513"&gt;June 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
-
-&lt;p&gt;I don’t think Dylan Roof was just a poor unfortunate victim of upbringing and circumstance, but I don’t believe anyone just jumps to being racist without help, and a lot of folks in the USA are incredibly effective at perpetrating sometimes subtle - and sometimes not-so-subtle - racism.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;What about free speech?!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;It is important here to make a distinction between the concept of free speech (the government not being able to arrest you for what you say) and the concept of not flying racist flags on government buildings.&lt;/p&gt;
-
-&lt;p&gt;Calling for the flag to be removed from government buildings (and therefore ending its public legitimisation) is not the same as telling people they can’t fly racist flags on their own property. You go ahead and do that if you want, you asshole, but your free speech is not being impacted here at all.&lt;/p&gt;
-
-&lt;p&gt;Some excuses were made about not being able to get the flag down for weeks due to requiring contractors to come and do it, so &lt;a href="http://abcnews.go.com/GMA/video/woman-climbs-flagpole-takes-confederate-flag-32081683"&gt;One brave lady got up the flag pole&lt;/a&gt; and did it for them. They managed to put it back up rather quickly while she was on her way to jail.&lt;/p&gt;
-
-&lt;p&gt;Luckily &lt;a href="http://www.usatoday.com/story/news/nation/2015/06/29/confederate-flag-taken-down-at-fort-sumter/29490845/"&gt;it is down now&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;People need to reevaluate the battles they are willing to fight, and the reasons they are willing to fight them. I couldn’t have cared less about the flag until people started using nonsense to defend it. Fuck anyone who wants to disrespect the thousands of African American citizens who have voiced their concerns over and over again about the flag and been told “Nah, it’s fine”.&lt;/p&gt;
-
-&lt;p&gt;Many people fought and died in that war on both sides, and I know that descendants of those lost on the Confederate side want to remember their families brave sacrifices, but they can do that without the flag. The grandchildren of Nazi soldiers are not flying the swastika either, even though I doubt many would want to.&lt;/p&gt;
-
-&lt;p&gt;The war is over, the Confederacy lost. It’s time to retire the flag and put it in museums, not continue to rub it in the faces of those who would have been enslaved if the South had won.&lt;/p&gt;
-
-&lt;p&gt;Just because you do not see a problem, does not mean the problem is not there. There are racist, domestic terrorists in the U.S. and they’re running wild, causing far more problems than the current distraction boogeyman: Muslims!&lt;/p&gt;
-
-&lt;p&gt;No, in the U.S. there are racist, often Christian terrorists, and right now they are &lt;a href="http://www.theroot.com/articles/culture/2015/07/who_is_burning_black_churches_here_s_what_we_know.html"&gt;actively burning down churches&lt;/a&gt; which have predominantly black congregations.&lt;/p&gt;
-
-&lt;p&gt;Pretending these assholes aren’t racist, refusing to call them terrorists, letting other people be lied to by ignorant racist media like Fox News instead of just banning them for regularly and knowingly broadcasting outright lies, and leaving symbols on public buildings that reaffirm those racist beliefs sounds like an utterly broken status quo that needs to be fixed.&lt;/p&gt;
-
-&lt;p&gt;If nothing changes, we can expect to see a lot more African Americans suffer in the near future.&lt;/p&gt;
 </content>
   </entry>
 </feed>

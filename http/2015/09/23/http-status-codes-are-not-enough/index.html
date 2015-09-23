@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>HTTP Status Codes Are Not Enough | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+  <link href="/images/favicon.png" rel="icon" type="image/png" />
+
+  <meta property="og:title" content="HTTP Status Codes Are Not Enough" />
+  <meta property="og:type" content="article" />
+  <meta property="article:author" content="Phil Sturgeon" />
+  <meta property="og:description" content="Don&#x27;t be fooled into thinking you can use HTTP status codes on their own. You need to supplement them using error messages, with maybe some specific error codes of your own and links to documentation explaining what the problem is." />
+  <meta property="og:site_name" content="Phil Sturgeon" />
+  <meta property="og:image" content="https://philsturgeon.uk/images/author.jpg" />
+  <meta property="og:url" content="https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/" />
+  <meta property="og:locale" content="en_GB" />
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="HTTP Status Codes Are Not Enough | Phil Sturgeon">
+  <meta name="twitter:image:src" content="https://philsturgeon.uk/images/author.jpg">
+  <meta name="twitter:url" content="https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/">
+  <meta name="twitter:description" content="Don&#x27;t be fooled into thinking you can use HTTP status codes on their own. You need to supplement them using error messages, with maybe some specific error codes of your own and links to documentation explaining what the problem is.">
+  <meta name="twitter:creator" content="@philsturgeon">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">HTTP Status Codes Are Not Enough</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-09-23 21:00:00 UTC">
+                Sep 23 2015
+              </time>
+              <a href="/tags/http/">#http</a>
+              <a href="/tags/api/">#api</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>I spotted an article called <a href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/">Just learn Rails (Part 3) HTTP status codes</a>. It started off good, and I liked that it was teaching people to avoid hardcoding their HTTP status codes in code, using <code>:conflict</code> instead of <code>409</code> and the like.</p>
+
+<p>That is a good message to send, which I why I wrote an article on <a href="https://philsturgeon.uk/http/2015/08/16/avoid-hardcoding-http-status-codes/">exactly that</a> last month.</p>
+
+<p>The article also stresses that you must not return errors on <code>200</code>, which even the insanity wolf will tell you.</p>
+
+<p><a href="https://speakerdeck.com/philsturgeon/api-pain-points-confoo-2015?slide=29"><img alt="Insanity wolf hates errors on a 200" width="729" height="729" src="/images/article_images/2015-09-23-http-status-codes-are-not-enough/insanity-wolf-errors.jpg" /></a></p>
+
+<p>The problem with the article is when it gets to sarcastically pointing out error messages are an overly verbose waste of time, or needless novella. I pointed out the flaw in this logic using some jovially hyperbolic wording as I’m known to do, and in the end the chap suggested I didn’t understand the article.</p>
+
+<p>I understand the article perfectly, and it’s a damaging message to send.</p>
+
+<blockquote>
+  <p>Instead, Ruby on Rails gives us very helpful symbols that can be used to accurately convey the appropriate response to end users.</p>
+
+  <p>To only return the correct HTTP status code, the books controller can be rewritten to:</p>
+</blockquote>
+
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="k">return</span> <span class="n">head</span> <span class="ss">:unauthorized</span>
+    <span class="k">end</span>
+
+    <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Fuck that! Am I unauthorized because I didn’t provide a key or because the key was invalid? A developer can spend forever debugging 
+that alone.</p>
+
+<blockquote>
+  <p>Alternatively, if extremely verbose and tedious error messages are the cat’s pajamas to you, it is possible to use these symbols in conjunction with response bodies:</p>
+</blockquote>
+
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">error: </span><span class="s1">'User is not logged in'</span> <span class="p">}</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="ss">:unauthorized</span>
+    <span class="k">else</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="ss">:ok</span>
+    <span class="k">end</span>
+
+    <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span><span class="p">,</span> <span class="ss">status: </span><span class="n">status</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Error messages are not some over-the-top exercise, creating tedious reading and understanding for everyone involved. They are fundafuckingmental to having any sort of half useful API.</p>
+
+<blockquote>
+  <h3 id="brevity-is-underrated">Brevity is underrated</h3>
+  <p>This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem could be solved with CanCanCan, it is important to understand how and why those libraries work the way that they do.</p>
+</blockquote>
+
+<p>Absolutely, a good API should definitely use status codes appropriately, but the suggestion throughout this article is that suplimenting that HTTP status messages are a pain, or uneccessary.</p>
+
+<p>Bunk. Bunk I say!</p>
+
+<p>Take a look at this:</p>
+
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"errors"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+    </span><span class="nt">"code"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="mi">20002</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"title"</span><span class="w">  </span><span class="p">:</span><span class="w"> </span><span class="s2">"There are no savings for this user."</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"status"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="w">
+  </span><span class="p">}]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>How the flying shit would I know from just a 400 that that user doesn’t have any savings? Especially when that same endpoint could also return:</p>
+
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"errors"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+    </span><span class="nt">"code"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="mi">20010</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"title"</span><span class="w">  </span><span class="p">:</span><span class="w"> </span><span class="s2">"Invalid geopoints for simulated savings."</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"status"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="w">
+  </span><span class="p">}]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The whole API does not rely on 400 errors over here, no, but even if you did find a more suitable status code I still would not know <em>exactly</em> what was happening.</p>
+
+<p>If you make me work with an API that does not have errors, I’m not going coming to your birthday party.</p>
+
+<blockquote>
+  <p>If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the error key to Error and ruin everyone’s day.</p>
+</blockquote>
+
+<p>Returning error messages is not in the HTTP specification, so best not to do it ever?</p>
+
+<p>I’ll concede that my jimmies do get a little rustled when I see people making their own random ad-hoc error formats, especially when error messages for APIs are a solved problem with some great solutions:</p>
+
+<ul>
+  <li><a href="http://jsonapi.org/format/#errors">JSON-API: Errors</a></li>
+  <li><a href="https://www.mnot.net/blog/2013/05/15/http_problem">HTTP Problems</a></li>
+</ul>
+
+<p>Hilariously that last one <a href="https://tools.ietf.org/html/draft-nottingham-http-problem-03">is an RFC</a>, written largely the same chap responsible for most of the modern day HTTP specification, so, if we’re into following specs with our APIs then we should probably be doing that.</p>
+
+<blockquote>
+  <p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes and save the novella for another time.</p>
+</blockquote>
+
+<p>I’ll take vague hints, a brief description and a link to some docs, or any one of those at a pinch. None of that is novella. If you give me none of that, then you’ve released a useless pile of shit, and most developers will just use a different API by somebody else instead of integrating with your business.</p>
+
+<h2 id="nice-errors">Nice Errors</h2>
+
+<p>The specifics of how you throw these vary by language, framework, and personal preference. Here is an approach we use in Rails:</p>
+
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>  
+  <span class="n">rescue_from</span> <span class="s1">'User::MissingPaymentDetails'</span> <span class="k">do</span> <span class="o">|</span><span class="n">exception</span><span class="o">|</span>
+    <span class="n">render_json_error</span><span class="p">(</span>
+      <span class="ss">:match_accepted_by_non_paying_passenger</span><span class="p">,</span>
+      <span class="ss">:precondition_failed</span><span class="p">,</span>
+      <span class="ss">details: </span><span class="n">exception</span><span class="p">.</span><span class="nf">message</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">render_json_error</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+		<span class="n">status</span> <span class="o">=</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">::</span><span class="no">SYMBOL_TO_STATUS_CODE</span><span class="p">[</span><span class="n">status</span><span class="p">]</span> <span class="k">if</span> <span class="n">status</span><span class="p">.</span><span class="nf">is_a?</span> <span class="no">Symbol</span>
+
+    <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">code: </span><span class="no">I18n</span><span class="p">.</span><span class="nf">t</span><span class="p">(</span><span class="s2">"error_codes.</span><span class="si">#{</span><span class="n">code</span><span class="si">}</span><span class="s2">.code"</span><span class="p">),</span>
+      <span class="ss">title: </span><span class="no">I18n</span><span class="p">.</span><span class="nf">t</span><span class="p">(</span><span class="s2">"error_codes.</span><span class="si">#{</span><span class="n">code</span><span class="si">}</span><span class="s2">.message"</span><span class="p">),</span>
+      <span class="ss">status: </span><span class="n">status</span>
+    <span class="p">}.</span><span class="nf">merge</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="n">render</span> <span class="ss">json: </span><span class="p">{</span> <span class="ss">errors: </span><span class="p">[</span><span class="n">error</span><span class="p">]</span> <span class="p">},</span> <span class="ss">status: </span><span class="n">status</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Then in <code>config/locales/errors.en.yaml</code>:</p>
+
+<pre class="highlight yaml"><code><span class="s">en</span><span class="pi">:</span>
+  <span class="s">error_codes</span><span class="pi">:</span>
+    <span class="c1"># ...</span>
+    <span class="s">match_accepted_by_non_paying_passenger</span><span class="pi">:</span>
+      <span class="s">code</span><span class="pi">:</span> <span class="s">19005</span>
+      <span class="s">message</span><span class="pi">:</span> <span class="s">It appears we're missing your payment details.</span>
+</code></pre>
+
+<p>Using this approach, you can catch global exceptions at a very high level for really generic things like this, and handle very specific exceptions in controllers. Hitting the method yourself works too of course. We even have some logic that turns validation errors into standard errors in this way.</p>
+
+<p>All of this allows for business logic to be translated into meaningful errors, all with useful computer <em>and</em> human readable error codes, with a convenient <code>:match_accepted_by_non_paying_passenger</code> that corresponds to the full title and the error code. Then you’re also providing the HTTP status via a symbol using <code>:precondition_failed</code> instead of just shoving a <code>412</code> in the controller.</p>
+
+<hr />
+
+<p>If you want more advice on HTTP/API stuff, grab a copy of my book <a href="http://apisyouwonthate.com/">Build APIs You Won’t Hate</a>. You can get that eBook for free if you donate $10 to my next <a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;participantID=2035">charity bike ride</a>.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=HTTP Status Codes Are Not Enough&amp;url=https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=HTTP Status Codes Are Not Enough&amp;u=https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="more isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">I spend a lot of time urging people to learn more languages, and if that is a bit much learn another framework. Rails and Laravel are the same, and Go is a barrel of laughs.</p>
+              <p>Get out of your rut.</p>
+            </section>
+          </div>
+          <div class="more isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <section class="author">
+              <a href="http://apisyouwonthate.com/">
+                <div class="book-image build-apis">Book Cover</div>
+                <h4>Build APIs You Won't Hate</h4>
+              </a>
+              <p class="bio">Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a>.</p>
+            </section>
+          </div>
+        </div>
+      </article>
+
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'philsturgeon';
+
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/http/2015/09/23/http-status-codes-are-not-enough/">HTTP Status Codes Are Not Enough</a></li>
+          <li><a href="/http/2015/09/03/auto-incrementing-to-destruction/">Auto-Incrementing IDs: Giving your Data Away</a></li>
+          <li><a href="/charity/2015/08/22/no-booze/">No Booze for a Month</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

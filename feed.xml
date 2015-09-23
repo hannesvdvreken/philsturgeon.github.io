@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/"/>
     <id>https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/</id>
     <published>2015-09-23T17:00:00-04:00</published>
-    <updated>2015-09-23T17:02:17-04:00</updated>
+    <updated>2015-09-23T17:13:14-04:00</updated>
     <summary type="html">Don't be fooled into thinking you can use HTTP status codes on their own. You need to supplement them using error messages, with maybe some specific error codes of your own and links to documentation explaining what the problem is.</summary>
     <content type="html">&lt;p&gt;I spotted an article called &lt;a href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"&gt;Just learn Rails (Part 3) HTTP status codes&lt;/a&gt;. It started off good, and I liked that it was teaching people to avoid hardcoding their HTTP status codes in code, using &lt;code&gt;:conflict&lt;/code&gt; instead of &lt;code&gt;409&lt;/code&gt; and the like.&lt;/p&gt;
 
@@ -106,7 +106,7 @@ that alone.&lt;/p&gt;
 
 &lt;p&gt;The whole API does not rely on 400 errors over here, no, but even if you did find a more suitable status code I still would not know &lt;em&gt;exactly&lt;/em&gt; what was happening.&lt;/p&gt;
 
-&lt;p&gt;If you make me work with an API that does not have errors, I’m not going coming to your birthday party.&lt;/p&gt;
+&lt;p&gt;If you make me work with an API that does not have errors, I’m not coming to your birthday party.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the error key to Error and ruin everyone’s day.&lt;/p&gt;

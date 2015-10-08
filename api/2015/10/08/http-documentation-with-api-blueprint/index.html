@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>HTTP Documentation with API Blueprint | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+  <link href="/images/favicon.png" rel="icon" type="image/png" />
+
+  <meta property="og:title" content="HTTP Documentation with API Blueprint" />
+  <meta property="og:type" content="article" />
+  <meta property="article:author" content="Phil Sturgeon" />
+  <meta property="og:description" content="When planning my talk and book on REST&#x2F;HTTP API development, I ended up mentioning APIs towards the end, and flippantly said “Oh an API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in API Blueprint before I get anywhere near the code." />
+  <meta property="og:site_name" content="Phil Sturgeon" />
+  <meta property="og:image" content="https://philsturgeon.uk/images/author.jpg" />
+  <meta property="og:url" content="https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/" />
+  <meta property="og:locale" content="en_GB" />
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="HTTP Documentation with API Blueprint | Phil Sturgeon">
+  <meta name="twitter:image:src" content="https://philsturgeon.uk/images/author.jpg">
+  <meta name="twitter:url" content="https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/">
+  <meta name="twitter:description" content="When planning my talk and book on REST&#x2F;HTTP API development, I ended up mentioning APIs towards the end, and flippantly said “Oh an API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in API Blueprint before I get anywhere near the code.">
+  <meta name="twitter:creator" content="@philsturgeon">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">HTTP Documentation with API Blueprint</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-10-08 15:59:00 UTC">
+                Oct  8 2015
+              </time>
+              <a href="/tags/api-blueprint/">#api blueprint</a>
+              <a href="/tags/apiary/">#apiary</a>
+              <a href="/tags/api/">#api</a>
+              <a href="/tags/http/">#http</a>
+              <a href="/tags/documentation/">#documentation</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>When planning my talk and book on REST/HTTP API development, I ended up mentioning APIs towards the end, and flippantly said “Oh an API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in <a href="https://apiblueprint.org">API Blueprint</a> before I get anywhere near the code.</p>
+
+<p>Documentation first gives you and the team a chance to play around with what fields are coming and going, and you can even dump this documentation file into a collaborative editing tool like Dropbox Notes or have a Google Hangouts with a tmate session. When the API team and the clients (web, iOS, Android, etc.) have reached a good level of agreement, the contracts can be “locked-down” and put into Git, meaning changes are tracked and blame can be used for anyone who f**ks up the contract.</p>
+
+<p>If your API documentation is then <a href="https://philsturgeon.uk/api/2015/01/28/dredd-api-testing-documentation/">tested with Dredd</a>, you know your contracts are holding up as expected over time.</p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p><a href="https://apiblueprint.org/#get-started">Getting Started with API Blueprint</a> is fairly vague and open-ended. They teach you about Drafter which early on is totally irrelevant other than for syntax checking, which the Apiary live editor does a better job of doing. Getting Started is a lot different to what they have documented, so here is how I go about it.</p>
+
+<p>We’ll assume for now that you want to use their hosted <a href="https://apiary.io/">Apiary</a> platform, and I’ll follow up with how to use alternatives in later articles.</p>
+
+<h2 id="setting-up-the-api-with-apiary">Setting up the API with Apiary</h2>
+
+<p>Make a new directory to work in, and in that shove a new <code>apiary.apib</code> file. We’ll put in the most basic API Blueprint syntax possible:</p>
+
+<pre class="highlight markdown"><code>FORMAT: 1A
+<span class="gh"># My API</span>
+
+<span class="gu">## GET /places</span>
+<span class="p">
++</span> Response 200 (text/plain)<span class="sb">
+
+        Hello World!
+</span></code></pre>
+
+<p><em><strong>Note:</strong> Normally I would use <code>~~~</code> to wrap the response body and only one level of indentation, but Markdown parsers <a href="http://bit.ly/1OmPR9X">freak out</a> if you try to put fenced code blocks inside fenced code blocks. You can use 8 spaces, 2 tabs, or wrap it in <code>~~~</code> yourself.</em></p>
+
+<p>Now, to get this file to Apiary, we have to make a GitHub repo. If you’re cool and use the <a href="https://github.com/github/hub">hub CLI tool</a> then just do this:</p>
+
+<pre class="highlight shell"><code><span class="gp">$ </span>hub init
+<span class="gp">$ </span>hub create
+<span class="gp">$ </span>git add apiary.apib
+<span class="gp">$ </span>git commit -m <span class="s2">"Added basic API Blueprint"</span>
+<span class="gp">$ </span>git push origin master
+</code></pre>
+
+<p>Now this API Blueprint is in a GitHub repo, we can set up Apiary.</p>
+
+<p>Firstly, click the dropdown next to where it has the default “Notes API” and select “Create New API”.</p>
+
+<p><img alt="Option to Create a new API on Apiary" src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/create-new-api.png" /></p>
+
+<p>Click Settings and scroll down to the connect to GitHub option.</p>
+
+<p><img alt="Link your repo on GitHub." src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/link-github-repo.png" /></p>
+
+<p>This will automatically set up a Service Hook on Github, so you don’t have to.</p>
+
+<p>Now, find the new repo we just made, and link it up by clicking Go.</p>
+
+<p><img alt="I found it!" src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/select-repo.png" /></p>
+
+<p>If that works, you’ll see a few options. If you can, click “Load blueprint from GitHub” to import, but you might have a bug - which I am not sure of the cause - so Overwrite first, then commit back over the top of it.</p>
+
+<p><img alt="Initial GitHub sync options. You probably never need to look here again." src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/load-blueprint-from-github.png" /></p>
+
+<p>Now whenever we push a change to our <code>apiary.apib</code> file, it’ll update Apiary. If we update Apiary, it’ll save the change to <code>apiary.apib</code> via a new commit.</p>
+
+<h2 id="formatted-responses">Formatted Responses</h2>
+
+<p>Having a Hello World is a nice start, but we will also need to learn how to work with data formats like JSON. The easiest way to output JSON in the response documentation is to change the response mime-type, and paste some example JSON in.</p>
+
+<pre class="highlight markdown"><code>FORMAT: 1A
+<span class="gh"># My API</span>
+
+<span class="gu">## GET /places</span>
+<span class="p">
++</span> Response 200 (application/json)<span class="sb">
+
+        {
+            "places" : [{
+                "id" : "fRge5",
+                "name" : "Battery Harris"
+            }]
+        }
+</span></code></pre>
+
+<p>Take a look at that in API Blueprint. Go ahead and use their editor with the live preview as we go along to save you committing stuff. You should see it in their output:</p>
+
+<p><img alt="Output of JSON response in Apiary" src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/basic-json-output.png" /></p>
+
+<p>Next, lets add another endpoint. We have <code>GET /places</code>, so lets add <code>GET /places/{id}</code> to get just a single place.</p>
+
+<pre class="highlight markdown"><code>FORMAT: 1A
+<span class="gh"># My API</span>
+
+<span class="gu">## GET /places</span>
+<span class="p">
++</span> Response 200 (application/json)<span class="sb">
+
+        {
+            "places" : [{
+                "id" : "fRge5",
+                "name" : "Battery Harris"
+            }]
+        }
+
+
+</span><span class="gu">## GET /places/{id}</span>
+<span class="p">
++</span> Parameters
+<span class="p">  +</span> id: <span class="sb">`fRge5`</span> - The unique ID of the place.
+<span class="p">
++</span> Response 200 (application/json)<span class="sb">
+
+        {
+            "places" : {
+                "id" : "fRge5",
+                "name" : "Battery Harris"
+            }
+        }
+
+</span></code></pre>
+
+<p>At a very simple level, this does work, but it is not very DRY. We are repeating the data in our examples over and over again, even though they share a really similar structure.</p>
+
+<p>Let’s leverage <a href="https://github.com/apiaryio/mson">MSON (“Markdown Syntax for Object Notation”)</a> to make our lives easier:</p>
+
+<pre class="highlight markdown"><code>FORMAT: 1A
+<span class="gh"># My API</span>
+
+<span class="gu">## GET /places</span>
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (array<span class="p">[</span><span class="nv">Place</span><span class="p">]</span>)
+    
+<span class="gu">## GET /places/{id}</span>
+<span class="p">
++</span> Parameters
+<span class="p">  +</span> id: <span class="sb">`fRge5`</span> - The unique ID of the place.
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place)
+
+<span class="gh"># Data Structures</span>
+
+<span class="gu">## Place (object)</span>
+<span class="p">
+-</span> id: <span class="sb">`fRge5`</span> (string)
+<span class="p">-</span> name: <span class="sb">`Battery Harris`</span> (string)
+</code></pre>
+
+<p>This has got a little large, so let’s take a look at this bit by bit.</p>
+
+<pre class="highlight markdown"><code><span class="gu">## GET /places</span>
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (array<span class="p">[</span><span class="nv">Place</span><span class="p">]</span>)
+</code></pre>
+
+<p>Here we have our <code>GET /places</code> request. It’s got a JSON response, with attributes. Those attributes contain a top-level array of places, which is an array of <code>Place</code> data structures.</p>
+
+<p>Yep, we’ve defined data structures! Where? This bit:</p>
+
+<pre class="highlight markdown"><code><span class="gh"># Data Structures</span>
+
+<span class="gu">## Place (object)</span>
+<span class="p">
+-</span> id: <span class="sb">`fRge5`</span> (string)
+<span class="p">-</span> name: <span class="sb">`Battery Harris`</span> (string)
+</code></pre>
+
+<p>Here we have defined the name of two fields, given them default values (an optional but wise move) then given them the type.</p>
+
+<p>Because both <code>GET /places</code> and <code>GET /places/{id}</code> share this data structure (even though one is an array and the other is an object), we can expand on the fields and really improve the place documentation.</p>
+
+<pre class="highlight markdown"><code><span class="gh"># Data Structures</span>
+
+<span class="gu">## Place (object)</span>
+<span class="p">
+-</span> id: <span class="sb">`fRge5`</span> (string, required) - The unique ID of the place.
+<span class="p">-</span> name: <span class="sb">`Battery Harris`</span> (string, required) - Name of the place.
+<span class="p">-</span> lat: <span class="sb">`40.712017`</span> (number, required) - Latitude as a decimal.
+<span class="p">-</span> lon: <span class="sb">`-73.950995`</span> (number, required) - Longitude as a decimal.
+<span class="p">-</span> status (enum<span class="p">[</span><span class="nv">string</span><span class="p">]</span>)
+<span class="p">  -</span> pending - They haven't finished their public profile or whatever
+<span class="p">  -</span> active - Good as gold
+<span class="p">  -</span> closed - This place doesn't exist
+<span class="p">-</span> created_at: <span class="sb">`2015-01-07T14:03:43Z`</span> (string, required) - ISO8601 date and time of when the rider was created.
+</code></pre>
+
+<p>Now we’ve got descriptions on our fields, and added a bunch more fields. The coolest is the status field, setting a bunch of string values in an enum, with all the options explained.</p>
+
+<p><img alt="How our MSON responses look in JSON form " src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/mson-json-output.png" /></p>
+
+<p>You can learn more about the “Attributes” keyword in the <a href="https://github.com/apiaryio/api-blueprint/blob/master/API%20Blueprint%20Specification.md#def-attributes-section">API Blueprint Spec</a>, and by reading more about the <a href="https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md">MSON syntax</a> specifically.</p>
+
+<h2 id="requests">Requests</h2>
+
+<p>APIs are more than just getting data, so time to look at a request.</p>
+
+<p>I’ve made an updated full example, which uses Resource Groups to define a URL and then has h3’s with the HTTP method to define what happens in the actions.</p>
+
+<pre class="highlight markdown"><code>FORMAT: 1A
+<span class="gh"># My API</span>
+
+Bit of a description or intro, and an introduction to how to OAuth, etc.
+
+<span class="gh"># Group Places</span>
+
+<span class="gu">## Places Collection [/places]</span>
+
+<span class="gu">### GET</span>
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (array<span class="p">[</span><span class="nv">Place</span><span class="p">]</span>)
+
+<span class="gu">## Place Resource [/places/{id}]</span>
+<span class="p">
++</span> Parameters
+<span class="p">  +</span> id: <span class="sb">`fRge5`</span> - The unique ID of the place.
+
+<span class="gu">### GET</span>
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place)
+
+<span class="gu">### PUT</span>
+<span class="p">
++</span> Request (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place)
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place)
+
+<span class="gu">### DELETE</span>
+<span class="p">
++</span> Response 204<span class="sb">
+
+
+</span><span class="gh"># Data Structures</span>
+
+<span class="gu">## Place (object)</span>
+<span class="p">
+-</span> id: <span class="sb">`fRge5`</span> (string, required) - The unique ID of the place.
+<span class="p">-</span> name: <span class="sb">`Battery Harris`</span> (string, required) - Name of the place.
+<span class="p">-</span> lat: <span class="sb">`40.712017`</span> (number, required) - Latitude as a decimal.
+<span class="p">-</span> lon: <span class="sb">`-73.950995`</span> (number, required) - Longitude as a decimal.
+<span class="p">-</span> status (enum<span class="p">[</span><span class="nv">string</span><span class="p">]</span>)
+<span class="p">  -</span> pending - They haven't finished their public profile or whatever.
+<span class="p">  -</span> active - Good as gold.
+<span class="p">  -</span> closed - This place doesn't exist.
+<span class="p">-</span> created_at: <span class="sb">`2015-01-07T14:03:43Z`</span> (string, required) - ISO8601 date and time of when the rider was created.
+</code></pre>
+
+<p>Looking good huh? We’ve got <code>PUT</code> and <code>DELETE</code> in there too now, showing off a <code>204</code> no less.</p>
+
+<p>Well, one thing left: Using <code>POST</code> to create a resource on the collection.</p>
+
+<p>The tough part here is that most <code>POST</code> requests involve sending partial representations, and letting the server fill in the gaps. To do that, our <code>Place</code> data structure falls over a little bit.</p>
+
+<p>So, we can split them up a bit. Take a look at this full example to see what I changed:</p>
+
+<pre class="highlight markdown"><code>FORMAT: 1A
+<span class="gh"># My API</span>
+
+Bit of a description or intro, and an introduction to how to OAuth, etc.
+
+<span class="gh"># Group Places</span>
+
+<span class="gu">## Places Collection [/places]</span>
+
+<span class="gu">### GET</span>
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (array<span class="p">[</span><span class="nv">Place Full</span><span class="p">]</span>)
+
+<span class="gu">### POST</span>
+<span class="p">
++</span> Request (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place Create)
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place Full)
+
+<span class="gu">## Place Resource [/places/{id}]</span>
+<span class="p">
++</span> Parameters
+<span class="p">  +</span> id: <span class="sb">`fRge5`</span> - The unique ID of the place.
+
+<span class="gu">### GET</span>
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place Full)
+
+<span class="gu">### PUT</span>
+<span class="p">
++</span> Request (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place Full)
+<span class="p">
++</span> Response 200 (application/json)
+<span class="p">    +</span> Attributes
+<span class="p">        -</span> places (Place Full)
+
+<span class="gu">### DELETE</span>
+<span class="p">
++</span> Response 204
+
+<span class="gh"># Data Structures</span>
+
+<span class="gu">## Place Create (object)</span>
+<span class="p">
+-</span> name: <span class="sb">`Battery Harris`</span> (string, required) - Name of the place.
+<span class="p">-</span> lat: <span class="sb">`40.712017`</span> (number, required) - Latitude as a decimal.
+<span class="p">-</span> lon: <span class="sb">`-73.950995`</span> (number, required) - Longitude as a decimal.
+<span class="p">-</span> status (enum<span class="p">[</span><span class="nv">string</span><span class="p">]</span>)
+<span class="p">  -</span> pending - They haven't finished their public profile or whatever.
+<span class="p">  -</span> active - Good as gold.
+<span class="p">  -</span> closed - This place doesn't exist.
+
+<span class="gu">## Place Full (object)</span>
+<span class="p">
+-</span> id: <span class="sb">`fRge5`</span> (string, required) - The unique ID of the place.
+<span class="p">-</span> Include Place Create
+<span class="p">-</span> created_at: <span class="sb">`2015-01-07T14:03:43Z`</span> (string, required) - ISO8601 date and time of when the rider was created.
+</code></pre>
+
+<p>We now have a <code>Place Create</code> object which has the fields required for creating, and the <code>Place Full</code> object, which includes <code>Place Create</code> for that full effect along with two extra fields that’ll only show up afterwards.</p>
+
+<h2 id="api-blueprint-vs-alternatives">API Blueprint vs. Alternatives</h2>
+
+<p>There are a few options around, the most popular being <a href="http://swagger.io/">Swagger</a> and <a href="http://raml.org/">RAML</a>. <a href="http://nordicapis.com/top-specification-formats-for-rest-apis/">Nordic API compare these formats</a> briefly, but it is a little vague.</p>
+
+<p>I’ll be honest, everything I’ve done with Swagger was awful. Swagger-PHP is based around an convoluted code-orientated approach, where it assumes your actual model classes are going to be how you represent your data and that’s just not at all true. Maybe I could find a way to tie Swagger-PHP to the serializers instead, but even Swagger UI is terrible. Swagger just feels wrong to me.</p>
+
+<p>RAML is powerful format. It has a lot of tooling for it, but tbh much of that tooling exists for API Blueprint too. The main drawback for me is that RAML is YAML, and I fucking hate YAML.</p>
+
+<p>Most complaints about API Blueprint are that the getting started is bad (I fixed that ^) or that it’s complex to write. Well, recent versions have made the syntax less verbose, MSON is excellent and you can get syntax checkers for many editors, including my new hero  <a href="https://atom.io/packages/language-api-blueprint">Atom</a>.</p>
+
+<p>Check them out and see which is best for you, but the idea is that you want to be specing your API and creating documentation <em>before</em> you build your API when possible.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>There’s a lot more to Apiary and MSON than this, and I want to show you how to use this for mock servers next, but having this stuff built out is a great way to get a team to agree on the contracts for requests and responses before people start messing around actually building stuff.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=HTTP Documentation with API Blueprint&amp;url=https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=HTTP Documentation with API Blueprint&amp;u=https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2015/10/02/everyones-favourite-twitter-character/">Everyones Favourite Twitter Characters</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="more isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">I spend a lot of time urging people to learn more languages, and if that is a bit much learn another framework. Rails and Laravel are the same, and Go is a barrel of laughs.</p>
+              <p>Get out of your rut.</p>
+            </section>
+          </div>
+          <div class="more isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <section class="author">
+              <a href="http://apisyouwonthate.com/">
+                <div class="book-image build-apis">Book Cover</div>
+                <h4>Build APIs You Won't Hate</h4>
+              </a>
+              <p class="bio">Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a>.</p>
+            </section>
+          </div>
+        </div>
+      </article>
+
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'philsturgeon';
+
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/api/2015/10/08/http-documentation-with-api-blueprint/">HTTP Documentation with API Blueprint</a></li>
+          <li><a href="/2015/10/02/everyones-favourite-twitter-character/">Everyones Favourite Twitter Characters</a></li>
+          <li><a href="/http/2015/09/23/http-status-codes-are-not-enough/">HTTP Status Codes Are Not Enough</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

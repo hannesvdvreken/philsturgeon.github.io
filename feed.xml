@@ -5,10 +5,366 @@
   <id>https://philsturgeon.uk/</id>
   <link href="https://philsturgeon.uk/"/>
   <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
-  <updated>2015-10-02T13:22:00-04:00</updated>
+  <updated>2015-10-08T11:59:00-04:00</updated>
   <author>
     <name>Phil Sturgeon</name>
   </author>
+  <entry>
+    <title>HTTP Documentation with API Blueprint</title>
+    <link rel="alternate" href="https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/"/>
+    <id>https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/</id>
+    <published>2015-10-08T11:59:00-04:00</published>
+    <updated>2015-10-08T13:39:16-04:00</updated>
+    <summary type="html">When planning my talk and book on REST/HTTP API development, I ended up mentioning APIs towards the end, and flippantly said “Oh an API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in API Blueprint before I get anywhere near the code.</summary>
+    <content type="html">&lt;p&gt;When planning my talk and book on REST/HTTP API development, I ended up mentioning APIs towards the end, and flippantly said “Oh an API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in &lt;a href="https://apiblueprint.org"&gt;API Blueprint&lt;/a&gt; before I get anywhere near the code.&lt;/p&gt;
+
+&lt;p&gt;Documentation first gives you and the team a chance to play around with what fields are coming and going, and you can even dump this documentation file into a collaborative editing tool like Dropbox Notes or have a Google Hangouts with a tmate session. When the API team and the clients (web, iOS, Android, etc.) have reached a good level of agreement, the contracts can be “locked-down” and put into Git, meaning changes are tracked and blame can be used for anyone who f**ks up the contract.&lt;/p&gt;
+
+&lt;p&gt;If your API documentation is then &lt;a href="https://philsturgeon.uk/api/2015/01/28/dredd-api-testing-documentation/"&gt;tested with Dredd&lt;/a&gt;, you know your contracts are holding up as expected over time.&lt;/p&gt;
+
+&lt;h2 id="getting-started"&gt;Getting Started&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://apiblueprint.org/#get-started"&gt;Getting Started with API Blueprint&lt;/a&gt; is fairly vague and open-ended. They teach you about Drafter which early on is totally irrelevant other than for syntax checking, which the Apiary live editor does a better job of doing. Getting Started is a lot different to what they have documented, so here is how I go about it.&lt;/p&gt;
+
+&lt;p&gt;We’ll assume for now that you want to use their hosted &lt;a href="https://apiary.io/"&gt;Apiary&lt;/a&gt; platform, and I’ll follow up with how to use alternatives in later articles.&lt;/p&gt;
+
+&lt;h2 id="setting-up-the-api-with-apiary"&gt;Setting up the API with Apiary&lt;/h2&gt;
+
+&lt;p&gt;Make a new directory to work in, and in that shove a new &lt;code&gt;apiary.apib&lt;/code&gt; file. We’ll put in the most basic API Blueprint syntax possible:&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;FORMAT: 1A
+&lt;span class="gh"&gt;# My API&lt;/span&gt;
+
+&lt;span class="gu"&gt;## GET /places&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (text/plain)&lt;span class="sb"&gt;
+
+        Hello World!
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Note:&lt;/strong&gt; Normally I would use &lt;code&gt;~~~&lt;/code&gt; to wrap the response body and only one level of indentation, but Markdown parsers &lt;a href="http://bit.ly/1OmPR9X"&gt;freak out&lt;/a&gt; if you try to put fenced code blocks inside fenced code blocks. You can use 8 spaces, 2 tabs, or wrap it in &lt;code&gt;~~~&lt;/code&gt; yourself.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, to get this file to Apiary, we have to make a GitHub repo. If you’re cool and use the &lt;a href="https://github.com/github/hub"&gt;hub CLI tool&lt;/a&gt; then just do this:&lt;/p&gt;
+
+&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="gp"&gt;$ &lt;/span&gt;hub init
+&lt;span class="gp"&gt;$ &lt;/span&gt;hub create
+&lt;span class="gp"&gt;$ &lt;/span&gt;git add apiary.apib
+&lt;span class="gp"&gt;$ &lt;/span&gt;git commit -m &lt;span class="s2"&gt;"Added basic API Blueprint"&lt;/span&gt;
+&lt;span class="gp"&gt;$ &lt;/span&gt;git push origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now this API Blueprint is in a GitHub repo, we can set up Apiary.&lt;/p&gt;
+
+&lt;p&gt;Firstly, click the dropdown next to where it has the default “Notes API” and select “Create New API”.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Option to Create a new API on Apiary" src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/create-new-api.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Click Settings and scroll down to the connect to GitHub option.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Link your repo on GitHub." src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/link-github-repo.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;This will automatically set up a Service Hook on Github, so you don’t have to.&lt;/p&gt;
+
+&lt;p&gt;Now, find the new repo we just made, and link it up by clicking Go.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="I found it!" src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/select-repo.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;If that works, you’ll see a few options. If you can, click “Load blueprint from GitHub” to import, but you might have a bug - which I am not sure of the cause - so Overwrite first, then commit back over the top of it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Initial GitHub sync options. You probably never need to look here again." src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/load-blueprint-from-github.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now whenever we push a change to our &lt;code&gt;apiary.apib&lt;/code&gt; file, it’ll update Apiary. If we update Apiary, it’ll save the change to &lt;code&gt;apiary.apib&lt;/code&gt; via a new commit.&lt;/p&gt;
+
+&lt;h2 id="formatted-responses"&gt;Formatted Responses&lt;/h2&gt;
+
+&lt;p&gt;Having a Hello World is a nice start, but we will also need to learn how to work with data formats like JSON. The easiest way to output JSON in the response documentation is to change the response mime-type, and paste some example JSON in.&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;FORMAT: 1A
+&lt;span class="gh"&gt;# My API&lt;/span&gt;
+
+&lt;span class="gu"&gt;## GET /places&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)&lt;span class="sb"&gt;
+
+        {
+            "places" : [{
+                "id" : "fRge5",
+                "name" : "Battery Harris"
+            }]
+        }
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Take a look at that in API Blueprint. Go ahead and use their editor with the live preview as we go along to save you committing stuff. You should see it in their output:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Output of JSON response in Apiary" src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/basic-json-output.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, lets add another endpoint. We have &lt;code&gt;GET /places&lt;/code&gt;, so lets add &lt;code&gt;GET /places/{id}&lt;/code&gt; to get just a single place.&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;FORMAT: 1A
+&lt;span class="gh"&gt;# My API&lt;/span&gt;
+
+&lt;span class="gu"&gt;## GET /places&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)&lt;span class="sb"&gt;
+
+        {
+            "places" : [{
+                "id" : "fRge5",
+                "name" : "Battery Harris"
+            }]
+        }
+
+
+&lt;/span&gt;&lt;span class="gu"&gt;## GET /places/{id}&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Parameters
+&lt;span class="p"&gt;  +&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; - The unique ID of the place.
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)&lt;span class="sb"&gt;
+
+        {
+            "places" : {
+                "id" : "fRge5",
+                "name" : "Battery Harris"
+            }
+        }
+
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;At a very simple level, this does work, but it is not very DRY. We are repeating the data in our examples over and over again, even though they share a really similar structure.&lt;/p&gt;
+
+&lt;p&gt;Let’s leverage &lt;a href="https://github.com/apiaryio/mson"&gt;MSON (“Markdown Syntax for Object Notation”)&lt;/a&gt; to make our lives easier:&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;FORMAT: 1A
+&lt;span class="gh"&gt;# My API&lt;/span&gt;
+
+&lt;span class="gu"&gt;## GET /places&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (array&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;Place&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+    
+&lt;span class="gu"&gt;## GET /places/{id}&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Parameters
+&lt;span class="p"&gt;  +&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; - The unique ID of the place.
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place)
+
+&lt;span class="gh"&gt;# Data Structures&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Place (object)&lt;/span&gt;
+&lt;span class="p"&gt;
+-&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; (string)
+&lt;span class="p"&gt;-&lt;/span&gt; name: &lt;span class="sb"&gt;`Battery Harris`&lt;/span&gt; (string)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This has got a little large, so let’s take a look at this bit by bit.&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;&lt;span class="gu"&gt;## GET /places&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (array&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;Place&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we have our &lt;code&gt;GET /places&lt;/code&gt; request. It’s got a JSON response, with attributes. Those attributes contain a top-level array of places, which is an array of &lt;code&gt;Place&lt;/code&gt; data structures.&lt;/p&gt;
+
+&lt;p&gt;Yep, we’ve defined data structures! Where? This bit:&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;&lt;span class="gh"&gt;# Data Structures&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Place (object)&lt;/span&gt;
+&lt;span class="p"&gt;
+-&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; (string)
+&lt;span class="p"&gt;-&lt;/span&gt; name: &lt;span class="sb"&gt;`Battery Harris`&lt;/span&gt; (string)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we have defined the name of two fields, given them default values (an optional but wise move) then given them the type.&lt;/p&gt;
+
+&lt;p&gt;Because both &lt;code&gt;GET /places&lt;/code&gt; and &lt;code&gt;GET /places/{id}&lt;/code&gt; share this data structure (even though one is an array and the other is an object), we can expand on the fields and really improve the place documentation.&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;&lt;span class="gh"&gt;# Data Structures&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Place (object)&lt;/span&gt;
+&lt;span class="p"&gt;
+-&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; (string, required) - The unique ID of the place.
+&lt;span class="p"&gt;-&lt;/span&gt; name: &lt;span class="sb"&gt;`Battery Harris`&lt;/span&gt; (string, required) - Name of the place.
+&lt;span class="p"&gt;-&lt;/span&gt; lat: &lt;span class="sb"&gt;`40.712017`&lt;/span&gt; (number, required) - Latitude as a decimal.
+&lt;span class="p"&gt;-&lt;/span&gt; lon: &lt;span class="sb"&gt;`-73.950995`&lt;/span&gt; (number, required) - Longitude as a decimal.
+&lt;span class="p"&gt;-&lt;/span&gt; status (enum&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;string&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+&lt;span class="p"&gt;  -&lt;/span&gt; pending - They haven't finished their public profile or whatever
+&lt;span class="p"&gt;  -&lt;/span&gt; active - Good as gold
+&lt;span class="p"&gt;  -&lt;/span&gt; closed - This place doesn't exist
+&lt;span class="p"&gt;-&lt;/span&gt; created_at: &lt;span class="sb"&gt;`2015-01-07T14:03:43Z`&lt;/span&gt; (string, required) - ISO8601 date and time of when the rider was created.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we’ve got descriptions on our fields, and added a bunch more fields. The coolest is the status field, setting a bunch of string values in an enum, with all the options explained.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="How our MSON responses look in JSON form " src="/images/article_images/2015-10-08-http-documentation-with-api-blueprint/mson-json-output.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can learn more about the “Attributes” keyword in the &lt;a href="https://github.com/apiaryio/api-blueprint/blob/master/API%20Blueprint%20Specification.md#def-attributes-section"&gt;API Blueprint Spec&lt;/a&gt;, and by reading more about the &lt;a href="https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md"&gt;MSON syntax&lt;/a&gt; specifically.&lt;/p&gt;
+
+&lt;h2 id="requests"&gt;Requests&lt;/h2&gt;
+
+&lt;p&gt;APIs are more than just getting data, so time to look at a request.&lt;/p&gt;
+
+&lt;p&gt;I’ve made an updated full example, which uses Resource Groups to define a URL and then has h3’s with the HTTP method to define what happens in the actions.&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;FORMAT: 1A
+&lt;span class="gh"&gt;# My API&lt;/span&gt;
+
+Bit of a description or intro, and an introduction to how to OAuth, etc.
+
+&lt;span class="gh"&gt;# Group Places&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Places Collection [/places]&lt;/span&gt;
+
+&lt;span class="gu"&gt;### GET&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (array&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;Place&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+
+&lt;span class="gu"&gt;## Place Resource [/places/{id}]&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Parameters
+&lt;span class="p"&gt;  +&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; - The unique ID of the place.
+
+&lt;span class="gu"&gt;### GET&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place)
+
+&lt;span class="gu"&gt;### PUT&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Request (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place)
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place)
+
+&lt;span class="gu"&gt;### DELETE&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 204&lt;span class="sb"&gt;
+
+
+&lt;/span&gt;&lt;span class="gh"&gt;# Data Structures&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Place (object)&lt;/span&gt;
+&lt;span class="p"&gt;
+-&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; (string, required) - The unique ID of the place.
+&lt;span class="p"&gt;-&lt;/span&gt; name: &lt;span class="sb"&gt;`Battery Harris`&lt;/span&gt; (string, required) - Name of the place.
+&lt;span class="p"&gt;-&lt;/span&gt; lat: &lt;span class="sb"&gt;`40.712017`&lt;/span&gt; (number, required) - Latitude as a decimal.
+&lt;span class="p"&gt;-&lt;/span&gt; lon: &lt;span class="sb"&gt;`-73.950995`&lt;/span&gt; (number, required) - Longitude as a decimal.
+&lt;span class="p"&gt;-&lt;/span&gt; status (enum&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;string&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+&lt;span class="p"&gt;  -&lt;/span&gt; pending - They haven't finished their public profile or whatever.
+&lt;span class="p"&gt;  -&lt;/span&gt; active - Good as gold.
+&lt;span class="p"&gt;  -&lt;/span&gt; closed - This place doesn't exist.
+&lt;span class="p"&gt;-&lt;/span&gt; created_at: &lt;span class="sb"&gt;`2015-01-07T14:03:43Z`&lt;/span&gt; (string, required) - ISO8601 date and time of when the rider was created.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Looking good huh? We’ve got &lt;code&gt;PUT&lt;/code&gt; and &lt;code&gt;DELETE&lt;/code&gt; in there too now, showing off a &lt;code&gt;204&lt;/code&gt; no less.&lt;/p&gt;
+
+&lt;p&gt;Well, one thing left: Using &lt;code&gt;POST&lt;/code&gt; to create a resource on the collection.&lt;/p&gt;
+
+&lt;p&gt;The tough part here is that most &lt;code&gt;POST&lt;/code&gt; requests involve sending partial representations, and letting the server fill in the gaps. To do that, our &lt;code&gt;Place&lt;/code&gt; data structure falls over a little bit.&lt;/p&gt;
+
+&lt;p&gt;So, we can split them up a bit. Take a look at this full example to see what I changed:&lt;/p&gt;
+
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;FORMAT: 1A
+&lt;span class="gh"&gt;# My API&lt;/span&gt;
+
+Bit of a description or intro, and an introduction to how to OAuth, etc.
+
+&lt;span class="gh"&gt;# Group Places&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Places Collection [/places]&lt;/span&gt;
+
+&lt;span class="gu"&gt;### GET&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (array&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;Place Full&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+
+&lt;span class="gu"&gt;### POST&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Request (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place Create)
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place Full)
+
+&lt;span class="gu"&gt;## Place Resource [/places/{id}]&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Parameters
+&lt;span class="p"&gt;  +&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; - The unique ID of the place.
+
+&lt;span class="gu"&gt;### GET&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place Full)
+
+&lt;span class="gu"&gt;### PUT&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Request (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place Full)
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 200 (application/json)
+&lt;span class="p"&gt;    +&lt;/span&gt; Attributes
+&lt;span class="p"&gt;        -&lt;/span&gt; places (Place Full)
+
+&lt;span class="gu"&gt;### DELETE&lt;/span&gt;
+&lt;span class="p"&gt;
++&lt;/span&gt; Response 204
+
+&lt;span class="gh"&gt;# Data Structures&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Place Create (object)&lt;/span&gt;
+&lt;span class="p"&gt;
+-&lt;/span&gt; name: &lt;span class="sb"&gt;`Battery Harris`&lt;/span&gt; (string, required) - Name of the place.
+&lt;span class="p"&gt;-&lt;/span&gt; lat: &lt;span class="sb"&gt;`40.712017`&lt;/span&gt; (number, required) - Latitude as a decimal.
+&lt;span class="p"&gt;-&lt;/span&gt; lon: &lt;span class="sb"&gt;`-73.950995`&lt;/span&gt; (number, required) - Longitude as a decimal.
+&lt;span class="p"&gt;-&lt;/span&gt; status (enum&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;string&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;)
+&lt;span class="p"&gt;  -&lt;/span&gt; pending - They haven't finished their public profile or whatever.
+&lt;span class="p"&gt;  -&lt;/span&gt; active - Good as gold.
+&lt;span class="p"&gt;  -&lt;/span&gt; closed - This place doesn't exist.
+
+&lt;span class="gu"&gt;## Place Full (object)&lt;/span&gt;
+&lt;span class="p"&gt;
+-&lt;/span&gt; id: &lt;span class="sb"&gt;`fRge5`&lt;/span&gt; (string, required) - The unique ID of the place.
+&lt;span class="p"&gt;-&lt;/span&gt; Include Place Create
+&lt;span class="p"&gt;-&lt;/span&gt; created_at: &lt;span class="sb"&gt;`2015-01-07T14:03:43Z`&lt;/span&gt; (string, required) - ISO8601 date and time of when the rider was created.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We now have a &lt;code&gt;Place Create&lt;/code&gt; object which has the fields required for creating, and the &lt;code&gt;Place Full&lt;/code&gt; object, which includes &lt;code&gt;Place Create&lt;/code&gt; for that full effect along with two extra fields that’ll only show up afterwards.&lt;/p&gt;
+
+&lt;h2 id="api-blueprint-vs-alternatives"&gt;API Blueprint vs. Alternatives&lt;/h2&gt;
+
+&lt;p&gt;There are a few options around, the most popular being &lt;a href="http://swagger.io/"&gt;Swagger&lt;/a&gt; and &lt;a href="http://raml.org/"&gt;RAML&lt;/a&gt;. &lt;a href="http://nordicapis.com/top-specification-formats-for-rest-apis/"&gt;Nordic API compare these formats&lt;/a&gt; briefly, but it is a little vague.&lt;/p&gt;
+
+&lt;p&gt;I’ll be honest, everything I’ve done with Swagger was awful. Swagger-PHP is based around an convoluted code-orientated approach, where it assumes your actual model classes are going to be how you represent your data and that’s just not at all true. Maybe I could find a way to tie Swagger-PHP to the serializers instead, but even Swagger UI is terrible. Swagger just feels wrong to me.&lt;/p&gt;
+
+&lt;p&gt;RAML is powerful format. It has a lot of tooling for it, but tbh much of that tooling exists for API Blueprint too. The main drawback for me is that RAML is YAML, and I fucking hate YAML.&lt;/p&gt;
+
+&lt;p&gt;Most complaints about API Blueprint are that the getting started is bad (I fixed that ^) or that it’s complex to write. Well, recent versions have made the syntax less verbose, MSON is excellent and you can get syntax checkers for many editors, including my new hero  &lt;a href="https://atom.io/packages/language-api-blueprint"&gt;Atom&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Check them out and see which is best for you, but the idea is that you want to be specing your API and creating documentation &lt;em&gt;before&lt;/em&gt; you build your API when possible.&lt;/p&gt;
+
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;There’s a lot more to Apiary and MSON than this, and I want to show you how to use this for mock servers next, but having this stuff built out is a great way to get a team to agree on the contracts for requests and responses before people start messing around actually building stuff.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Everyones Favourite Twitter Characters</title>
     <link rel="alternate" href="https://philsturgeon.uk/2015/10/02/everyones-favourite-twitter-character/"/>
@@ -168,7 +524,7 @@
 
 &lt;p&gt;The article also stresses that you must not return errors on &lt;code&gt;200&lt;/code&gt;, which only the insanity wolf would do.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href="https://speakerdeck.com/philsturgeon/api-pain-points-confoo-2015?slide=29"&gt;&lt;img alt="Insanity wolf hates errors on a 200" width="729" height="729" src="/images/article_images/2015-09-23-http-status-codes-are-not-enough/insanity-wolf-errors.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://speakerdeck.com/philsturgeon/api-pain-points-confoo-2015?slide=29"&gt;&lt;img alt="Insanity wolf hates errors on a 200" src="/images/article_images/2015-09-23-http-status-codes-are-not-enough/insanity-wolf-errors.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;The problem with the article is when it gets to sarcastically pointing out error messages are an overly verbose waste of time, or needless novella. I pointed out the flaw in this logic using some jovially hyperbolic wording as I’m known to do, and in the end the chap suggested I didn’t understand the article.&lt;/p&gt;
 
@@ -668,128 +1024,6 @@ that alone.&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Also, &lt;a href="http://2015.sunshinephp.com/speakers"&gt;SunshinePHP&lt;/a&gt; achieved about 30% women speakers last time around, so maybe give &lt;a href="https://twitter.com/adamculp"&gt;Adam Culp&lt;/a&gt; a shout if you’re organizing something. Good job!&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Avoid Hardcoding HTTP Status Codes</title>
-    <link rel="alternate" href="https://philsturgeon.uk/http/2015/08/16/avoid-hardcoding-http-status-codes/"/>
-    <id>https://philsturgeon.uk/http/2015/08/16/avoid-hardcoding-http-status-codes/</id>
-    <published>2015-08-16T17:00:00-04:00</published>
-    <updated>2015-09-23T16:24:47-04:00</updated>
-    <summary type="html">A lot of things in programming are argued to death, but one subject where people almost unanimously agree is that magic numbers can be a pain in the ass, and they should be avoided whenever possible. Sadly when it comes to HTTP status codes, people keep on hardcoding them, and it leads to all sorts of confusion.</summary>
-    <content type="html">&lt;p&gt;A lot of things in programming are argued to death, but one subject where people almost unanimously agree is that magic numbers can be a pain in the ass, and they should be avoided whenever possible. Sadly when it comes to HTTP status codes, people keep on hardcoding them, and it leads to all sorts of confusion.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Remembering which code is which is incredibly difficult, even when you have spent 5 years of your life building APIs&lt;/li&gt;
-  &lt;li&gt;There are an awful lot of codes&lt;/li&gt;
-  &lt;li&gt;Even if you remember them, you are inviting trouble when new programmers are let loose on the codebase&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;What is 409?&lt;/p&gt;
-
-&lt;p&gt;If you answer without looking it up on &lt;a href="https://kapeli.com/dash"&gt;Dash&lt;/a&gt; or &lt;a href="http://httpstatusdogs.com"&gt;HTTP Status Dogs&lt;/a&gt; then you are a machine.&lt;/p&gt;
-
-&lt;p&gt;Go has these built right into their main &lt;code&gt;net/http&lt;/code&gt; library:&lt;/p&gt;
-
-&lt;pre class="highlight go"&gt;&lt;code&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusBadRequest&lt;/span&gt;&lt;span class="x"&gt;
-&lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StatusOK&lt;/span&gt;&lt;span class="x"&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Ruby on Rails utilizes Rack to help solve this problem. The &lt;a href="http://guides.rubyonrails.org/layouts_and_rendering.html#the-status-option"&gt;render option of Rails&lt;/a&gt; offers a &lt;code&gt;:status&lt;/code&gt; attribute, which defaults to &lt;code&gt;:ok&lt;/code&gt; and can be set to any of the following options:&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Status&lt;/th&gt;
-      &lt;th&gt;Symbol&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;300&lt;/td&gt;
-      &lt;td&gt;:multiple_choices&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;301&lt;/td&gt;
-      &lt;td&gt;:moved_permanently&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;302&lt;/td&gt;
-      &lt;td&gt;:found&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;303&lt;/td&gt;
-      &lt;td&gt;:see_other&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;304&lt;/td&gt;
-      &lt;td&gt;:not_modified&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;305&lt;/td&gt;
-      &lt;td&gt;:use_proxy&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;306&lt;/td&gt;
-      &lt;td&gt;:reserved&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;307&lt;/td&gt;
-      &lt;td&gt;:temporary_redirect&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;308&lt;/td&gt;
-      &lt;td&gt;:permanent_redirect&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;The list goes on, and is built on &lt;a href="https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L470"&gt;a big old array in Rack&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Rack (and Rails) are not the only frameworks in the world to provide these options, &lt;a href="https://github.com/symfony/HttpFoundation/blob/master/Response.php"&gt;Symfony has a go too&lt;/a&gt; in &lt;code&gt;HttpFoundation&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre class="highlight php"&gt;&lt;code&gt;public function someAction(Request $request)
-{
-  return new Response('', Response::HTTP_NO_CONTENT);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I’d say that seeing &lt;code&gt;HTTP_NO_CONTENT&lt;/code&gt; is quite a lot more useful than seeing &lt;code&gt;204&lt;/code&gt; right? And any half decent IDE will let you know that &lt;code&gt;HTTP_NO_CONTENT&lt;/code&gt; has the value of &lt;code&gt;204&lt;/code&gt; anyway.&lt;/p&gt;
-
-&lt;p&gt;Sadly, the PHP tools outside of Symfony have been a bit lacking.&lt;/p&gt;
-
-&lt;p&gt;Laravel has a bunch of hardcoded status codes in &lt;a href="http://laravel.com/docs/5.1/errors#http-exceptions"&gt;Custom HTTP Error Documention&lt;/a&gt;, even though their responses are built on top of HttpFoundation.&lt;/p&gt;
-
-&lt;p&gt;Guzzle, and all PSR-7 stuff, provides the status code and the reason phrase (which can theoretically change if your API developer is a smart-ass), so again you’re working with magic numbers.&lt;/p&gt;
-
-&lt;pre class="highlight php"&gt;&lt;code&gt;$response = $client-&amp;gt;get('http://www.amazon.com')-&amp;gt;send();
-
-echo $response-&amp;gt;getStatusCode();      // &amp;gt;&amp;gt;&amp;gt; 200
-echo $response-&amp;gt;getReasonPhrase();    // &amp;gt;&amp;gt;&amp;gt; OK
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Most folks who become fed up with hardcoding status codes end up implementing their own solution, but this is just more code that needs to be tested and I’ve seen a few people actually get some of the codes wrong…&lt;/p&gt;
-
-&lt;p&gt;The solution here is to provide a reusable package, which contains the constants without needing all of Symfony HttpFoundation available to work.&lt;/p&gt;
-
-&lt;p&gt;Recently one turned up on &lt;a href="https://groups.google.com/forum/#!topic/thephpleague/iBfghcg3TJc"&gt;The League mailing list&lt;/a&gt; which ended up being built as &lt;a href="https://github.com/lukasoppermann/http-status"&gt;lukasoppermann/http-status&lt;/a&gt;. Since then I noticed another one, called &lt;a href="https://github.com/shrikeh/teapot"&gt;Teapot&lt;/a&gt;.&lt;/p&gt;
-
-&lt;pre class="highlight php"&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;?php&lt;/span&gt;
-&lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nx"&gt;\Teapot\StatusCode&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;$code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;$response&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;getStatusCode&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;NOT_FOUND&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;FORBIDDEN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertNotEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;MOVED_PERMANENTLY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="nv"&gt;$this&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="na"&gt;assertEquals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;StatusCode&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="na"&gt;CREATED&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Nice and simple.&lt;/p&gt;
-
-&lt;p&gt;There is some room for the PHP-FIG to improve this situation I think, as the PHP community does not have a single Rack-like system where all this stuff is done already.&lt;/p&gt;
-
-&lt;p&gt;I don’t mind how you go about avoiding hardcoded HTTP status codes in your projects, but please avoid doing it somehow.&lt;/p&gt;
-
-&lt;p&gt;If you want more advice on HTTP/API stuff, grab a copy of my book &lt;a href="http://apisyouwonthate.com/"&gt;Build APIs You Won’t Hate&lt;/a&gt;. You can get that eBook for free if you donate $10 to my next &lt;a href="http://fundraising.housingworks.org/index.cfm?fuseaction=donordrive.participant&amp;amp;participantID=2035"&gt;charity bike ride&lt;/a&gt;.&lt;/p&gt;
 </content>
   </entry>
 </feed>

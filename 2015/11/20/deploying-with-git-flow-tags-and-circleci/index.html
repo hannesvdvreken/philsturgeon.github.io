@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Deploying with Git-Flow, Tags and CircleCI | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+  <link href="/images/favicon.png" rel="icon" type="image/png" />
+
+  <meta property="og:title" content="Deploying with Git-Flow, Tags and CircleCI" />
+  <meta property="og:type" content="article" />
+  <meta property="article:author" content="Phil Sturgeon" />
+  <meta property="og:description" content="Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!" />
+  <meta property="og:site_name" content="Phil Sturgeon" />
+  <meta property="og:image" content="https://philsturgeon.uk/images/author.jpg" />
+  <meta property="og:url" content="https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/" />
+  <meta property="og:locale" content="en_GB" />
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="Deploying with Git-Flow, Tags and CircleCI | Phil Sturgeon">
+  <meta name="twitter:image:src" content="https://philsturgeon.uk/images/author.jpg">
+  <meta name="twitter:url" content="https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/">
+  <meta name="twitter:description" content="Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!">
+  <meta name="twitter:creator" content="@philsturgeon">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">Deploying with Git-Flow, Tags and CircleCI</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-11-20 23:53:00 UTC">
+                Nov 20 2015
+              </time>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!</p>
+
+<p>Back in the day I escaped FTP deployments by <a href="/2008/10/02/Deploying-sites-with-SVN/">using SVN</a>, which was “ok”, and later I switched to <a href="/git/2010/02/23/Deploying-websites-with-Git/">deploying using Git</a>. Since then I’ve played with Capistrano, used Chef to deploy to AWS and tried all sorts of other services that aim to make deployments easier.</p>
+
+<p>Nothing has ever been easier than using PaaS systems like Heroku. For some small client sites, or this blog, or whatever else, I used to just <code>alias yolo='git push heroku master'</code>. That was a solid replacement for the SVN/Git deploys I hacked together in the past, but larger teams need a bit more than that.</p>
+
+<p>When you’re building a complex application where multiple versions are being built in tandem, a QA team with multiple day review periods and a production server that might need hotfixes deployed regardless of whats in QA, this “do stuff then push” approach does’t hold up.</p>
+
+<p>At Ride, we use Heroku, and for a while we used <a href="https://guides.github.com/introduction/flow/">GitHub-flow</a>. When a PR was merged to <code>master</code> it would go straight to the Heroku staging environment, then, we had a <code>qa</code> and <code>production</code> branch that would go off to the appropriate environment when we were ready to deploy those versions.</p>
+
+<p>CircleCI supports <a href="https://circleci.com/docs/configuration#deployment">branch based deployment</a> nicely, and their <a href="https://circleci.com/docs/continuous-deployment-with-heroku">Heroku deployments</a> are incredibly easy. This was ok but having a <code>qa</code> and <code>production</code> branch lead to a lot of confusion. The branching model of the code should not be mixed in with implementation details of deployment. People were sending PRs from QA to Production and sometimes hotfixes had to be merged back and things got missed and… it was just a mess.</p>
+
+<p>I wanted to use tags for this, and more importantly I wanted to use them as more than just “here is a snapshot in case we have to roll back”. I looked into having automated deployment that looked a bit more like this:</p>
+
+<p><img alt="Fancy diagram showing tag version-based deployments to QA/Prod" src="/images/article_images/2015-11-20-deploying-with-git-flow-tags-and-circleci/fancy-diagram.jpg" /></p>
+
+<p>Annoyingly CircleCI wouldn’t let me do this. Tags would not trigger a build on their system, so the deployments would not happen! I tweeted asking if they’d work on it, and 3 months later.. <a href="https://circleci.com/docs/configuration#tags">they have tag-based deployments</a>!</p>
+
+<p>The <a href="http://nvie.com/posts/a-successful-git-branching-model/">git-flow branch model</a> helps us create tags. Those tags can then be deployed, and based on the name of the tag, CircleCI will deploy them to QA and/or Production using a bit of regex in the <code>circle.yml</code>:</p>
+
+<pre class="highlight yaml"><code><span class="s">deployment</span><span class="pi">:</span>
+  <span class="s">staging</span><span class="pi">:</span>
+    <span class="s">branch</span><span class="pi">:</span> <span class="s">master</span>
+    <span class="s">heroku</span><span class="pi">:</span>
+      <span class="s">appname</span><span class="pi">:</span> <span class="s">foo-app-staging</span>
+  <span class="s">qa</span><span class="pi">:</span>
+    <span class="s">tag</span><span class="pi">:</span> <span class="s">/v[0-9]+(\.[0-9]+)+(-rc[0-9]+)?/</span> <span class="c1"># v1.2.3 and v1.2.3-rc1</span>
+    <span class="s">heroku</span><span class="pi">:</span>
+      <span class="s">appname</span><span class="pi">:</span> <span class="s">foo-app-qa</span>
+  <span class="s">production</span><span class="pi">:</span>
+    <span class="s">tag</span><span class="pi">:</span> <span class="s">/v[0-9]+(\.[0-9]+)+/</span> <span class="c1"># v1.2.3 only</span>
+    <span class="s">heroku</span><span class="pi">:</span>
+      <span class="s">appname</span><span class="pi">:</span> <span class="s">foo-app</span>
+</code></pre>
+
+<p>Technically, that is all you need to do. RC tags will go only to QA, and final tags will go to both.</p>
+
+<p>This is a guide I put together for folks at Ride, and hopefully it’ll be helpful to some of you.</p>
+
+<h2 id="types-of-release">Types of Release</h2>
+
+<p>There are two types of release.</p>
+
+<ul>
+  <li>A “Planned Release”</li>
+  <li>A Hotfix</li>
+</ul>
+
+<p>If there is a huge problem that needs to be fixed, make a hotfix. If it is not breaking the production systems, then it can be part of the next planned release.</p>
+
+<p>Common sense is required for making that decision. Hotfixes will bypass QA, so use them sparingly.</p>
+
+<h2 id="making-a-planned-release">Making a Planned Release</h2>
+
+<p>A planned release is where we put new features, and anything that happens to be sat in <code>develop</code> branch.</p>
+
+<p>We always start a new minor (or a major) version, so planned releases will <strong>not</strong> be <code>1.6.1</code> or <code>1.6.2</code>. This leads to problems with hotfixes, which use those patch level version numbers, and we end up with two people trying to make different tags with the same name…</p>
+
+<pre class="highlight plaintext"><code>$ git pull origin develop           # Make sure you've got all the develop changes
+$ git flow release start 1.6.0      # Increment the version number by at least 1 minor
+$ vim CHANGELOG.md                  # Update the release information and whatever else
+</code></pre>
+
+<p>You can have any branch checked out when you run <code>git flow feature start</code>, and it will just make the branch from <code>develop</code> anyway.</p>
+
+<p>At this point, we want to make a QA release, so that we can get our code tested.</p>
+
+<pre class="highlight plaintext"><code>$ git tag v1.6.0-rc1                # Create an RC1 version of this release so that QA can test it
+$ git push origin v1.6.0-rc1        # Send to GitHub, and deploy via CircleCI if it works
+</code></pre>
+
+<p>If somebody else created the release branch and you don’t have it locally, you can track the release branch instead of <code>start</code>ing it:</p>
+
+<pre class="highlight plaintext"><code>$ git flow release track 1.6.0      # This will grab the release/1.6.0 branch from origin and check it out
+</code></pre>
+
+<p>Now, if we get some feedback and our RC release has some bugs, we can make another. People can PR directly to the <code>release/1.6.0</code> branch (preferable), or commits can be cherry-picked from elsewhere.</p>
+
+<pre class="highlight plaintext"><code>$ git pull origin release/1.6.0     # Pull changes that were merged via PRs
+$ git cherry-pick dfs7432r28r       # Optional: Take a cool fix from develop
+$ git tag v1.6.0-rc2                # Create an RC2 version of this release
+$ git push origin v1.6.0-rc2        # Send to GitHub, and auto-deploy via CircleCI if it works
+</code></pre>
+
+<p>If this RC is approved, we can go ahead and update the changelog one last time, then finish the release:</p>
+
+<pre class="highlight plaintext"><code>$ git flow release finish 1.6.0     # Git Flow will merge this to master and develop, and make the final tag
+$ git push origin v1.6.0            # Send to GitHub, and auto-deploy via CircleCI if it works
+</code></pre>
+
+<p>Done! Well, except for a little cleanup:</p>
+
+<pre class="highlight plaintext"><code>$ git push origin master            # update master
+$ git push origin develop           # aaand update develop
+</code></pre>
+
+<p>Sending things to QA and waiting for feedback can be a slow process. If production is broken and we need to deploy fast, we need to create a hotfix instead.</p>
+
+<h2 id="making-a-hotfix-release">Making a Hotfix Release</h2>
+
+<p>Instead of using the <code>git flow release</code> sub-command, we can switch out to use <code>git flow hotfix</code>. The difference here is mainly that the branch is made from master, which helps us avoid any new feature development, which might not be production ready.</p>
+
+<pre class="highlight plaintext"><code>$ git flow hotfix start 1.6.1       # Makes a hotfix/1.6.1 branch
+$ git cherry-pick sdfsha1234        # Pull or merge or cherry-pick in whichever commit(s) fix the issue
+$ vim CHANGELOG.md                  # Update release notes with the bug fix
+$ git flow hotfix finish 1.6.1      # Mark the hotfix as done and put it into master
+$ git push origin v1.6.1            # Put that tag online for everyone to enjoy
+$ git push origin master
+</code></pre>
+
+<h2 id="summary">Summary</h2>
+
+<p>This looks like a lot of work for deployments, and I would absolutely prefer to have continuous deployment instead of having to craft and prepare versions, but that is not always possible. For that to work you need more than just unit and integration tests, but you need full, multi-system testing that is rather tricky to achieve.</p>
+
+<p>With more testing, versions will be less important, and tag-based deploys won’t matter. In the meantime, this whole “use Git-Flow to make tags then let CircleCI shove them on the right environment” approach is pretty damn tastey if you ask me.</p>
+
+          
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=Deploying with Git-Flow, Tags and CircleCI&amp;url=https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=Deploying with Git-Flow, Tags and CircleCI&amp;u=https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/api/2015/10/08/http-documentation-with-api-blueprint/">HTTP Documentation with API Blueprint</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="more isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">I spend a lot of time urging people to learn more languages, and if that is a bit much learn another framework. Rails and Laravel are the same, and Go is a barrel of laughs.</p>
+              <p>Get out of your rut.</p>
+            </section>
+          </div>
+          <div class="more isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <section class="author">
+              <a href="http://apisyouwonthate.com/">
+                <div class="book-image build-apis">Book Cover</div>
+                <h4>Build APIs You Won't Hate</h4>
+              </a>
+              <p class="bio">Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a>.</p>
+            </section>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/11/20/deploying-with-git-flow-tags-and-circleci/">Deploying with Git-Flow, Tags and CircleCI</a></li>
+          <li><a href="/api/2015/10/08/http-documentation-with-api-blueprint/">HTTP Documentation with API Blueprint</a></li>
+          <li><a href="/2015/10/02/everyones-favourite-twitter-character/">Everyones Favourite Twitter Characters</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>

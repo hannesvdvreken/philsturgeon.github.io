@@ -5,16 +5,140 @@
   <id>https://philsturgeon.uk/</id>
   <link href="https://philsturgeon.uk/"/>
   <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
-  <updated>2015-10-08T11:59:00-04:00</updated>
+  <updated>2015-11-20T13:53:00-10:00</updated>
   <author>
     <name>Phil Sturgeon</name>
   </author>
   <entry>
+    <title>Deploying with Git-Flow, Tags and CircleCI</title>
+    <link rel="alternate" href="https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/"/>
+    <id>https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/</id>
+    <published>2015-11-20T13:53:00-10:00</published>
+    <updated>2015-11-20T14:55:55-10:00</updated>
+    <summary type="html">Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!</summary>
+    <content type="html">&lt;p&gt;Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!&lt;/p&gt;
+
+&lt;p&gt;Back in the day I escaped FTP deployments by &lt;a href="/2008/10/02/Deploying-sites-with-SVN/"&gt;using SVN&lt;/a&gt;, which was “ok”, and later I switched to &lt;a href="/git/2010/02/23/Deploying-websites-with-Git/"&gt;deploying using Git&lt;/a&gt;. Since then I’ve played with Capistrano, used Chef to deploy to AWS and tried all sorts of other services that aim to make deployments easier.&lt;/p&gt;
+
+&lt;p&gt;Nothing has ever been easier than using PaaS systems like Heroku. For some small client sites, or this blog, or whatever else, I used to just &lt;code&gt;alias yolo='git push heroku master'&lt;/code&gt;. That was a solid replacement for the SVN/Git deploys I hacked together in the past, but larger teams need a bit more than that.&lt;/p&gt;
+
+&lt;p&gt;When you’re building a complex application where multiple versions are being built in tandem, a QA team with multiple day review periods and a production server that might need hotfixes deployed regardless of whats in QA, this “do stuff then push” approach does’t hold up.&lt;/p&gt;
+
+&lt;p&gt;At Ride, we use Heroku, and for a while we used &lt;a href="https://guides.github.com/introduction/flow/"&gt;GitHub-flow&lt;/a&gt;. When a PR was merged to &lt;code&gt;master&lt;/code&gt; it would go straight to the Heroku staging environment, then, we had a &lt;code&gt;qa&lt;/code&gt; and &lt;code&gt;production&lt;/code&gt; branch that would go off to the appropriate environment when we were ready to deploy those versions.&lt;/p&gt;
+
+&lt;p&gt;CircleCI supports &lt;a href="https://circleci.com/docs/configuration#deployment"&gt;branch based deployment&lt;/a&gt; nicely, and their &lt;a href="https://circleci.com/docs/continuous-deployment-with-heroku"&gt;Heroku deployments&lt;/a&gt; are incredibly easy. This was ok but having a &lt;code&gt;qa&lt;/code&gt; and &lt;code&gt;production&lt;/code&gt; branch lead to a lot of confusion. The branching model of the code should not be mixed in with implementation details of deployment. People were sending PRs from QA to Production and sometimes hotfixes had to be merged back and things got missed and… it was just a mess.&lt;/p&gt;
+
+&lt;p&gt;I wanted to use tags for this, and more importantly I wanted to use them as more than just “here is a snapshot in case we have to roll back”. I looked into having automated deployment that looked a bit more like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt="Fancy diagram showing tag version-based deployments to QA/Prod" src="/images/article_images/2015-11-20-deploying-with-git-flow-tags-and-circleci/fancy-diagram.jpg" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Annoyingly CircleCI wouldn’t let me do this. Tags would not trigger a build on their system, so the deployments would not happen! I tweeted asking if they’d work on it, and 3 months later.. &lt;a href="https://circleci.com/docs/configuration#tags"&gt;they have tag-based deployments&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href="http://nvie.com/posts/a-successful-git-branching-model/"&gt;git-flow branch model&lt;/a&gt; helps us create tags. Those tags can then be deployed, and based on the name of the tag, CircleCI will deploy them to QA and/or Production using a bit of regex in the &lt;code&gt;circle.yml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="s"&gt;deployment&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="s"&gt;staging&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="s"&gt;branch&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;master&lt;/span&gt;
+    &lt;span class="s"&gt;heroku&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="s"&gt;appname&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;foo-app-staging&lt;/span&gt;
+  &lt;span class="s"&gt;qa&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="s"&gt;tag&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;/v[0-9]+(\.[0-9]+)+(-rc[0-9]+)?/&lt;/span&gt; &lt;span class="c1"&gt;# v1.2.3 and v1.2.3-rc1&lt;/span&gt;
+    &lt;span class="s"&gt;heroku&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="s"&gt;appname&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;foo-app-qa&lt;/span&gt;
+  &lt;span class="s"&gt;production&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="s"&gt;tag&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;/v[0-9]+(\.[0-9]+)+/&lt;/span&gt; &lt;span class="c1"&gt;# v1.2.3 only&lt;/span&gt;
+    &lt;span class="s"&gt;heroku&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="s"&gt;appname&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;foo-app&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Technically, that is all you need to do. RC tags will go only to QA, and final tags will go to both.&lt;/p&gt;
+
+&lt;p&gt;This is a guide I put together for folks at Ride, and hopefully it’ll be helpful to some of you.&lt;/p&gt;
+
+&lt;h2 id="types-of-release"&gt;Types of Release&lt;/h2&gt;
+
+&lt;p&gt;There are two types of release.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A “Planned Release”&lt;/li&gt;
+  &lt;li&gt;A Hotfix&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If there is a huge problem that needs to be fixed, make a hotfix. If it is not breaking the production systems, then it can be part of the next planned release.&lt;/p&gt;
+
+&lt;p&gt;Common sense is required for making that decision. Hotfixes will bypass QA, so use them sparingly.&lt;/p&gt;
+
+&lt;h2 id="making-a-planned-release"&gt;Making a Planned Release&lt;/h2&gt;
+
+&lt;p&gt;A planned release is where we put new features, and anything that happens to be sat in &lt;code&gt;develop&lt;/code&gt; branch.&lt;/p&gt;
+
+&lt;p&gt;We always start a new minor (or a major) version, so planned releases will &lt;strong&gt;not&lt;/strong&gt; be &lt;code&gt;1.6.1&lt;/code&gt; or &lt;code&gt;1.6.2&lt;/code&gt;. This leads to problems with hotfixes, which use those patch level version numbers, and we end up with two people trying to make different tags with the same name…&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git pull origin develop           # Make sure you've got all the develop changes
+$ git flow release start 1.6.0      # Increment the version number by at least 1 minor
+$ vim CHANGELOG.md                  # Update the release information and whatever else
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can have any branch checked out when you run &lt;code&gt;git flow feature start&lt;/code&gt;, and it will just make the branch from &lt;code&gt;develop&lt;/code&gt; anyway.&lt;/p&gt;
+
+&lt;p&gt;At this point, we want to make a QA release, so that we can get our code tested.&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git tag v1.6.0-rc1                # Create an RC1 version of this release so that QA can test it
+$ git push origin v1.6.0-rc1        # Send to GitHub, and deploy via CircleCI if it works
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If somebody else created the release branch and you don’t have it locally, you can track the release branch instead of &lt;code&gt;start&lt;/code&gt;ing it:&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git flow release track 1.6.0      # This will grab the release/1.6.0 branch from origin and check it out
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, if we get some feedback and our RC release has some bugs, we can make another. People can PR directly to the &lt;code&gt;release/1.6.0&lt;/code&gt; branch (preferable), or commits can be cherry-picked from elsewhere.&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git pull origin release/1.6.0     # Pull changes that were merged via PRs
+$ git cherry-pick dfs7432r28r       # Optional: Take a cool fix from develop
+$ git tag v1.6.0-rc2                # Create an RC2 version of this release
+$ git push origin v1.6.0-rc2        # Send to GitHub, and auto-deploy via CircleCI if it works
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If this RC is approved, we can go ahead and update the changelog one last time, then finish the release:&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git flow release finish 1.6.0     # Git Flow will merge this to master and develop, and make the final tag
+$ git push origin v1.6.0            # Send to GitHub, and auto-deploy via CircleCI if it works
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Done! Well, except for a little cleanup:&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git push origin master            # update master
+$ git push origin develop           # aaand update develop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sending things to QA and waiting for feedback can be a slow process. If production is broken and we need to deploy fast, we need to create a hotfix instead.&lt;/p&gt;
+
+&lt;h2 id="making-a-hotfix-release"&gt;Making a Hotfix Release&lt;/h2&gt;
+
+&lt;p&gt;Instead of using the &lt;code&gt;git flow release&lt;/code&gt; sub-command, we can switch out to use &lt;code&gt;git flow hotfix&lt;/code&gt;. The difference here is mainly that the branch is made from master, which helps us avoid any new feature development, which might not be production ready.&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ git flow hotfix start 1.6.1       # Makes a hotfix/1.6.1 branch
+$ git cherry-pick sdfsha1234        # Pull or merge or cherry-pick in whichever commit(s) fix the issue
+$ vim CHANGELOG.md                  # Update release notes with the bug fix
+$ git flow hotfix finish 1.6.1      # Mark the hotfix as done and put it into master
+$ git push origin v1.6.1            # Put that tag online for everyone to enjoy
+$ git push origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;This looks like a lot of work for deployments, and I would absolutely prefer to have continuous deployment instead of having to craft and prepare versions, but that is not always possible. For that to work you need more than just unit and integration tests, but you need full, multi-system testing that is rather tricky to achieve.&lt;/p&gt;
+
+&lt;p&gt;With more testing, versions will be less important, and tag-based deploys won’t matter. In the meantime, this whole “use Git-Flow to make tags then let CircleCI shove them on the right environment” approach is pretty damn tastey if you ask me.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
     <title>HTTP Documentation with API Blueprint</title>
     <link rel="alternate" href="https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/"/>
     <id>https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/</id>
-    <published>2015-10-08T11:59:00-04:00</published>
-    <updated>2015-10-08T13:41:48-04:00</updated>
+    <published>2015-10-08T05:59:00-10:00</published>
+    <updated>2015-10-08T07:41:48-10:00</updated>
     <summary type="html">When planning my talk and book on REST/HTTP API development, I ended up mentioning documentation towards the end, and flippantly said “Oh and API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in API Blueprint before I get anywhere near the code.</summary>
     <content type="html">&lt;p&gt;When planning my talk and book on REST/HTTP API development, I ended up mentioning documentation towards the end, and flippantly said “Oh and API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in &lt;a href="https://apiblueprint.org"&gt;API Blueprint&lt;/a&gt; before I get anywhere near the code.&lt;/p&gt;
 
@@ -369,8 +493,8 @@ Bit of a description or intro, and an introduction to how to OAuth, etc.
     <title>Everyones Favourite Twitter Characters</title>
     <link rel="alternate" href="https://philsturgeon.uk/2015/10/02/everyones-favourite-twitter-character/"/>
     <id>https://philsturgeon.uk/2015/10/02/everyones-favourite-twitter-character/</id>
-    <published>2015-10-02T13:22:00-04:00</published>
-    <updated>2015-10-03T16:57:43-04:00</updated>
+    <published>2015-10-02T07:22:00-10:00</published>
+    <updated>2015-10-03T10:57:43-10:00</updated>
     <summary type="html">Regularly, I make a general piece of advice, and the types of responses are pretty similar regardless of the actual conversation.</summary>
     <content type="html">&lt;p&gt;Regularly, I make a general piece of advice, and the types of responses are pretty similar regardless of the actual conversation.&lt;/p&gt;
 
@@ -515,8 +639,8 @@ Bit of a description or intro, and an introduction to how to OAuth, etc.
     <title>HTTP Status Codes Are Not Enough</title>
     <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/"/>
     <id>https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/</id>
-    <published>2015-09-23T17:00:00-04:00</published>
-    <updated>2015-10-08T13:42:13-04:00</updated>
+    <published>2015-09-23T11:00:00-10:00</published>
+    <updated>2015-10-08T07:42:13-10:00</updated>
     <summary type="html">Don't be fooled into thinking you can use HTTP status codes on their own. You need to supplement them using error messages, with maybe some specific error codes of your own and links to documentation explaining what the problem is.</summary>
     <content type="html">&lt;p&gt;I spotted an article called &lt;a href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"&gt;Just learn Rails (Part 3) HTTP status codes&lt;/a&gt;. It started off good, and I liked that it was teaching people to avoid hardcoding their HTTP status codes in code, using &lt;code&gt;:conflict&lt;/code&gt; instead of &lt;code&gt;409&lt;/code&gt; and the like.&lt;/p&gt;
 
@@ -677,8 +801,8 @@ that alone.&lt;/p&gt;
     <title>Auto-Incrementing IDs: Giving your Data Away</title>
     <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/"/>
     <id>https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/</id>
-    <published>2015-09-03T09:47:00-04:00</published>
-    <updated>2015-10-08T14:02:11-04:00</updated>
+    <published>2015-09-03T03:47:00-10:00</published>
+    <updated>2015-10-08T08:02:11-10:00</updated>
     <summary type="html">Something we’re always taught as developers, usually by tutorials or via the defaults in various ORM tools, is every SQL table needs an auto-incrementing ID. This is a weirdly common fallacy, enforced by old tutorials, new tutorials and half-arsed tooling in various forms. Why are auto-incrementing IDs a problem? Because it means people can download your database.</summary>
     <content type="html">&lt;p&gt;Something we’re always taught as developers, usually by tutorials or via the defaults in various ORM tools, is every SQL table needs an auto-incrementing ID. This is a weirdly common fallacy, enforced by old tutorials, new tutorials and half-arsed tooling in various forms. Why are auto-incrementing IDs a problem? Because it means people can download your database.&lt;/p&gt;
 
@@ -804,8 +928,8 @@ that alone.&lt;/p&gt;
     <title>No Booze for a Month</title>
     <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/22/no-booze/"/>
     <id>https://philsturgeon.uk/charity/2015/08/22/no-booze/</id>
-    <published>2015-08-22T13:30:00-04:00</published>
-    <updated>2015-09-23T16:24:47-04:00</updated>
+    <published>2015-08-22T07:30:00-10:00</published>
+    <updated>2015-09-23T10:24:47-10:00</updated>
     <summary type="html">In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!</summary>
     <content type="html">&lt;p&gt;In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!&lt;/p&gt;
 
@@ -828,194 +952,6 @@ that alone.&lt;/p&gt;
 &lt;p&gt;But, jokes aside, my reliance on booze and the inconvenience of going without it is nothing compared to what those living with HIV/Aids have to go through, and I’m doing this to raise money for them.&lt;/p&gt;
 
 &lt;p&gt;Please put your hand in your pocket and &lt;a href="http://fundraising.housingworks.org/participant/philstu-15"&gt;donate some cash for an amazing cause&lt;/a&gt;.&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>The Ratio of Women Speakers in Tech</title>
-    <link rel="alternate" href="https://philsturgeon.uk/feminism/2015/08/17/women-speaker-ratio-conversation-loop/"/>
-    <id>https://philsturgeon.uk/feminism/2015/08/17/women-speaker-ratio-conversation-loop/</id>
-    <published>2015-08-17T17:00:00-04:00</published>
-    <updated>2015-09-28T11:30:23-04:00</updated>
-    <summary type="html">There are a lot of my opinions and viewpoints that have changed over time. Some slowly and naturally, and some sharp and sudden like a wet mackerel to the face. One is on the ratio of women speakers when it comes to tech conferences.</summary>
-    <content type="html">&lt;p&gt;There are a lot of my opinions and viewpoints that have changed over time. Some slowly and naturally, and some sharp and sudden like a wet mackerel to the face. One is on the ratio of women speakers when it comes to tech conferences.&lt;/p&gt;
-
-&lt;p&gt;I previously held an opinion like many of the folks in the PHP community, who are discussing this stuff now, which is: well there just &lt;em&gt;aren’t&lt;/em&gt; that many women programmers!&lt;/p&gt;
-
-&lt;p&gt;That seems fair right? There aren’t many women speakers because there aren’t many women programmers. Us menfolk have been to loads of conferences and seen hardly any women, we’ve worked in our startups and there might have been one, but the meetups are all dudes and everywhere we go it’s mostly dudes! Right?&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;That used to be my opinion, and I’ve run multiple conferences in the past that were extremely male: cast, crew and audience. I could make my excuses, but I’m going to accept that I was ignorant and lazy. Everything in this article is the 180 mental flip I’ve come to over the last year or two with the help of some good friends.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Take the above viewpoint for a minute (dumb and entirely anecdotal as it is) and go with it, because it’s one I see a &lt;em&gt;lot&lt;/em&gt; of people hold.&lt;/p&gt;
-
-&lt;p&gt;If we’re going to say that we think there being 1 or 2 women speakers at a conference of 10 or 20 speakers is representative of the ratio of women actually in the field, then we’re making an argument for accurate representation. We’re saying the gender ratio on stage is that of the ratio in real life.&lt;/p&gt;
-
-&lt;p&gt;Assuming the gender ratio is 10% women in the field then having 1 or 2 at a conference of 10 or 20 speakers would be accurate, but here is a little statistic:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Women comprise 34% of web developers; 23% of programmers; 37% of database administrators; 20% of software developers; and 15% of information security analysts. (Department of Labor Current Population Survey, 2012)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;So if we’re going with the representative argument, at conferences about web development, I’d expect 34% of the speakers to be women. At programming conferences I’d expect 23% of the speakers to be women. At database adminstrator conferences I’d expect… you get the idea.&lt;/p&gt;
-
-&lt;p&gt;Simply put, the ratio argument does not hold up to the real world. We have a discrepancy.&lt;/p&gt;
-
-&lt;p&gt;Whenever anything is said in this conversation about the discrepancy, there are a lot of common responses that are traipsed out.&lt;/p&gt;
-
-&lt;h2 id="getting-50-is-just-not-possible"&gt;Getting 50% is just not possible&lt;/h2&gt;
-
-&lt;p&gt;Some people act like 50% is an unreasonable goal, and so give up on the whole idea and shut down anyone who talks about improving the situation at all.&lt;/p&gt;
-
-&lt;p&gt;50% does not have to be the goal right now. Let’s try and get way the hell past 10%.&lt;/p&gt;
-
-&lt;h2 id="quota-filling"&gt;Quota Filling&lt;/h2&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Why should the conference be responsible for quota filling instead of selecting based on skill&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Basically the thought process for some conference organizers (speaking as somebody who ran three ~100 person events) goes like this:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Do a CFP&lt;/li&gt;
-  &lt;li&gt;Reach out to some folks to get them to submit&lt;/li&gt;
-  &lt;li&gt;Realize you don’t have many women&lt;/li&gt;
-  &lt;li&gt;???&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Some would say that at step 4, if you turn down some guys who &lt;em&gt;would&lt;/em&gt; give good talks to find women, then you are quota filling.&lt;/p&gt;
-
-&lt;p&gt;Firstly, “quota filling” suggests that you’re just throwing some women in there to avoid getting shouted at.&lt;/p&gt;
-
-&lt;p&gt;Let me be clear. Placing women on the stage &lt;em&gt;for the sake of having some women up there&lt;/em&gt; is not what many reasonable people are asking for. It’s offensive to suggest that is why a decent ratio of women speakers is an objective. It is also quite obviously offensive (I would hope) to ask somebody to speak just because they are a women.&lt;/p&gt;
-
-&lt;p&gt;It can also be damaging. If you have experienced men and a few inexperienced women you found to fill your “quota” then you’re going to make those women look bad in front of a lot of people.&lt;/p&gt;
-
-&lt;p&gt;Getting any women you can find is not the point. Saying “oops, it looks like we got a bunch of dudes so far, lets see if we can make this a bit more balanced” is &lt;em&gt;not&lt;/em&gt; quota filling. It’s rebalancing the scales of equality that are - for a myriad of reasons - way off base right now.&lt;/p&gt;
-
-&lt;p&gt;Secondly, quota filling is a shit idea because it gives folks a ready to use slippery slope argument.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Once we add five women, are we sure that one of them is a single mom? We wouldn’t want to leave out that demographic and have people assume the only women who can make a conference panel are single ones without kids or ones with partners at home to lessen their load.&lt;/p&gt;
-
-  &lt;p&gt;There’s also no African Americans on the Edge Conference’s roster. I don’t see any people of (obvious) Hispanic descent. Why is no one up in arms over that?
-&lt;em&gt;– &lt;a href="https://sugarrae.com/rants-in-bitchland/women-tech-conferences-and-bs/"&gt;Women, Tech Conferences and the BullSh!t Surrounding It&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Ha, right. If we start jamming people in based on one criteria, we’re gonna have to start jamming people in based on another.&lt;/p&gt;
-
-&lt;p&gt;It’s not about catering to every checkbox you can imagine, it’s more about questioning why all of your speakers are of such a narrow demographic, and attempting to make things be a bit more representative of the field.&lt;/p&gt;
-
-&lt;p&gt;Just like with our stats on women in the field, surprisingly enough 95% of programmers are not white men, and conferences sure do make it seem that way.&lt;/p&gt;
-
-&lt;h2 id="beholden-to-the-cfp"&gt;Beholden to the CFP&lt;/h2&gt;
-
-&lt;p&gt;Some conference speaker selections are invitation based.&lt;/p&gt;
-
-&lt;p&gt;Some conference speaker selections are CFP based.&lt;/p&gt;
-
-&lt;p&gt;Most are realistically both, even if they do not advertise it.&lt;/p&gt;
-
-&lt;p&gt;If a conference is not doing a CFP and it only selects dudes then you fucked up. Let’s assume there is a CFP, because many of the conferences lacking in diverse lineups use this defense:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Women just aren’t submitting [as much as men] and we take our submissions from CFP&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;This may be true, and it may be down to a huge number of reasons. It may be that your conference board is just a bunch of dudes and they can’t be bothered with another brofest. It could be you don’t have a Code of Conduct and they’re uninterested in supporting that, or it could be that your Twitter followship doesn’t have many women in it for whatever reason and your marketing efforts were a bit lacking beyond you and your friends tweeting about it.&lt;/p&gt;
-
-&lt;p&gt;Whatever the reasons, saying “We don’t have any/many women because none/not many applied.” is a total cop out and sometimes a bit of a convenient lie.&lt;/p&gt;
-
-&lt;p&gt;I’ve been approached a bunch of times by conference organizers – everything from local conferences in far away lands to some of the largest PHP conferences – saying “Hey Phil, we’d like you to speak at our conference.”&lt;/p&gt;
-
-&lt;p&gt;I didn’t go to all of them, but with the ones I did, sometimes I put a CFP in after they asked me to, sometimes they just ignored the CFP step entirely and signed me up.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;So it’s not always a CFP.&lt;/li&gt;
-  &lt;li&gt;Why is it ok to ignore CFP sometimes, but be beholden to it when discussing women speakers?&lt;/li&gt;
-  &lt;li&gt;Why can’t they approach smart women they know?&lt;/li&gt;
-  &lt;li&gt;If they don’t know more women why don’t they try broadening their social circles?&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id="we-got-a-few-from-sponsors-and-we-had-no-say"&gt;We Got A Few [from sponsors and we had no say]!&lt;/h2&gt;
-
-&lt;p&gt;Often at conferences, the larger sponsors send people to speak, and a lot of these folks - in my experience - have been women (#NotAllDevEvangelists). This means that some (or depressingly sometimes all) of the female line-up is filled with sponsor provided folks.&lt;/p&gt;
-
-&lt;p&gt;Now, sponsor provided people are not a problem. Sure sometimes they just try and flog you their stuff, but many of these speakers are amazing, insightful and don’t just bang on about their company.&lt;/p&gt;
-
-&lt;p&gt;Sadly when there are sponsor provided people flogging the product, the reaction depends on the gender of the speaker. When a guy is up there sales pitching his heart out, most folks just think “that guy is spammy” and wander off or open the laptop. When a women is doing it, and they see no/few other women at the conference, they end up thinking some pretty negative stuff about women in tech, if they realize it or not.&lt;/p&gt;
-
-&lt;p&gt;&lt;img alt="XKCD on &amp;quot;That guy sucks&amp;quot; vs. &amp;quot;Women suck&amp;quot;" src="http://imgs.xkcd.com/comics/how_it_works.png" /&gt;&lt;/p&gt;
-
-&lt;p&gt;Just like with “quota filling”, if there are just a few woman and they are not giving highly technical, it leaves a general bad impression of women as a whole.&lt;/p&gt;
-
-&lt;p&gt;Besides, if as a conference you can’t get past 10% when you have sponsor provided women speakers, then you’re really fucking something up at a fundamental level.&lt;/p&gt;
-
-&lt;h2 id="hiding-the-real-problems"&gt;Hiding the Real Problems&lt;/h2&gt;
-
-&lt;p&gt;There are certainly huge problems to solve in why the number of women programmers are so far below 50%, like all the reasons in this study showing the &lt;a href="http://anitaborg.org/insights-tools/infographics/how-to-retain-women-technologists/"&gt;high attrition rate of women in tech&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;One of my friends quit programming courses because the lecturers gave her zero help and a lot of shit, while bending over backwards to help the boys.&lt;/p&gt;
-
-&lt;p&gt;One of my friends quit a job because it was a bit of a boys club, and the CEO did not know how to change that. They both just decided it was easier for her to work somewhere else.&lt;/p&gt;
-
-&lt;p&gt;The best developer at the last startup I worked for nearly didn’t get hired because she “Wasn’t a good fit for the team.” No idea what that meant, but she was a fucking excellent programmer who used parts of PHP I didn’t know existed to smash out fizz-buzz in no time, while some of the other guys couldn’t even get it done.&lt;/p&gt;
-
-&lt;p&gt;All this stuff is a problem, but aiming for a more representative number of female speakers at conferences is not an either/or situation. Schools and startups can work on those problems, while conferences work on theirs.&lt;/p&gt;
-
-&lt;h2 id="conferences-are-a-business"&gt;Conferences are a Business&lt;/h2&gt;
-
-&lt;p&gt;I totally get this, being there in the past myself.&lt;/p&gt;
-
-&lt;p&gt;Conferences gotta make money. Conferences gotta get attendees to get that money. Attendees wanna see people that know smart stuff to convince their bosses or partners the money is worth being spent.&lt;/p&gt;
-
-&lt;p&gt;This argument is used to explain that the hunt for a diverse lineup is irrelevant, because you just need to get bums on seats and known names are the best way to do that.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Reputation does not equate to skill. I’m a half decent developer who has been given the chance to speak at way too many conferences.&lt;/li&gt;
-  &lt;li&gt;An awful lot of these known names - myself included of course - are white dudes, way up into the 90% range.&lt;/li&gt;
-  &lt;li&gt;Recycling the same old names every time can’t be doing a huge amount for business, especially when most of these folks are fairly young and unlikely to die or retire soon. Fresh blood should be considered a must.&lt;/li&gt;
-  &lt;li&gt;If a woman speaker is high on skill and low on reputation, lend her some privilege and get her on the secondary stage, then bring her back next year on the main stage if she kills it.&lt;/li&gt;
-  &lt;li&gt;If you want to bring as many people as you can, a more diverse lineup will lead to a more diverse potential demographic, meaning you can make more money…&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The latter point does presume that people of a certain demographic are more likely to attend if they are represented, but I don’t feel like that is unreasonable. I doubt many people are sat there waiting for a diversity checklist to hit 3 boxes before they grab a ticket, but I do think a lot of people are tired of seeing white-dude lineup after white-dude lineup.&lt;/p&gt;
-
-&lt;p&gt;Also on the last point, think of it this way: Even if you’re a misogynistic ass-hat who doesn’t care about gender equality or diversity, there is an economic incentive to doing this. Nobody will know if that is your reasoning, and maybe they don’t need to know, but if all you care about is running a business then widening your demographic seems like a pretty solid way to do it.&lt;/p&gt;
-
-&lt;p&gt;Finally, if &lt;em&gt;you&lt;/em&gt; could not do any better at your conference, maybe some outside help could change the situation next time.&lt;/p&gt;
-
-&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
-
-&lt;p&gt;I don’t think anyone here is trying to be a bad person.&lt;/p&gt;
-
-&lt;p&gt;I think the vast majority conference organizers are good people who are stressed out, and maybe aren’t taking as many things into consideration as they could.&lt;/p&gt;
-
-&lt;p&gt;I don’t think we need to shout at any conference organizers that don’t have 50% women on their lineup.&lt;/p&gt;
-
-&lt;p&gt;I think we should probably be having polite (probably private) words with conference organizers who fail to hit 25%.&lt;/p&gt;
-
-&lt;p&gt;I think it would be good if people raised the questions of why a conference is 95% white-dudes, but I think onlookers need to stop traipsing out the above shitty arguments when they do.&lt;/p&gt;
-
-&lt;p&gt;I think most conference organizers need to expand their followship to include more women, and advertise outside their usual networks by approaching groups and organizations that are there to help with this.&lt;/p&gt;
-
-&lt;p&gt;I think conference speakers should try to lend their privilege to others who are less known in general. Invited to speak at a conference but can’t make it? Suggest a friend, who might not be a white-dude.&lt;/p&gt;
-
-&lt;p&gt;I think a lot of us need to re-evaluate how many women there really are in programming, and start asking why we don’t see them around as much. What is it conferences, meet-ups, startups, etc. are doing that makes it be so dude-centric?&lt;/p&gt;
-
-&lt;p&gt;And while we all know /r/php can be a festering pile of bile-flavoured nonsense at times, &lt;a href="https://www.reddit.com/r/PHP/comments/30wati/looking_for_women_speakers_at_php_new_zealand/"&gt;this thread&lt;/a&gt; is the problem with this conversation being had. So much ignorance in there, and one of the moderators &lt;a href="https://www.reddit.com/r/PHP/comments/30wati/looking_for_women_speakers_at_php_new_zealand/cpx17ul"&gt;jumped in&lt;/a&gt; saying all this stuff and more. Apparently I am unfairly hostile to white-dudes.&lt;/p&gt;
-
-&lt;p&gt;I have a lot of work to do with &lt;a href="http://phptownhall.com/"&gt;my podcast&lt;/a&gt; to stop it being such a cavalcade of white-dudes too. There’s no high horse here, just a plea for attempts at progress, instead of a never-ending stream of “Nah, it’s fine!”.&lt;/p&gt;
-
-&lt;h2 id="further-reading"&gt;Further Reading&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href="http://www.callbackwomen.com/home.html"&gt;CallbackWomen&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="http://geekfeminism.org/2012/05/21/how-i-got-50-women-speakers-at-my-tech-conference/"&gt;How I Got 50% Women Speakers at My Tech Conference&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="http://2012.jsconf.eu/2012/09/17/beating-the-odds-how-we-got-25-percent-women-speakers.html"&gt;Beating the Odds — How We got 25% Women Speakers for JSConf EU 2012&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="http://blog.sqisland.com/2015/08/droidcon-nyc-22-percent-female-speakers.html"&gt;Droidcon NYC: 22% women speakers&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Also, &lt;a href="http://2015.sunshinephp.com/speakers"&gt;SunshinePHP&lt;/a&gt; achieved about 30% women speakers last time around, so maybe give &lt;a href="https://twitter.com/adamculp"&gt;Adam Culp&lt;/a&gt; a shout if you’re organizing something. Good job!&lt;/p&gt;
 </content>
   </entry>
 </feed>

@@ -76,9 +76,9 @@
           <a name="topofpage"></a>
           <p>Back in 2008 I wrote an article describing how you can <a title="Deploying sites with Subversion (SVN)" href="/blog/2008/10/deploying-sites-with-svn">use Subversion as a very simple deployment method</a> from your local box, through testing environments to your live servers. Since then I have been using Git to track all client work and personal projects, so I modified this approach to work with Git.</p>
 
-<p>It sounds a little crazy to some people, but really deploying websites with a version control system makes a lot of sense. When you develop on your local box you can change any number of files throughout a codebase and trying to manually remember what files have been changed can be a pain in the nadgers.</p>
+<p>It sounds a little crazy to some people, but really deploying websites with a version control system makes a lot of sense. When you develop on your local box you can change any number of files throughout a codebase and trying to manually remember what files have been changed can be a pain in the nads.</p>
 
-<p>You either need to use your VCS ( <a title="Apache Subversion" href="http://subversion.apache.org/">Subversion</a>, <a title="Git: Fast Version Control" href="http://git-scm.com/">Git</a>, <a title="Mercurial: Distributed Source Control Management" href="http://mercurial.selenic.com/">Mercurial</a>, etc) to give you a list of changes files so you can manually go around re-uploading each of them, but this can take a long time on a large application.</p>
+<p>You either need to use your VCS (<a title="Apache Subversion" href="http://subversion.apache.org/">Subversion</a>, <a title="Git: Fast Version Control" href="http://git-scm.com/">Git</a>, <a title="Mercurial: Distributed Source Control Management" href="http://mercurial.selenic.com/">Mercurial</a>, etc) to give you a list of changes files so you can manually go around re-uploading each of them, but this can take a long time on a large application.</p>
 
 <p>Another option is re-uploading your entire site through FTP which is even more annoying, if not potentially dangerous to live servers as it can destroy file permissions, remove user-uploaded content, confuse cache systems and show programming errors throughout the site as files are deleted and replaced by the FTP client.</p>
 
@@ -104,7 +104,9 @@
 
 <h4 id="step-3-setup-your-repos">Step 3: Setup your repo’s</h4>
 
-<pre class="highlight plaintext"><code>$ cd /home/user/public_html$ git init$ git remote add origin git@github.com:philsturgeon/somerepo.git
+<pre class="highlight plaintext"><code>$ cd /home/user/public_html
+$ git init
+$ git remote add origin git@github.com:philsturgeon/somerepo.git
 </code></pre>
 
 <p>This next command gets a little tricky if you already have your site running on this server. I have always used this method from the first deployment of Git managed sites, but you will probably need to delete any folders that will be managed by Git so they can be replaced. Of course be careful with backups and save any user uploaded content, but once that is done you wont have to worry about losing changes ever again.</p>
@@ -132,7 +134,10 @@
 
 <p>You can push directly from your local box to the live website, or the testing server you are running Git on. On your local box you can simply add testing and live servers as another remote:</p>
 
-<pre class="highlight plaintext"><code>$ git remote add testing ssh://user@example.com/home/example/public_html$ git remote add live ssh://user@example.com/home/example/public_html$ git push origin master$ git push testing master
+<pre class="highlight plaintext"><code>$ git remote add testing ssh://user@example.com/home/example/public_html
+$ git remote add live ssh://user@example.com/home/example/public_html
+$ git push origin master
+$ git push testing master
 </code></pre>
 
 <p>And then when you have tested these changes had no screwy effects on your testing server:</p>
@@ -142,20 +147,21 @@
 
 <p>That means any time you make a change, you can commit it, push it back to the main codebase (GitHub, CodeBaseHQ, etc) then push it to the correct server(s). Sorted!</p>
 
-<p>_ <strong>Update:</strong> After posting it came to my attention that directly pushing to a repository like this appears to work from the push end, but it wont actually update the files on the live server. To get this to happen you need to create a post-receive hook._</p>
+<p><em><strong>Update:</strong> After posting it came to my attention that directly pushing to a repository like this appears to work from the push end, but it wont actually update the files on the live server. To get this to happen you need to create a post-receive hook.</em></p>
 
-<pre class="highlight plaintext"><code>$ ssh user@example.com$ cd /home/example/public_html$ vim .git/hooks/post-receive
+<pre class="highlight plaintext"><code>$ ssh user@example.com
+$ cd /home/example/public_html
+$ vim .git/hooks/post-receive
 </code></pre>
 
 <p>The only thing in my post-receive hook was the default example, so I deleted it and added this:</p>
 
-<blockquote>
-  <h1 id="binsh">!/bin/sh</h1>
+<pre class="highlight shell"><code><span class="c">#!/bin/sh    </span>
 
-  <h1 id="update-the-working-tree-after-changes-have-been-pushed-here">Update the working tree after changes have been pushed here</h1>
-  <p>cd ..<br />
-env -i git reset –hard</p>
-</blockquote>
+<span class="c"># Update the working tree after changes have been pushed here  </span>
+<span class="nb">cd</span> ..  
+env -i git reset --hard
+</code></pre>
 
 <p>Save that with Escape then :wq and you need to permission the hook so it can be executed:</p>
 
@@ -279,9 +285,9 @@ env -i git reset –hard</p>
       <li>
         <h3>Recent Posts</h3>
         <ul>
+          <li><a href="/2015/11/20/deploying-with-git-flow-tags-and-circleci/">Deploying with Git-Flow, Tags and CircleCI</a></li>
           <li><a href="/api/2015/10/08/http-documentation-with-api-blueprint/">HTTP Documentation with API Blueprint</a></li>
           <li><a href="/2015/10/02/everyones-favourite-twitter-character/">Everyones Favourite Twitter Characters</a></li>
-          <li><a href="/http/2015/09/23/http-status-codes-are-not-enough/">HTTP Status Codes Are Not Enough</a></li>
         </ul>
       </li>
     </ul>

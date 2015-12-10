@@ -5,10 +5,46 @@
   <id>https://philsturgeon.uk/</id>
   <link href="https://philsturgeon.uk/"/>
   <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
-  <updated>2015-11-20T13:53:00-10:00</updated>
+  <updated>2015-11-23T16:37:00-10:00</updated>
   <author>
     <name>Phil Sturgeon</name>
   </author>
+  <entry>
+    <title>HTTP/REST API File Uploads</title>
+    <link rel="alternate" href="https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/"/>
+    <id>https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/</id>
+    <published>2015-11-23T16:37:00-10:00</published>
+    <updated>2015-11-29T17:06:14-10:00</updated>
+    <summary type="html">POST /avatars
+Authentication: Bearer sdfjhdsklfhdlhfj
+Content-Type: image/jpeg
+Content-Length: 5436357a</summary>
+    <content type="html">&lt;h2 id="approach-one-direct-base64-encoded-upload"&gt;Approach One: Direct Base64 Encoded upload&lt;/h2&gt;
+
+&lt;p&gt;POST /avatars
+Authentication: Bearer sdfjhdsklfhdlhfj
+Content-Type: image/jpeg
+Content-Length: 5436357a&lt;/p&gt;
+
+&lt;p&gt;?PNG&lt;/p&gt;
+
+&lt;p&gt;IHD?wS??iCCPICC Profilex?T?kA?6n??Zk?x?”IY?hE?6?bk
+Y?&amp;lt;ߡ)??????9Nyx?+=?Y”|@5-?M?S?%?@?H8??qR&amp;gt;?׋??inf???O?????b??N?????~N??&amp;gt;?!?
+??V?J?p?8?da?sZHO?Ln?}&amp;amp;???wVQ?y?g????E??0
+ ??
+   IDAc????????-IEND?B`?&lt;/p&gt;
+
+&lt;p&gt;Approach Two:&lt;/p&gt;
+
+&lt;p&gt;POST /avatars&lt;/p&gt;
+
+&lt;p&gt;Content-Type: application/json&lt;/p&gt;
+
+&lt;p&gt;{
+  “image_url” : “https://facebook.com/images/dfidsyfsudf.jpg”
+}&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Deploying with Git-Flow, Tags and CircleCI</title>
     <link rel="alternate" href="https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/"/>
@@ -922,36 +958,6 @@ that alone.&lt;/p&gt;
 &lt;p&gt;How? Look for apps regularly hitting their rate limit. Look for stuff that is randomly search geo boxes moving across the map in an unnatural way (people don’t move in a sweeping left to right grid pattern).&lt;/p&gt;
 
 &lt;p&gt;Automate those detections, and fire off an email to the bastards trying to download your dataset. You’ll have their email because they signed up, and if they’re really daft they’ll use their work email. I’ve seen that happen, and we had a nice little chat.&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>No Booze for a Month</title>
-    <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/22/no-booze/"/>
-    <id>https://philsturgeon.uk/charity/2015/08/22/no-booze/</id>
-    <published>2015-08-22T07:30:00-10:00</published>
-    <updated>2015-09-23T10:24:47-10:00</updated>
-    <summary type="html">In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!</summary>
-    <content type="html">&lt;p&gt;In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!&lt;/p&gt;
-
-&lt;p&gt;In addition to &lt;a href="/charity/2015/08/11/geeks-giving-for-aids-again/"&gt;offering tech/PHP related rewards&lt;/a&gt; for cool free stuff, I thought I would go one step further to shock people into grabbing their wallets.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;ONE MONTH, NO BOOZE!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Yeah you heard me. Usually there is nothing but cider pumping through my veins. Terrible, sickly sweet, American cider these days, but booze all the same.&lt;/p&gt;
-
-&lt;p&gt;In the name of raising a boatload of cash for charity, I am going to go sober for one whole month.&lt;/p&gt;
-
-&lt;p&gt;I am 5 days in. This runs August 15th, to September 15th.&lt;/p&gt;
-
-&lt;p&gt;Last week was a trial run of 7 days, which I did succeed but tbh it has only made this month harder.&lt;/p&gt;
-
-&lt;p&gt;Anyone who knows me knows how hard this is going to be, especially as I have two conferences to attend and a 26 hour flight to New Zealand to get through next week.&lt;/p&gt;
-
-&lt;p&gt;But, jokes aside, my reliance on booze and the inconvenience of going without it is nothing compared to what those living with HIV/Aids have to go through, and I’m doing this to raise money for them.&lt;/p&gt;
-
-&lt;p&gt;Please put your hand in your pocket and &lt;a href="http://fundraising.housingworks.org/participant/philstu-15"&gt;donate some cash for an amazing cause&lt;/a&gt;.&lt;/p&gt;
 </content>
   </entry>
 </feed>

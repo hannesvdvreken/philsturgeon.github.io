@@ -5,52 +5,16 @@
   <id>https://philsturgeon.uk/</id>
   <link href="https://philsturgeon.uk/"/>
   <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
-  <updated>2015-11-23T16:37:00-10:00</updated>
+  <updated>2015-11-20T18:53:00-05:00</updated>
   <author>
     <name>Phil Sturgeon</name>
   </author>
   <entry>
-    <title>HTTP/REST API File Uploads</title>
-    <link rel="alternate" href="https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/"/>
-    <id>https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/</id>
-    <published>2015-11-23T16:37:00-10:00</published>
-    <updated>2015-11-29T17:06:14-10:00</updated>
-    <summary type="html">POST /avatars
-Authentication: Bearer sdfjhdsklfhdlhfj
-Content-Type: image/jpeg
-Content-Length: 5436357a</summary>
-    <content type="html">&lt;h2 id="approach-one-direct-base64-encoded-upload"&gt;Approach One: Direct Base64 Encoded upload&lt;/h2&gt;
-
-&lt;p&gt;POST /avatars
-Authentication: Bearer sdfjhdsklfhdlhfj
-Content-Type: image/jpeg
-Content-Length: 5436357a&lt;/p&gt;
-
-&lt;p&gt;?PNG&lt;/p&gt;
-
-&lt;p&gt;IHD?wS??iCCPICC Profilex?T?kA?6n??Zk?x?”IY?hE?6?bk
-Y?&amp;lt;ߡ)??????9Nyx?+=?Y”|@5-?M?S?%?@?H8??qR&amp;gt;?׋??inf???O?????b??N?????~N??&amp;gt;?!?
-??V?J?p?8?da?sZHO?Ln?}&amp;amp;???wVQ?y?g????E??0
- ??
-   IDAc????????-IEND?B`?&lt;/p&gt;
-
-&lt;p&gt;Approach Two:&lt;/p&gt;
-
-&lt;p&gt;POST /avatars&lt;/p&gt;
-
-&lt;p&gt;Content-Type: application/json&lt;/p&gt;
-
-&lt;p&gt;{
-  “image_url” : “https://facebook.com/images/dfidsyfsudf.jpg”
-}&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
     <title>Deploying with Git-Flow, Tags and CircleCI</title>
     <link rel="alternate" href="https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/"/>
     <id>https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/</id>
-    <published>2015-11-20T13:53:00-10:00</published>
-    <updated>2015-11-20T14:55:55-10:00</updated>
+    <published>2015-11-20T18:53:00-05:00</published>
+    <updated>2015-11-20T19:55:55-05:00</updated>
     <summary type="html">Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!</summary>
     <content type="html">&lt;p&gt;Want an integrated deployment process that sends tags off to the right environment (QA or Production) automatically as soon as they’re pushed to Git? Read on!&lt;/p&gt;
 
@@ -173,8 +137,8 @@ $ git push origin master
     <title>HTTP Documentation with API Blueprint</title>
     <link rel="alternate" href="https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/"/>
     <id>https://philsturgeon.uk/api/2015/10/08/http-documentation-with-api-blueprint/</id>
-    <published>2015-10-08T05:59:00-10:00</published>
-    <updated>2015-10-08T07:41:48-10:00</updated>
+    <published>2015-10-08T11:59:00-04:00</published>
+    <updated>2015-10-08T13:41:48-04:00</updated>
     <summary type="html">When planning my talk and book on REST/HTTP API development, I ended up mentioning documentation towards the end, and flippantly said “Oh and API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in API Blueprint before I get anywhere near the code.</summary>
     <content type="html">&lt;p&gt;When planning my talk and book on REST/HTTP API development, I ended up mentioning documentation towards the end, and flippantly said “Oh and API Blueprint is pretty good probably just use that.” This is something I’d love to fix with a time machine, as these days I spec out an API in &lt;a href="https://apiblueprint.org"&gt;API Blueprint&lt;/a&gt; before I get anywhere near the code.&lt;/p&gt;
 
@@ -529,8 +493,8 @@ Bit of a description or intro, and an introduction to how to OAuth, etc.
     <title>Everyones Favourite Twitter Characters</title>
     <link rel="alternate" href="https://philsturgeon.uk/2015/10/02/everyones-favourite-twitter-character/"/>
     <id>https://philsturgeon.uk/2015/10/02/everyones-favourite-twitter-character/</id>
-    <published>2015-10-02T07:22:00-10:00</published>
-    <updated>2015-10-03T10:57:43-10:00</updated>
+    <published>2015-10-02T13:22:00-04:00</published>
+    <updated>2015-10-03T16:57:43-04:00</updated>
     <summary type="html">Regularly, I make a general piece of advice, and the types of responses are pretty similar regardless of the actual conversation.</summary>
     <content type="html">&lt;p&gt;Regularly, I make a general piece of advice, and the types of responses are pretty similar regardless of the actual conversation.&lt;/p&gt;
 
@@ -675,8 +639,8 @@ Bit of a description or intro, and an introduction to how to OAuth, etc.
     <title>HTTP Status Codes Are Not Enough</title>
     <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/"/>
     <id>https://philsturgeon.uk/http/2015/09/23/http-status-codes-are-not-enough/</id>
-    <published>2015-09-23T11:00:00-10:00</published>
-    <updated>2015-10-08T07:42:13-10:00</updated>
+    <published>2015-09-23T17:00:00-04:00</published>
+    <updated>2015-10-08T13:42:13-04:00</updated>
     <summary type="html">Don't be fooled into thinking you can use HTTP status codes on their own. You need to supplement them using error messages, with maybe some specific error codes of your own and links to documentation explaining what the problem is.</summary>
     <content type="html">&lt;p&gt;I spotted an article called &lt;a href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"&gt;Just learn Rails (Part 3) HTTP status codes&lt;/a&gt;. It started off good, and I liked that it was teaching people to avoid hardcoding their HTTP status codes in code, using &lt;code&gt;:conflict&lt;/code&gt; instead of &lt;code&gt;409&lt;/code&gt; and the like.&lt;/p&gt;
 
@@ -837,8 +801,8 @@ that alone.&lt;/p&gt;
     <title>Auto-Incrementing IDs: Giving your Data Away</title>
     <link rel="alternate" href="https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/"/>
     <id>https://philsturgeon.uk/http/2015/09/03/auto-incrementing-to-destruction/</id>
-    <published>2015-09-03T03:47:00-10:00</published>
-    <updated>2015-10-08T08:02:11-10:00</updated>
+    <published>2015-09-03T09:47:00-04:00</published>
+    <updated>2015-10-08T14:02:11-04:00</updated>
     <summary type="html">Something we’re always taught as developers, usually by tutorials or via the defaults in various ORM tools, is every SQL table needs an auto-incrementing ID. This is a weirdly common fallacy, enforced by old tutorials, new tutorials and half-arsed tooling in various forms. Why are auto-incrementing IDs a problem? Because it means people can download your database.</summary>
     <content type="html">&lt;p&gt;Something we’re always taught as developers, usually by tutorials or via the defaults in various ORM tools, is every SQL table needs an auto-incrementing ID. This is a weirdly common fallacy, enforced by old tutorials, new tutorials and half-arsed tooling in various forms. Why are auto-incrementing IDs a problem? Because it means people can download your database.&lt;/p&gt;
 
@@ -958,6 +922,36 @@ that alone.&lt;/p&gt;
 &lt;p&gt;How? Look for apps regularly hitting their rate limit. Look for stuff that is randomly search geo boxes moving across the map in an unnatural way (people don’t move in a sweeping left to right grid pattern).&lt;/p&gt;
 
 &lt;p&gt;Automate those detections, and fire off an email to the bastards trying to download your dataset. You’ll have their email because they signed up, and if they’re really daft they’ll use their work email. I’ve seen that happen, and we had a nice little chat.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>No Booze for a Month</title>
+    <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/22/no-booze/"/>
+    <id>https://philsturgeon.uk/charity/2015/08/22/no-booze/</id>
+    <published>2015-08-22T13:30:00-04:00</published>
+    <updated>2015-09-23T16:24:47-04:00</updated>
+    <summary type="html">In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!</summary>
+    <content type="html">&lt;p&gt;In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!&lt;/p&gt;
+
+&lt;p&gt;In addition to &lt;a href="/charity/2015/08/11/geeks-giving-for-aids-again/"&gt;offering tech/PHP related rewards&lt;/a&gt; for cool free stuff, I thought I would go one step further to shock people into grabbing their wallets.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ONE MONTH, NO BOOZE!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Yeah you heard me. Usually there is nothing but cider pumping through my veins. Terrible, sickly sweet, American cider these days, but booze all the same.&lt;/p&gt;
+
+&lt;p&gt;In the name of raising a boatload of cash for charity, I am going to go sober for one whole month.&lt;/p&gt;
+
+&lt;p&gt;I am 5 days in. This runs August 15th, to September 15th.&lt;/p&gt;
+
+&lt;p&gt;Last week was a trial run of 7 days, which I did succeed but tbh it has only made this month harder.&lt;/p&gt;
+
+&lt;p&gt;Anyone who knows me knows how hard this is going to be, especially as I have two conferences to attend and a 26 hour flight to New Zealand to get through next week.&lt;/p&gt;
+
+&lt;p&gt;But, jokes aside, my reliance on booze and the inconvenience of going without it is nothing compared to what those living with HIV/Aids have to go through, and I’m doing this to raise money for them.&lt;/p&gt;
+
+&lt;p&gt;Please put your hand in your pocket and &lt;a href="http://fundraising.housingworks.org/participant/philstu-15"&gt;donate some cash for an amazing cause&lt;/a&gt;.&lt;/p&gt;
 </content>
   </entry>
 </feed>

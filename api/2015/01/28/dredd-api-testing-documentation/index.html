@@ -111,29 +111,29 @@
 
 <p>In the Apiary article they have an example <code>scripts/test</code> file:</p>
 
-<pre class="highlight plaintext"><code>#!/bin/sh
+<pre class="highlight shell"><code><span class="c">#!/bin/sh</span>
 ./node_modules/coffee-script/bin/coffee app.coffee &amp;
 sleep 5
-PID=$!
+<span class="nv">PID</span><span class="o">=</span><span class="nv">$!</span>
 dredd apiary.apib http://localhost:3000/
-RESULT=$?
-kill -9 $PID
-exit $RESULT
+<span class="nv">RESULT</span><span class="o">=</span><span class="nv">$?</span>
+<span class="nb">kill</span> -9 <span class="nv">$PID</span>
+<span class="nb">exit</span> <span class="nv">$RESULT</span>
 </code></pre>
 
 <p>I tweaked that and made a <code>bin/run_dredd</code> script to fit in with the other Rails executables:</p>
 
-<pre class="highlight plaintext"><code>#!/bin/sh
-RAILS_ENV=test bundle exec rake db:reset
-RAILS_ENV=test bundle exec rake db:fixtures:load
-RAILS_ENV=test bundle exec rake db:seed
-RAILS_ENV=test bundle exec rails server -p 3001 &amp;
+<pre class="highlight shell"><code><span class="c">#!/bin/sh</span>
+<span class="nv">RAILS_ENV</span><span class="o">=</span><span class="nb">test </span>bundle <span class="nb">exec </span>rake db:reset
+<span class="nv">RAILS_ENV</span><span class="o">=</span><span class="nb">test </span>bundle <span class="nb">exec </span>rake db:fixtures:load
+<span class="nv">RAILS_ENV</span><span class="o">=</span><span class="nb">test </span>bundle <span class="nb">exec </span>rake db:seed
+<span class="nv">RAILS_ENV</span><span class="o">=</span><span class="nb">test </span>bundle <span class="nb">exec </span>rails server -p 3001 &amp;
 sleep 5
-PID=$!
+<span class="nv">PID</span><span class="o">=</span><span class="nv">$!</span>
 dredd apiary.apib http://localhost:3001/ --sorted
-RESULT=$?
-kill -9 $PID
-exit $RESULT
+<span class="nv">RESULT</span><span class="o">=</span><span class="nv">$?</span>
+<span class="nb">kill</span> -9 <span class="nv">$PID</span>
+<span class="nb">exit</span> <span class="nv">$RESULT</span>
 </code></pre>
 
 <p>This helped make dredd set itself up with a useful database, run a server in the test environment, look at the <code>apiary.apib</code> file then kill its process. A very handy script.</p>
@@ -152,23 +152,15 @@ exit $RESULT
 
 <p>To make this work, I added some</p>
 
-<p>~~~js text %}
-## Credit Card collection [/credit_cards]</p>
+<pre class="highlight plaintext"><code>## Credit Card collection [/credit_cards]
 
-<h3 id="create-a-credit-card-post">Create a Credit Card [POST]</h3>
+### Create a Credit Card [POST]
 
-<ul>
-  <li>Request (application/json; charset=utf-8)
-    <ul>
-      <li>
-        <p>Headers</p>
++ Request (application/json; charset=utf-8)
+    + Headers
 
-<pre class="highlight plaintext"><code>  Authorization: Bearer passenger_access_token ~~~
+            Authorization: Bearer passenger_access_token
 </code></pre>
-      </li>
-    </ul>
-  </li>
-</ul>
 
 <p>We also have <code>driver_access_token</code> and <code>foo_service_access_token</code>. This can be a bit misleading as it looks like we are saying <em>only users</em> on an endpoint that might allow users <em>and</em> services, but that can be explained for humans in the description.</p>
 
@@ -188,15 +180,14 @@ exit $RESULT
 
 <p>CircleCI was perfectly happy to run Dredd with minimal cocking around:</p>
 
-<p>~~~js yaml %}
-dependencies:
-  post:
-    - npm install -g dredd
-test:
-  override:
-    - bundle exec rake test
-    - bundle exec ./bin/run_dredd
-~~~</p>
+<pre class="highlight yaml"><code><span class="s">dependencies</span><span class="pi">:</span>
+  <span class="s">post</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">npm install -g dredd</span>
+<span class="s">test</span><span class="pi">:</span>
+  <span class="s">override</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">bundle exec rake test</span>
+    <span class="pi">-</span> <span class="s">bundle exec ./bin/run_dredd</span>
+</code></pre>
 
 <p>I had to override the default command to allow multiple commands, and obviously <code>dredd</code> had to be installed via npm, but after that it just used the same <code>./bin/run_dredd</code> I’d been using locally.</p>
 
@@ -204,9 +195,8 @@ test:
 
 <p>JSON syntax errors in examples, Markdown syntax errors and other problems can really mess you up, and Dredd is not always that hot at reporting them. There is another tool called <a href="https://github.com/apiaryio/snowcrash">Snowcrash</a>, which you can use directly once installed. If anything goes weird in your tests, try this command:</p>
 
-<p>~~~js sh %}
-$ snowcrash apiary.apib
-~~~</p>
+<pre class="highlight plaintext"><code>$ snowcrash apiary.apib
+</code></pre>
 
 <p>This gives some great feedback on all sorts of potential screw-ups in your documentation, which otherwise might go unreported.</p>
 
@@ -338,9 +328,9 @@ $ snowcrash apiary.apib
       <li>
         <h3>Recent Posts</h3>
         <ul>
-          <li><a href="/2015/11/24/http-rest-api-file-uploads/">HTTP/REST API File Uploads</a></li>
           <li><a href="/2015/11/20/deploying-with-git-flow-tags-and-circleci/">Deploying with Git-Flow, Tags and CircleCI</a></li>
           <li><a href="/api/2015/10/08/http-documentation-with-api-blueprint/">HTTP Documentation with API Blueprint</a></li>
+          <li><a href="/2015/10/02/everyones-favourite-twitter-character/">Everyones Favourite Twitter Characters</a></li>
         </ul>
       </li>
     </ul>

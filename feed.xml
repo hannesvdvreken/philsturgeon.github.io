@@ -5,10 +5,231 @@
   <id>https://philsturgeon.uk/</id>
   <link href="https://philsturgeon.uk/"/>
   <link href="https://philsturgeon.uk/feed.xml" rel="self"/>
-  <updated>2015-11-20T18:53:00-05:00</updated>
+  <updated>2015-11-23T21:37:00-05:00</updated>
   <author>
     <name>Phil Sturgeon</name>
   </author>
+  <entry>
+    <title>HTTP/REST API File Uploads</title>
+    <link rel="alternate" href="https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/"/>
+    <id>https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/</id>
+    <published>2015-11-23T21:37:00-05:00</published>
+    <updated>2016-01-04T17:51:49-05:00</updated>
+    <summary type="html">File uploads are one thing that always feel rather complicated, and working out how to handle this in an API doesn’t make life easier. For many programmers, this has been abstracted away behind the HTTP standard, HTML and convenient features in languages like PHP, that populate a $_FILES array for us to play with. This is not really how it works for an API.</summary>
+    <content type="html">&lt;p&gt;File uploads are one thing that always feel rather complicated, and working out how to handle this in an API doesn’t make life easier. For many programmers, this has been abstracted away behind the HTTP standard, HTML and convenient features in languages like PHP, that populate a &lt;code&gt;$_FILES&lt;/code&gt; array for us to play with. This is not really how it works for an API.&lt;/p&gt;
+
+&lt;p&gt;I have come across a few main approaches to uploading files:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Uploading a file with metadata, like an image with comments, categories, location, etc.&lt;/li&gt;
+  &lt;li&gt;Uploading just a file by itself, like an avatar for an existing user&lt;/li&gt;
+  &lt;li&gt;Uploading a file from a URL&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To many folks number 1 sounds like a perfect time to use multipart forms, but they really are a mess, and do not make as much sense for 2 and 3.&lt;/p&gt;
+
+&lt;h2 id="why-multipart-mostly-sucks"&gt;Why Multipart Mostly Sucks&lt;/h2&gt;
+
+&lt;p&gt;Making a multipart request looks a little like this:&lt;/p&gt;
+
+&lt;pre class="highlight http"&gt;&lt;code&gt;&lt;span class="nf"&gt;POST&lt;/span&gt; &lt;span class="nn"&gt;/avatars&lt;/span&gt; &lt;span class="k"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt;
+&lt;span class="na"&gt;Host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;localhost:3000&lt;/span&gt;
+&lt;span class="na"&gt;Authentication&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Bearer some-token&lt;/span&gt;
+&lt;span class="na"&gt;Content-Type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;multipart/form-data; boundary=MultipartBoundry&lt;/span&gt;
+&lt;span class="na"&gt;Accept-Encoding&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;gzip, deflate&lt;/span&gt;
+
+--MultipartBoundry
+Content-Disposition: form-data; name="image"; filename="12348024_1150631324960893_344096225642532672_n.jpg"
+Content-Type: image/jpeg
+
+rawimagecontentwhichlooksfunnyandgoesonforever.d.sf.d.f.sd.fsdkfjkslhfdkshfkjsdfdkfh
+--MultipartBoundry
+Content-Disposition: form-data; name="category"
+
+123
+--MultipartBoundry
+Content-Disposition: form-data; name="location"
+
+123,-50
+--MultipartBoundry--
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The fields are split up, as are the files, by the boundary separator. These requests can get pretty big with a fair number of fields, and it’s not JSON.&lt;/p&gt;
+
+&lt;p&gt;We can do JSON, but it’s a bit gross:&lt;/p&gt;
+
+&lt;pre class="highlight http"&gt;&lt;code&gt;&lt;span class="nf"&gt;POST&lt;/span&gt; &lt;span class="nn"&gt;/avatars&lt;/span&gt; &lt;span class="k"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt;
+&lt;span class="na"&gt;Host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;localhost:3000&lt;/span&gt;
+&lt;span class="na"&gt;Authentication&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Bearer some-token&lt;/span&gt;
+&lt;span class="na"&gt;Content-Type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;multipart/form-data; boundary=MultipartBoundry&lt;/span&gt;
+&lt;span class="na"&gt;Accept-Encoding&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;gzip, deflate&lt;/span&gt;
+
+--MultipartBoundry
+Content-Disposition: form-data; name="image"; filename="12348024_1150631324960893_344096225642532672_n.jpg"
+Content-Type: image/jpeg
+
+rawimagecontentwhichlooksfunnyandgoesonforever.d.sf.d.f.sd.fsdkfjkslhfdkshfkjsdfdkfh
+--MultipartBoundry
+Content-Disposition: form-data; name="myJsonData"
+Content-Type: application/json
+
+{"category":123,"location":123,-50}
+--MultipartBoundry--
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, I know “a bit gross” is not a strong technical reason to do anything, but think about documenting this. Think about explaining to developers that you want to send JSON, not actual JSON but… some JSON in a string. Then think about how developers actually do that. The Postman HTTP client that I love to use has no option for that, and I’m not sure how many of my favourite gem/composer package HTTP clients can do it either.&lt;/p&gt;
+
+&lt;p&gt;Then there’s all the mucking around with setting a boundary, the complexity of building out expected responses for your integration tests, and all sorts of other things I’d rather not think about.&lt;/p&gt;
+
+&lt;p&gt;So, how do we do it if not multipart form uploads?&lt;/p&gt;
+
+&lt;h2 id="method-a-direct-file-upload"&gt;Method A: Direct File Upload&lt;/h2&gt;
+
+&lt;p&gt;Sending along JSON data and the image in one request is not always something that needs to happen. You can either split it into two requests, or you can just have the one request if you only need to infer a little bit of data from the request.&lt;/p&gt;
+
+&lt;p&gt;For example, direct image upload works for uploading avatars for a user:&lt;/p&gt;
+
+&lt;pre class="highlight http"&gt;&lt;code&gt;&lt;span class="nf"&gt;POST&lt;/span&gt; &lt;span class="nn"&gt;/avatars&lt;/span&gt; &lt;span class="k"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt;
+&lt;span class="na"&gt;Host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;localhost:3000&lt;/span&gt;
+&lt;span class="na"&gt;Authentication&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Bearer some-token&lt;/span&gt;
+&lt;span class="na"&gt;Content-Type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;image/jpeg&lt;/span&gt;
+&lt;span class="na"&gt;Content-Length&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;284&lt;/span&gt;
+
+raw image content
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We have an &lt;code&gt;/avatars&lt;/code&gt; collection which is only avatars for that user, and the user is detected by checking &lt;code&gt;oauth2-access-token&lt;/code&gt;. Between knowing the user, and being provided the &lt;code&gt;Content-Type&lt;/code&gt; to let us know if it’s a JPEG, Gif or PNG means we actually have all the connected data we need for this use-case, and the image itself is just sat in the HTTP body as raw data. Httparty in Ruby will for example take an instance of &lt;code&gt;File&lt;/code&gt; as the payload, or you can send the string in PHP doing &lt;code&gt;file_get_contents('/path/to/file')&lt;/code&gt; and send that.&lt;/p&gt;
+
+&lt;p&gt;From there it is trivially easy to fetch that body have a string of the image:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PHP: &lt;code&gt;file_get_contents('php://input');&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Ruby (Rack): &lt;code&gt;request.body&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With this string you can easily upload it to S3 or put it anywhere else you like, especially if you’re using something excellent like &lt;a href="http://flysystem.thephpleague.com/"&gt;Flysystem&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The only thing worth mentioning on that request is the addition of &lt;code&gt;Content-Length&lt;/code&gt;, which is basically the size of the image being uploaded. A quick check of &lt;code&gt;headers['Content-Length'].to_i &amp;gt; 3.megabytes&lt;/code&gt; will let us quickly reply saying “This image is too large”, which is better than waiting forever to say that. Sure, malicious folks could lie here, so your backend code will need to check the image size too. &lt;strong&gt;Never trust input.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Content-Length&lt;/code&gt; also lets you know if you’ve got all of the image or not. If there is a trouble and only some of the image is uploaded, then the size of the image you receive will not be the same as the content length. Check them, see how it goes.&lt;/p&gt;
+
+&lt;p&gt;The response here will have a simple body:&lt;/p&gt;
+
+&lt;pre class="highlight json"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"avatars"&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nt"&gt;"id"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nt"&gt;"image_url"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"http://localhost:3000/attachments/store/foo/avatar.jpg"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nt"&gt;"links"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+            &lt;/span&gt;&lt;span class="nt"&gt;"user"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That &lt;code&gt;user&lt;/code&gt; was inferred from the token, and the &lt;code&gt;image_url&lt;/code&gt; is the resulting URL to the avatar that has been uploaded. Normally this would be a CDN URL of course, because you don’t want your API responsible for handling asset downloads too. Probably.&lt;/p&gt;
+
+&lt;h2 id="method-b-upload-from-url"&gt;Method B: Upload from URL&lt;/h2&gt;
+
+&lt;p&gt;Uploading images directly in the HTTP body was something that worked well for the mobile teams at &lt;a href="https://ride.com/"&gt;Ride&lt;/a&gt;, but the web team didn’t have as much fun with it. It’s probably down to the business requirements we have. Basically, the mobile teams were uploading user avatar images directly from the photo libraries on the device, and the web teams were pulling avatars from Facebook or Twitter.&lt;/p&gt;
+
+&lt;p&gt;Even if we were doing things a little differently, there is no way for the web team to access the raw content of a full image using just browser-based JavaScript. They could probably do some madness to get it, but it seemed easier to just provide another option. The same endpoint, with the same logic behind it all, but add in support for a JSON payload:&lt;/p&gt;
+
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;POST /avatars HTTP/1.1
+Host: localhost:3000
+Authentication: Bearer some-token
+Content-Type: application/json
+
+{
+  "image_url" : "https://facebook.com/images/dfidsyfsudf.png"
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That was literally all we needed to support externally to have it all work. Then internally I checked the content type, and either called a &lt;code&gt;read_from_string&lt;/code&gt; method or a &lt;code&gt;read_from_url&lt;/code&gt; method, which both do exactly what it says on the tin.&lt;/p&gt;
+
+&lt;p&gt;Then of course the response will be identical to Method 1:&lt;/p&gt;
+
+&lt;pre class="highlight json"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"avatars"&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nt"&gt;"id"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"2"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nt"&gt;"image_url"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"http://localhost:3000/attachments/store/bar/avatar.png"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nt"&gt;"links"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+            &lt;/span&gt;&lt;span class="nt"&gt;"user"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Supporting both might not be something you need to do, and you might start out only needing one. Definitely do not write API functionality that you do not need and will not use, but keep in mind that at some point somebody may want the other approach added in. HTTP makes that incredibly easy to do thanks to being able to switch &lt;code&gt;Content-Type&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id="what-about-meta-data"&gt;What about Meta Data?&lt;/h2&gt;
+
+&lt;p&gt;To go back to the list of different types of upload, you might have noticed we’ve not actually covered all three.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Uploading a file with metadata, like an image with comments, categories, location, etc.&lt;/li&gt;
+  &lt;li&gt;Uploading just a file by itself, like an avatar for an existing user&lt;/li&gt;
+  &lt;li&gt;Uploading a file from a URL&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;“Direct file upload” and “upload from URL” cover 2 and 3, but the first point is still not covered. By now you might be thinking “Dude, multipart!” but there is another way.&lt;/p&gt;
+
+&lt;p&gt;YouTube video uploads are incredibly quirky and poorly documented. They hide their HTTP interactions behind poorly built SDKs (especially the PHP one, it hurts to look at), but their API does something I really like.&lt;/p&gt;
+
+&lt;p&gt;Basically, the &lt;a href="https://developers.google.com/youtube/v3/guides/using_resumable_upload_protocol"&gt;Resumable Upload Option&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre class="highlight http"&gt;&lt;code&gt;&lt;span class="nf"&gt;POST&lt;/span&gt; &lt;span class="nn"&gt;/upload/youtube/v3/videos?uploadType=resumable&amp;amp;part=snippet,status,contentDetails&lt;/span&gt; &lt;span class="k"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt;
+&lt;span class="na"&gt;Host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;www.googleapis.com&lt;/span&gt;
+&lt;span class="na"&gt;Authorization&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Bearer AUTH_TOKEN&lt;/span&gt;
+&lt;span class="na"&gt;Content-Length&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;278&lt;/span&gt;
+&lt;span class="na"&gt;Content-Type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;application/json; charset=UTF-8&lt;/span&gt;
+&lt;span class="na"&gt;X-Upload-Content-Length&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;3000000&lt;/span&gt;
+&lt;span class="na"&gt;X-Upload-Content-Type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;video/*&lt;/span&gt;
+
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="nt"&gt;"snippet"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"title"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"My video title"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"description"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"This is a description of my video"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"tags"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;"cool"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"video"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"more keywords"&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"categoryId"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="nt"&gt;"status"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"privacyStatus"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"public"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"embeddable"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nt"&gt;"license"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"youtube"&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here they upload all of the meta data for their video before sending it. This is another huge benefit over multipart, as this small and simple HTTP request has a much better chance of being successful first time than a request with a 1gb video in it. This small web request is likely to sneak through, and reduce the change of that title and description being lost, which is so so so annoying.&lt;/p&gt;
+
+&lt;p&gt;Then, the HTTP response of the video contains a &lt;code&gt;Location&lt;/code&gt; header with a URL to the video upload endpoint:&lt;/p&gt;
+
+&lt;pre class="highlight http"&gt;&lt;code&gt;&lt;span class="k"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt; &lt;span class="m"&gt;200&lt;/span&gt; &lt;span class="ne"&gt;OK&lt;/span&gt;
+&lt;span class="na"&gt;Location&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&amp;amp;upload_id=xa298sd_f&amp;amp;part=snippet,status,contentDetails&lt;/span&gt;
+&lt;span class="na"&gt;Content-Length&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then with this URL you’re back to method 1: direct file uploads. With all of your meta data saved, all you have to do is fire the video at this URL:&lt;/p&gt;
+
+&lt;pre class="highlight http"&gt;&lt;code&gt;&lt;span class="nf"&gt;PUT&lt;/span&gt; &lt;span class="nn"&gt;UPLOAD_URL&lt;/span&gt; &lt;span class="k"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt;
+&lt;span class="na"&gt;Authorization&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Bearer AUTH_TOKEN&lt;/span&gt;
+&lt;span class="na"&gt;Content-Length&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;CONTENT_LENGTH&lt;/span&gt;
+&lt;span class="na"&gt;Content-Type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;CONTENT_TYPE&lt;/span&gt;
+
+BINARY_FILE_DATA
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What’s cool about this approach, is that URL &lt;em&gt;could&lt;/em&gt; be part of your main API, or it &lt;em&gt;could&lt;/em&gt; be a totally different service. It could be a direct-to-S3 URL, or some Go service, or anything.&lt;/p&gt;
+
+&lt;p&gt;Larger companies will be more prone to building a service to handle such files coming in, whilst smaller teams might want to keep things simple and let their API do the heavy lifting. The larger the file, the more likely you’ll want to split that off, as having your API handle these huge files - even if the uploads are chunked - will keep the HTTP workers busy. Maintaining those connections might slow down a Rails-based API for a long time, for example, so having another service would help there.&lt;/p&gt;
+
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;I know thats a bit vague and fluffy, and doesn’t give a single recommendation, but the point here is that you have some options.&lt;/p&gt;
+
+&lt;p&gt;Take a think about what sort of file uploads you need, how big the files are, where they’re going and what sort of clients will be using your API. The YouTube approach is a bit complex, but a combination of 1 and 2 usually take care of the job, and stop you needing to work with multi-part uploads, which to me hardly solve the problem and make life unnecessarily complex for some developers.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Deploying with Git-Flow, Tags and CircleCI</title>
     <link rel="alternate" href="https://philsturgeon.uk/2015/11/20/deploying-with-git-flow-tags-and-circleci/"/>
@@ -922,36 +1143,6 @@ that alone.&lt;/p&gt;
 &lt;p&gt;How? Look for apps regularly hitting their rate limit. Look for stuff that is randomly search geo boxes moving across the map in an unnatural way (people don’t move in a sweeping left to right grid pattern).&lt;/p&gt;
 
 &lt;p&gt;Automate those detections, and fire off an email to the bastards trying to download your dataset. You’ll have their email because they signed up, and if they’re really daft they’ll use their work email. I’ve seen that happen, and we had a nice little chat.&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>No Booze for a Month</title>
-    <link rel="alternate" href="https://philsturgeon.uk/charity/2015/08/22/no-booze/"/>
-    <id>https://philsturgeon.uk/charity/2015/08/22/no-booze/</id>
-    <published>2015-08-22T13:30:00-04:00</published>
-    <updated>2015-09-23T16:24:47-04:00</updated>
-    <summary type="html">In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!</summary>
-    <content type="html">&lt;p&gt;In 5 weeks I’ll be riding my bike a really long way to raise money for charity. Sadly, as I ride bikes all the time, not so many people are interested in forking out. Luckily, I have a plan!&lt;/p&gt;
-
-&lt;p&gt;In addition to &lt;a href="/charity/2015/08/11/geeks-giving-for-aids-again/"&gt;offering tech/PHP related rewards&lt;/a&gt; for cool free stuff, I thought I would go one step further to shock people into grabbing their wallets.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;ONE MONTH, NO BOOZE!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Yeah you heard me. Usually there is nothing but cider pumping through my veins. Terrible, sickly sweet, American cider these days, but booze all the same.&lt;/p&gt;
-
-&lt;p&gt;In the name of raising a boatload of cash for charity, I am going to go sober for one whole month.&lt;/p&gt;
-
-&lt;p&gt;I am 5 days in. This runs August 15th, to September 15th.&lt;/p&gt;
-
-&lt;p&gt;Last week was a trial run of 7 days, which I did succeed but tbh it has only made this month harder.&lt;/p&gt;
-
-&lt;p&gt;Anyone who knows me knows how hard this is going to be, especially as I have two conferences to attend and a 26 hour flight to New Zealand to get through next week.&lt;/p&gt;
-
-&lt;p&gt;But, jokes aside, my reliance on booze and the inconvenience of going without it is nothing compared to what those living with HIV/Aids have to go through, and I’m doing this to raise money for them.&lt;/p&gt;
-
-&lt;p&gt;Please put your hand in your pocket and &lt;a href="http://fundraising.housingworks.org/participant/philstu-15"&gt;donate some cash for an amazing cause&lt;/a&gt;.&lt;/p&gt;
 </content>
   </entry>
 </feed>

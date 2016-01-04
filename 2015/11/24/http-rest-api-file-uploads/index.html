@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>HTTP/REST API File Uploads | Phil Sturgeon</title>
+  <meta name="description" content="I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/stylesheets/main.css" rel="stylesheet" media="screen" />
+  <link href="/stylesheets/print.css" rel="stylesheet" media="print" />
+  <link href="/images/favicon.png" rel="icon" type="image/png" />
+
+  <meta property="og:title" content="HTTP/REST API File Uploads" />
+  <meta property="og:type" content="article" />
+  <meta property="article:author" content="Phil Sturgeon" />
+  <meta property="og:description" content="File uploads are one thing that always feel rather complicated, and working out how to handle this in an API doesn’t make life easier. For many programmers, this has been abstracted away behind the HTTP standard, HTML and convenient features in languages like PHP, that populate a $_FILES array for us to play with. This is not really how it works for an API." />
+  <meta property="og:site_name" content="Phil Sturgeon" />
+  <meta property="og:image" content="https://philsturgeon.uk/images/author.jpg" />
+  <meta property="og:url" content="https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/" />
+  <meta property="og:locale" content="en_GB" />
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@philsturgeon">
+  <meta name="twitter:title" content="HTTP&#x2F;REST API File Uploads | Phil Sturgeon">
+  <meta name="twitter:image:src" content="https://philsturgeon.uk/images/author.jpg">
+  <meta name="twitter:url" content="https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/">
+  <meta name="twitter:description" content="File uploads are one thing that always feel rather complicated, and working out how to handle this in an API doesn’t make life easier. For many programmers, this has been abstracted away behind the HTTP standard, HTML and convenient features in languages like PHP, that populate a $_FILES array for us to play with. This is not really how it works for an API.">
+  <meta name="twitter:creator" content="@philsturgeon">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+</head>
+
+
+  <body>
+
+    <a class='fa fa-home logo-readium' href='/'></a>
+
+
+    <!-- content start -->
+
+    <main class="content" role="main">
+      <article class="post">
+        <div class="noarticleimage">
+          <div class="post-meta">
+            <h1 class="post-title">HTTP&#x2F;REST API File Uploads</h1>
+            <div class="cf post-meta-text">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4 class="author-name" itemprop="author" itemscope itemtype="http://schema.org/Person">Phil Sturgeon</h4>
+              on
+              <time datetime="2015-11-24 02:37:00 UTC">
+                Nov 24 2015
+              </time>
+              <a href="/tags/http/">#http</a>
+              <a href="/tags/api/">#api</a>
+              <a href="/tags/uploads/">#uploads</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <section class="post-content">
+          <div class="post-reading">
+            <span class="post-reading-time"></span> read
+          </div>
+          <a name="topofpage"></a>
+          <p>File uploads are one thing that always feel rather complicated, and working out how to handle this in an API doesn’t make life easier. For many programmers, this has been abstracted away behind the HTTP standard, HTML and convenient features in languages like PHP, that populate a <code>$_FILES</code> array for us to play with. This is not really how it works for an API.</p>
+
+<p>I have come across a few main approaches to uploading files:</p>
+
+<ol>
+  <li>Uploading a file with metadata, like an image with comments, categories, location, etc.</li>
+  <li>Uploading just a file by itself, like an avatar for an existing user</li>
+  <li>Uploading a file from a URL</li>
+</ol>
+
+<p>To many folks number 1 sounds like a perfect time to use multipart forms, but they really are a mess, and do not make as much sense for 2 and 3.</p>
+
+<h2 id="why-multipart-mostly-sucks">Why Multipart Mostly Sucks</h2>
+
+<p>Making a multipart request looks a little like this:</p>
+
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/avatars</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:3000</span>
+<span class="na">Authentication</span><span class="p">:</span> <span class="s">Bearer some-token</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">multipart/form-data; boundary=MultipartBoundry</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+
+--MultipartBoundry
+Content-Disposition: form-data; name="image"; filename="12348024_1150631324960893_344096225642532672_n.jpg"
+Content-Type: image/jpeg
+
+rawimagecontentwhichlooksfunnyandgoesonforever.d.sf.d.f.sd.fsdkfjkslhfdkshfkjsdfdkfh
+--MultipartBoundry
+Content-Disposition: form-data; name="category"
+
+123
+--MultipartBoundry
+Content-Disposition: form-data; name="location"
+
+123,-50
+--MultipartBoundry--
+</code></pre>
+
+<p>The fields are split up, as are the files, by the boundary separator. These requests can get pretty big with a fair number of fields, and it’s not JSON.</p>
+
+<p>We can do JSON, but it’s a bit gross:</p>
+
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/avatars</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:3000</span>
+<span class="na">Authentication</span><span class="p">:</span> <span class="s">Bearer some-token</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">multipart/form-data; boundary=MultipartBoundry</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+
+--MultipartBoundry
+Content-Disposition: form-data; name="image"; filename="12348024_1150631324960893_344096225642532672_n.jpg"
+Content-Type: image/jpeg
+
+rawimagecontentwhichlooksfunnyandgoesonforever.d.sf.d.f.sd.fsdkfjkslhfdkshfkjsdfdkfh
+--MultipartBoundry
+Content-Disposition: form-data; name="myJsonData"
+Content-Type: application/json
+
+{"category":123,"location":123,-50}
+--MultipartBoundry--
+</code></pre>
+
+<p>Now, I know “a bit gross” is not a strong technical reason to do anything, but think about documenting this. Think about explaining to developers that you want to send JSON, not actual JSON but… some JSON in a string. Then think about how developers actually do that. The Postman HTTP client that I love to use has no option for that, and I’m not sure how many of my favourite gem/composer package HTTP clients can do it either.</p>
+
+<p>Then there’s all the mucking around with setting a boundary, the complexity of building out expected responses for your integration tests, and all sorts of other things I’d rather not think about.</p>
+
+<p>So, how do we do it if not multipart form uploads?</p>
+
+<h2 id="method-a-direct-file-upload">Method A: Direct File Upload</h2>
+
+<p>Sending along JSON data and the image in one request is not always something that needs to happen. You can either split it into two requests, or you can just have the one request if you only need to infer a little bit of data from the request.</p>
+
+<p>For example, direct image upload works for uploading avatars for a user:</p>
+
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/avatars</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:3000</span>
+<span class="na">Authentication</span><span class="p">:</span> <span class="s">Bearer some-token</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">image/jpeg</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">284</span>
+
+raw image content
+</code></pre>
+
+<p>We have an <code>/avatars</code> collection which is only avatars for that user, and the user is detected by checking <code>oauth2-access-token</code>. Between knowing the user, and being provided the <code>Content-Type</code> to let us know if it’s a JPEG, Gif or PNG means we actually have all the connected data we need for this use-case, and the image itself is just sat in the HTTP body as raw data. Httparty in Ruby will for example take an instance of <code>File</code> as the payload, or you can send the string in PHP doing <code>file_get_contents('/path/to/file')</code> and send that.</p>
+
+<p>From there it is trivially easy to fetch that body have a string of the image:</p>
+
+<ul>
+  <li>PHP: <code>file_get_contents('php://input');</code></li>
+  <li>Ruby (Rack): <code>request.body</code></li>
+</ul>
+
+<p>With this string you can easily upload it to S3 or put it anywhere else you like, especially if you’re using something excellent like <a href="http://flysystem.thephpleague.com/">Flysystem</a>.</p>
+
+<p>The only thing worth mentioning on that request is the addition of <code>Content-Length</code>, which is basically the size of the image being uploaded. A quick check of <code>headers['Content-Length'].to_i &gt; 3.megabytes</code> will let us quickly reply saying “This image is too large”, which is better than waiting forever to say that. Sure, malicious folks could lie here, so your backend code will need to check the image size too. <strong>Never trust input.</strong></p>
+
+<p><code>Content-Length</code> also lets you know if you’ve got all of the image or not. If there is a trouble and only some of the image is uploaded, then the size of the image you receive will not be the same as the content length. Check them, see how it goes.</p>
+
+<p>The response here will have a simple body:</p>
+
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"avatars"</span><span class="p">:{</span><span class="w">
+        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://localhost:3000/attachments/store/foo/avatar.jpg"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>That <code>user</code> was inferred from the token, and the <code>image_url</code> is the resulting URL to the avatar that has been uploaded. Normally this would be a CDN URL of course, because you don’t want your API responsible for handling asset downloads too. Probably.</p>
+
+<h2 id="method-b-upload-from-url">Method B: Upload from URL</h2>
+
+<p>Uploading images directly in the HTTP body was something that worked well for the mobile teams at <a href="https://ride.com/">Ride</a>, but the web team didn’t have as much fun with it. It’s probably down to the business requirements we have. Basically, the mobile teams were uploading user avatar images directly from the photo libraries on the device, and the web teams were pulling avatars from Facebook or Twitter.</p>
+
+<p>Even if we were doing things a little differently, there is no way for the web team to access the raw content of a full image using just browser-based JavaScript. They could probably do some madness to get it, but it seemed easier to just provide another option. The same endpoint, with the same logic behind it all, but add in support for a JSON payload:</p>
+
+<pre class="highlight plaintext"><code>POST /avatars HTTP/1.1
+Host: localhost:3000
+Authentication: Bearer some-token
+Content-Type: application/json
+
+{
+  "image_url" : "https://facebook.com/images/dfidsyfsudf.png"
+}
+</code></pre>
+
+<p>That was literally all we needed to support externally to have it all work. Then internally I checked the content type, and either called a <code>read_from_string</code> method or a <code>read_from_url</code> method, which both do exactly what it says on the tin.</p>
+
+<p>Then of course the response will be identical to Method 1:</p>
+
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"avatars"</span><span class="p">:{</span><span class="w">
+        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://localhost:3000/attachments/store/bar/avatar.png"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Supporting both might not be something you need to do, and you might start out only needing one. Definitely do not write API functionality that you do not need and will not use, but keep in mind that at some point somebody may want the other approach added in. HTTP makes that incredibly easy to do thanks to being able to switch <code>Content-Type</code>.</p>
+
+<h2 id="what-about-meta-data">What about Meta Data?</h2>
+
+<p>To go back to the list of different types of upload, you might have noticed we’ve not actually covered all three.</p>
+
+<ol>
+  <li>Uploading a file with metadata, like an image with comments, categories, location, etc.</li>
+  <li>Uploading just a file by itself, like an avatar for an existing user</li>
+  <li>Uploading a file from a URL</li>
+</ol>
+
+<p>“Direct file upload” and “upload from URL” cover 2 and 3, but the first point is still not covered. By now you might be thinking “Dude, multipart!” but there is another way.</p>
+
+<p>YouTube video uploads are incredibly quirky and poorly documented. They hide their HTTP interactions behind poorly built SDKs (especially the PHP one, it hurts to look at), but their API does something I really like.</p>
+
+<p>Basically, the <a href="https://developers.google.com/youtube/v3/guides/using_resumable_upload_protocol">Resumable Upload Option</a></p>
+
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/upload/youtube/v3/videos?uploadType=resumable&amp;part=snippet,status,contentDetails</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.googleapis.com</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer AUTH_TOKEN</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">278</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=UTF-8</span>
+<span class="na">X-Upload-Content-Length</span><span class="p">:</span> <span class="s">3000000</span>
+<span class="na">X-Upload-Content-Type</span><span class="p">:</span> <span class="s">video/*</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="nt">"snippet"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My video title"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a description of my video"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"cool"</span><span class="p">,</span><span class="w"> </span><span class="s2">"video"</span><span class="p">,</span><span class="w"> </span><span class="s2">"more keywords"</span><span class="p">],</span><span class="w">
+    </span><span class="nt">"categoryId"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"privacyStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"public"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"embeddable"</span><span class="p">:</span><span class="w"> </span><span class="err">True</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"license"</span><span class="p">:</span><span class="w"> </span><span class="s2">"youtube"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Here they upload all of the meta data for their video before sending it. This is another huge benefit over multipart, as this small and simple HTTP request has a much better chance of being successful first time than a request with a 1gb video in it. This small web request is likely to sneak through, and reduce the change of that title and description being lost, which is so so so annoying.</p>
+
+<p>Then, the HTTP response of the video contains a <code>Location</code> header with a URL to the video upload endpoint:</p>
+
+<pre class="highlight http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Location</span><span class="p">:</span> <span class="s">https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&amp;upload_id=xa298sd_f&amp;part=snippet,status,contentDetails</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">0</span>
+</code></pre>
+
+<p>Then with this URL you’re back to method 1: direct file uploads. With all of your meta data saved, all you have to do is fire the video at this URL:</p>
+
+<pre class="highlight http"><code><span class="nf">PUT</span> <span class="nn">UPLOAD_URL</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer AUTH_TOKEN</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">CONTENT_LENGTH</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">CONTENT_TYPE</span>
+
+BINARY_FILE_DATA
+</code></pre>
+
+<p>What’s cool about this approach, is that URL <em>could</em> be part of your main API, or it <em>could</em> be a totally different service. It could be a direct-to-S3 URL, or some Go service, or anything.</p>
+
+<p>Larger companies will be more prone to building a service to handle such files coming in, whilst smaller teams might want to keep things simple and let their API do the heavy lifting. The larger the file, the more likely you’ll want to split that off, as having your API handle these huge files - even if the uploads are chunked - will keep the HTTP workers busy. Maintaining those connections might slow down a Rails-based API for a long time, for example, so having another service would help there.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I know thats a bit vague and fluffy, and doesn’t give a single recommendation, but the point here is that you have some options.</p>
+
+<p>Take a think about what sort of file uploads you need, how big the files are, where they’re going and what sort of clients will be using your API. The YouTube approach is a bit complex, but a combination of 1 and 2 usually take care of the job, and stop you needing to work with multi-part uploads, which to me hardly solve the problem and make life unnecessarily complex for some developers.</p>
+
+          <hr>
+<p>If you're interested in API development and want to hang out with other developers who share your interests, swing by the <a href="https://slack.apisyouwonthate.com/?utm_source=philsturgeon.uk&utm_content=api-tag-footer">APIs You Won't Hate Slack Channel</a>. It's a community of over 300 developers who help each other out, and chat about HTTP, REST and APIs.</p>
+
+        </section>
+        <footer class="post-footer">
+            <section class="share">
+                  <a class="icon-twitter" href="https://twitter.com/share?text=HTTP&#x2F;REST API File Uploads&amp;url=https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-twitter"></i><span class="hidden">twitter</span>
+                  </a>
+                  <a class="icon-facebook" href="https://www.facebook.com/sharer.php?t=HTTP&#x2F;REST API File Uploads&amp;u=https://philsturgeon.uk/2015/11/24/http-rest-api-file-uploads/"
+                    onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+                  <i class="fa fa-facebook"></i><span class="hidden">facebook</span>
+                  </a>
+            </section>
+            <section class="post-next-previous">
+                <p>
+                    Previous:
+                    <a class="button" href="/2015/11/20/deploying-with-git-flow-tags-and-circleci/">Deploying with Git-Flow, Tags and CircleCI</a>
+                </p>
+            </section>
+        </footer>
+        <div class="bottom-teaser cf">
+          <div class="more isLeft">
+            <h5 class="index-headline featured"><span>Written by</span></h5>
+            <section class="author">
+              <div class="author-image" style="background-image: url(/images/author.jpg)">Blog Logo</div>
+              <h4>Phil Sturgeon</h4>
+              <p class="bio">I spend a lot of time urging people to learn more languages, and if that is a bit much learn another framework. Rails and Laravel are the same, and Go is a barrel of laughs.</p>
+              <p>Get out of your rut.</p>
+            </section>
+          </div>
+          <div class="more isRight">
+            <h5 class="index-headline featured"><span>More Writing</span></h5>
+            <section class="author">
+              <a href="http://apisyouwonthate.com/">
+                <div class="book-image build-apis">Book Cover</div>
+                <h4>Build APIs You Won't Hate</h4>
+              </a>
+              <p class="bio">Everyone and their dog wants an API, so you should probably learn how to build them.</p>
+              <p><a href="http://apisyouwonthate.com/">Buy it from LeanPub or Amazon</a>.</p>
+            </section>
+          </div>
+        </div>
+      </article>
+
+
+    </main>
+    <div class="bottom-closer">
+      <div class="background-closer-image" style="background-image: url(/images/ciderphpants.jpg)">
+        Image
+      </div>
+      <div class="inner">
+        <h1 class="blog-title">Phil Sturgeon</h1>
+        <h2 class="blog-description">I used to contribute to the PHP-FIG, The League of Extraordinary Packages, PHP The Right Way, CodeIgniter, FuelPHP, PyroCMS and a bunch of other stuff, but I gave it all up to join the circus</h2>
+        <a href="/" class="btn">Back to Overview</a>
+      </div>
+    </div>
+
+    <!-- content end -->
+
+    <footer class='footer' role='contentinfo'>
+  <div class='footer-links'>
+    <ul class='context'>
+      <li>
+        <h3>Content</h3>
+      </li>
+      <li>
+        <a href='/about'>About</a>
+      </li>
+      <li>
+        <a href='/books'>Books</a>
+      </li>
+    </ul>
+    <ul class='follow'>
+      <li>
+        <h3>Follow Me</h3>
+      </li>
+      <li>
+        <a href='https://twitter.com/philsturgeon'>Twitter</a>
+      </li>
+      <li>
+        <a href='https://github.com/'>GitHub</a>
+      </li>
+      <li>
+        <a href='http://phptownhall.com/'>PHP Town Hall</a>
+      </li>
+    </ul>
+    <ul class='recent_posts'>
+      <li>
+        <h3>Recent Posts</h3>
+        <ul>
+          <li><a href="/2015/11/24/http-rest-api-file-uploads/">HTTP/REST API File Uploads</a></li>
+          <li><a href="/2015/11/20/deploying-with-git-flow-tags-and-circleci/">Deploying with Git-Flow, Tags and CircleCI</a></li>
+          <li><a href="/api/2015/10/08/http-documentation-with-api-blueprint/">HTTP Documentation with API Blueprint</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/javascripts/jquery.fitvids.js"></script>
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/readingTime.min.js"></script>
+<script>
+(function ($) {
+  "use strict";
+  $(document).ready(function(){
+
+    var $window = $(window),
+    $image = $('.post-image-image, .teaserimage-image');
+    $window.on('scroll', function() {
+      var top = $window.scrollTop();
+
+      if (top < 0 || top > 1500) { return; }
+      $image
+        .css('transform', 'translate3d(0px, '+top/3+'px, 0px)')
+        .css('opacity', 1-Math.max(top/700, 0));
+    });
+    $window.trigger('scroll');
+
+    var height = $('.article-image').height();
+    $('.post-content').css('padding-top', height + 'px');
+
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+       && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+        if (target.length) {
+          $('html,body').animate({ scrollTop: target.offset().top }, 500);
+          return false;
+        }
+      }
+    });
+  });
+}(jQuery));
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8523256-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+  </body>
+
+</html>
